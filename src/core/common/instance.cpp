@@ -1,10 +1,12 @@
-#include "common/instance.h"
+#include <stdint.h>
+
+#include "common/instance.hpp"
 #include "common/new.hpp"
 
 namespace vc {
 
 // Define the raw storage use for nesx instance (in single-instance case).
-static goDEFINE_ALIGNED_VAR(sInstanceRaw, sizeof(Instance), uint64_t);
+static vcDEFINE_ALIGNED_VAR(sInstanceRaw, sizeof(Instance), uint64_t);
 
 Instance::Instance(void)
     : mIsInitialized(false)

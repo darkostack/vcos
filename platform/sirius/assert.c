@@ -3,8 +3,5 @@
 
 void assert_failure(const char *file, unsigned line)
 {
-#if 0
-    printf("%s:%u => ", file, line); \
-#endif
-    while (1);
+    while (1); \
 }

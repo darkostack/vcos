@@ -1,4 +1,6 @@
-APPS_CLI_C += main.c
+APPS_CLI_C += $(addprefix cli/,\
+    main.c \
+    )
 
 OBJS_APPS_CLI += $(addprefix $(BUILD)/, $(APPS_CLI_C:.c=.o))
 
@@ -32,4 +34,4 @@ $(BUILD)/%.a:
 
 $(LIB_APPS_ARCHIVE): $(LIB_APPS_OBJS)
 
--include $(OBJS_APPS:%.o=%.d)
+-include $(OBJS_APPS_CLI:%.o=%.d)

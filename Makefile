@@ -95,7 +95,6 @@ export LIB_APPS = libapps.a
 
 LIBS += $(BUILD)/platform/$(LIB_PLATFORM)
 LIBS += $(BUILD)/src/$(LIB_SRC_CORE)
-LIBS += $(BUILD)/src/$(LIB_SRC_CLI)
 LIBS += $(BUILD)/apps/$(LIB_APPS)
 
 LDSCRIPT = $(TOP)/platform/$(PLATFORM)/$(PLATFORM).ld
@@ -110,7 +109,7 @@ OBJS:
 	$(MAKE) -C src BUILD="$(BUILD)/src" CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
 	$(MAKE) -C apps BUILD="$(BUILD)/apps" CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
 
-$(IMAGE_OUT).elf: $(LIBS)
+$(IMAGE).elf: $(LIBS)
 	$(CC) $(LDFLAGS) $(patsubst %,-L%,$(patsubst %/,%,$(sort $(dir $(LIBS)))))  \
 	-Wl,--whole-archive $(patsubst %,-l%,$(patsubst lib%,%,$(sort $(basename $(notdir $(LIBS)))))) \
 	-Wl,--no-whole-archive -T $(LDSCRIPT) \
@@ -123,10 +122,9 @@ $(IMAGE).lst: $(IMAGE).elf
 	$(OBJDUMP) -h -S $< > $@
 
 $(VCOS): OBJS $(IMAGE).bin $(IMAGE).lst | $(BUILD)
-	$(SIZE) --format=berkeley $(IMAGE_OUT).elf
+	$(SIZE) --format=berkeley $(IMAGE).elf
 
 BUILD_FINISHED_INFO:
-	$(ECHO) ""
 	$(ECHO) "---------------------------------------------------------------------"
 	$(ECHO) "\033[32mFinished Building\033[0m : [$(PLATFORM)] in $(HOST_MACHINE)"
 	$(ECHO) "---------------------------------------------------------------------"
@@ -144,4 +142,4 @@ clean:
 	-rm -rf $(BUILD)
 
 size:
-	$(SIZE) --format=SysV $(IMAGE_OUT).elf
+	$(SIZE) --format=SysV $(IMAGE).elf
