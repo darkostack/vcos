@@ -1,8 +1,8 @@
 #include <assert.h>
 
-#include "cpu.h"
+#include <vcos/periph/gpio.h>
 
-#include "periph/gpio.h"
+#include "cpu.h"
 
 /**
  * Sirius has 32 external interupt lines, 16 pins of PORTA and 16 pins of PORTC.
@@ -13,155 +13,155 @@
  * isr_gpio_ctx index 0-15 will be used to store PORTA pins and the rest will
  * be used for PORTC pins.
  */
-static gpio_isr_ctx_t isr_gpio_ctx[EXTI_NUMOF];
+static vcGpioIsrContext sIsrGpioContext[EXTI_NUMOF];
 
-static inline uint8_t _port(gpio_t pin)
+static inline uint8_t _port(vcGpio aPin)
 {
     /* get the port number from given GPIO_PIN() */
-    return (pin & 0xf);
+    return (aPin & 0xf);
 }
 
-static inline uint8_t _pin(gpio_t pin)
+static inline uint8_t _pin(vcGpio aPin)
 {
     /* get the pin number from given GPIO_PIN() */
-    return ((pin >> 4) & 0xf);
+    return ((aPin >> 4) & 0xf);
 }
 
-int gpio_init(gpio_t pin, gpio_mode_t mode)
+int vcGpioInit(vcGpio aPin, vcGpioMode aMode)
 {
     uint32_t temp;
 
     VC_GPIO_Type *gpio = NULL;
 
-    if (_port(pin) == PORTA) {
+    if (_port(aPin) == PORTA) {
         gpio = (VC_GPIO_Type *)VC_GPIOA;
     } else {
-        gpio = (VC_GPIO_Type *)VC_GPIO(_port(pin));
+        gpio = (VC_GPIO_Type *)VC_GPIO(_port(aPin));
     }
 
     assert(gpio != NULL);
 
     /* set gpio mode */
-    if (mode == GPIO_IN) {
+    if (aMode == GPIO_IN) {
         /* input */
         temp = gpio->OEN;
-        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(pin));
-        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(aPin));
+        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(aPin));
         gpio->OEN = temp;
 
         temp = gpio->IE;
-        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(pin));
-        temp |= GPIO_IOX_IE_IOXIE_Enabled(_pin(pin));
+        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(aPin));
+        temp |= GPIO_IOX_IE_IOXIE_Enabled(_pin(aPin));
         gpio->IE = temp;
 
         temp = gpio->ATT;
-        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(pin));
-        temp |= GPIO_IOX_ATT_IOXATT_CMOS(_pin(pin));
+        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_ATT_IOXATT_CMOS(_pin(aPin));
         gpio->ATT = temp;
 
-    } else if (mode == GPIO_IN_PD) {
+    } else if (aMode == GPIO_IN_PD) {
         /* input pull-down */
         temp = gpio->OEN;
-        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(pin));
-        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(aPin));
+        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(aPin));
         gpio->OEN = temp;
 
         temp = gpio->IE;
-        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(pin));
-        temp |= GPIO_IOX_IE_IOXIE_Enabled(_pin(pin));
+        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(aPin));
+        temp |= GPIO_IOX_IE_IOXIE_Enabled(_pin(aPin));
         gpio->IE = temp;
 
         temp = gpio->ATT;
-        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(pin));
-        temp |= GPIO_IOX_ATT_IOXATT_OPEN_DRAIN(_pin(pin));
+        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_ATT_IOXATT_OPEN_DRAIN(_pin(aPin));
         gpio->ATT = temp;
 
         temp = gpio->DAT;
-        temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
-        temp |= GPIO_IOX_DAT_IOXDAT_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_DAT_IOXDAT_Disabled(_pin(aPin));
         gpio->DAT = temp;
 
-    } else if (mode == GPIO_IN_PU) {
+    } else if (aMode == GPIO_IN_PU) {
         /* input pull-up */
         temp = gpio->OEN;
-        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(pin));
-        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(aPin));
+        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(aPin));
         gpio->OEN = temp;
 
         temp = gpio->IE;
-        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(pin));
-        temp |= GPIO_IOX_IE_IOXIE_Enabled(_pin(pin));
+        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(aPin));
+        temp |= GPIO_IOX_IE_IOXIE_Enabled(_pin(aPin));
         gpio->IE = temp;
 
         temp = gpio->ATT;
-        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(pin));
-        temp |= GPIO_IOX_ATT_IOXATT_OPEN_DRAIN(_pin(pin));
+        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_ATT_IOXATT_OPEN_DRAIN(_pin(aPin));
         gpio->ATT = temp;
 
         temp = gpio->DAT;
-        temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
-        temp |= GPIO_IOX_DAT_IOXDAT_Enabled(_pin(pin));
+        temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_DAT_IOXDAT_Enabled(_pin(aPin));
         gpio->DAT = temp;
 
-    } else if (mode == GPIO_OUT) {
+    } else if (aMode == GPIO_OUT) {
         /* output */
         temp = gpio->OEN;
-        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(pin));
-        temp |= GPIO_IOX_OEN_IOXOEN_Enabled(_pin(pin));
+        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(aPin));
+        temp |= GPIO_IOX_OEN_IOXOEN_Enabled(_pin(aPin));
         gpio->OEN = temp;
 
         temp = gpio->IE;
-        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(pin));
-        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(aPin));
+        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(aPin));
         gpio->IE = temp;
 
         temp = gpio->ATT;
-        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(pin));
-        temp |= GPIO_IOX_ATT_IOXATT_CMOS(_pin(pin));
+        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_ATT_IOXATT_CMOS(_pin(aPin));
         gpio->ATT = temp;
 
-    } else if (mode == GPIO_OD) {
+    } else if (aMode == GPIO_OD) {
         /* open-drain output low */
         temp = gpio->OEN;
-        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(pin));
-        temp |= GPIO_IOX_OEN_IOXOEN_Enabled(_pin(pin));
+        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(aPin));
+        temp |= GPIO_IOX_OEN_IOXOEN_Enabled(_pin(aPin));
         gpio->OEN = temp;
 
         temp = gpio->IE;
-        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(pin));
-        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(aPin));
+        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(aPin));
         gpio->IE = temp;
 
         temp = gpio->ATT;
-        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(pin));
-        temp |= GPIO_IOX_ATT_IOXATT_OPEN_DRAIN(_pin(pin));
+        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_ATT_IOXATT_OPEN_DRAIN(_pin(aPin));
         gpio->ATT = temp;
 
         temp = gpio->DAT;
-        temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
-        temp |= GPIO_IOX_DAT_IOXDAT_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_DAT_IOXDAT_Disabled(_pin(aPin));
         gpio->DAT = temp;
 
-    } else if (mode == GPIO_OD_PU) {
+    } else if (aMode == GPIO_OD_PU) {
         /* open-drain output high */
         temp = gpio->OEN;
-        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(pin));
-        temp |= GPIO_IOX_OEN_IOXOEN_Enabled(_pin(pin));
+        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(aPin));
+        temp |= GPIO_IOX_OEN_IOXOEN_Enabled(_pin(aPin));
         gpio->OEN = temp;
 
         temp = gpio->IE;
-        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(pin));
-        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(aPin));
+        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(aPin));
         gpio->IE = temp;
 
         temp = gpio->ATT;
-        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(pin));
-        temp |= GPIO_IOX_ATT_IOXATT_OPEN_DRAIN(_pin(pin));
+        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_ATT_IOXATT_OPEN_DRAIN(_pin(aPin));
         gpio->ATT = temp;
 
         temp = gpio->DAT;
-        temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
-        temp |= GPIO_IOX_DAT_IOXDAT_Enabled(_pin(pin));
+        temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_DAT_IOXDAT_Enabled(_pin(aPin));
         gpio->DAT = temp;
 
     } else {
@@ -169,53 +169,53 @@ int gpio_init(gpio_t pin, gpio_mode_t mode)
     }
 
     /* reset PORTx pin special function as gpio */
-    if (_port(pin) == PORTA) {
-        if (_pin(pin) < 8) {
+    if (_port(aPin) == PORTA) {
+        if (_pin(aPin) < 8) {
             temp = VC_GPIOA->SEL0;
-            temp &= ~GPIO_IOA_SEL0_IOAx_SEL_Msk(_pin(pin));
-            temp |= GPIO_SEL0_IOAx_GPIO(_pin(pin));
+            temp &= ~GPIO_IOA_SEL0_IOAx_SEL_Msk(_pin(aPin));
+            temp |= GPIO_SEL0_IOAx_GPIO(_pin(aPin));
             VC_GPIOA->SEL0 = temp;
         } else {
             temp = VC_GPIOA->SEL1;
-            temp &= ~GPIO_IOA_SEL1_IOAx_SEL_Msk(_pin(pin));
-            temp |= GPIO_SEL1_IOAx_GPIO(_pin(pin));
+            temp &= ~GPIO_IOA_SEL1_IOAx_SEL_Msk(_pin(aPin));
+            temp |= GPIO_SEL1_IOAx_GPIO(_pin(aPin));
             VC_GPIOA->SEL1 = temp;
         }
-    } else if (_port(pin) == PORTB || _port(pin) == PORTC) {
-        if (_port(pin) == PORTB) {
-            if (_pin(pin) < 8) {
+    } else if (_port(aPin) == PORTB || _port(aPin) == PORTC) {
+        if (_port(aPin) == PORTB) {
+            if (_pin(aPin) < 8) {
                 temp = VC_GPIOB->SEL0;
-                temp &= ~GPIO_IOB_SEL0_IOBx_SEL_Msk(_pin(pin));
+                temp &= ~GPIO_IOB_SEL0_IOBx_SEL_Msk(_pin(aPin));
                 VC_GPIOB->SEL0 = temp;
             } else {
                 temp = VC_GPIOB->SEL1;
-                temp &= ~GPIO_IOB_SEL1_IOBx_SEL_Msk(_pin(pin));
+                temp &= ~GPIO_IOB_SEL1_IOBx_SEL_Msk(_pin(aPin));
                 VC_GPIOB->SEL1 = temp;
             }
         } else {
-            if (_pin(pin) < 8) {
+            if (_pin(aPin) < 8) {
                 temp = VC_GPIOC->SEL0;
-                temp &= ~GPIO_IOC_SEL0_IOCx_SEL_Msk(_pin(pin));
+                temp &= ~GPIO_IOC_SEL0_IOCx_SEL_Msk(_pin(aPin));
                 VC_GPIOC->SEL0 = temp;
             } else {
                 temp = VC_GPIOC->SEL1;
-                temp &= ~GPIO_IOC_SEL1_IOCx_SEL_Msk(_pin(pin));
+                temp &= ~GPIO_IOC_SEL1_IOCx_SEL_Msk(_pin(aPin));
                 VC_GPIOC->SEL1 = temp;
             }
         }
     } else {
-        if (_port(pin) == PORTD) {
+        if (_port(aPin) == PORTD) {
             temp = VC_GPIOD->SEL;
-            temp &= ~GPIO_IOD_SEL_IODx_SEL_Msk(_pin(pin));
+            temp &= ~GPIO_IOD_SEL_IODx_SEL_Msk(_pin(aPin));
             VC_GPIOD->SEL = temp;
-        } else if (_port(pin) == PORTE) {
+        } else if (_port(aPin) == PORTE) {
             temp = VC_GPIOE->SEL;
-            temp &= ~GPIO_IOE_SEL_IOEx_SEL_Msk(_pin(pin));
+            temp &= ~GPIO_IOE_SEL_IOEx_SEL_Msk(_pin(aPin));
             VC_GPIOE->SEL = temp;
         } else {
-            assert(_pin(pin) < 4); /* PORTF only support pin (0 - 3) */
+            assert(_pin(aPin) < 4); /* PORTF only support pin (0 - 3) */
             temp = VC_GPIOF->SEL;
-            temp &= ~GPIO_IOF_SEL_IOFx_SEL_Msk(_pin(pin));
+            temp &= ~GPIO_IOF_SEL_IOFx_SEL_Msk(_pin(aPin));
             VC_GPIOF->SEL = temp;
         }
     }
@@ -223,30 +223,30 @@ int gpio_init(gpio_t pin, gpio_mode_t mode)
     return 0;
 }
 
-int gpio_init_int(gpio_t pin,
-                  gpio_mode_t mode,
-                  gpio_flank_t flank,
-                  gpio_cb_t cb,
-                  void *arg)
+int vcGpioInitInt(vcGpio aPin,
+                  vcGpioMode aMode,
+                  vcGpioFlank aFlank,
+                  vcGpioCallback aCallback,
+                  void *aArg)
 {
     uint32_t temp, temp1 = 0;
 
-    assert((_port(pin) == PORTA) || (_port(pin) == PORTC));
-    assert(cb != NULL);
+    assert((_port(aPin) == PORTA) || (_port(aPin) == PORTC));
+    assert(aCallback != NULL);
 
     /* store callback information */
-    isr_gpio_ctx[(8 * _port(pin)) + _pin(pin)].cb = cb;
-    isr_gpio_ctx[(8 * _port(pin)) + _pin(pin)].arg = arg;
+    sIsrGpioContext[(8 * _port(aPin)) + _pin(aPin)].mCallback = aCallback;
+    sIsrGpioContext[(8 * _port(aPin)) + _pin(aPin)].mArg = aArg;
 
     /* initialize pin as input */
-    gpio_init(pin, mode);
+    vcGpioInit(aPin, aMode);
 
     /* enable gpio interrupt */
 
-    if (_port(pin) == PORTA) {
+    if (_port(aPin) == PORTA) {
         /* disable IOA de-glitch circuit */
         temp = VC_PMU->IOANODEG;
-        temp |= (1 << _pin(pin));
+        temp |= (1 << _pin(aPin));
         VC_PMU->IOANODEG = temp;
 
         /* enable pmu interrupt */
@@ -258,31 +258,31 @@ int gpio_init_int(gpio_t pin,
         temp = VC_GPIOA->WKUEN;
         temp1 = VC_GPIOA->DAT;
 
-        temp &= ~GPIO_IOx_WKUEN_Msk(_pin(pin));
-        temp1 &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
+        temp &= ~GPIO_IOx_WKUEN_Msk(_pin(aPin));
+        temp1 &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
 
-        if (flank == GPIO_FALLING) {
-            temp |= (1UL << GPIO_IOx_WKUEN_Pos(_pin(pin)));
-            temp1 |= (1UL << _pin(pin));
-        } else if (flank == GPIO_RISING) {
-            temp |= (1UL << GPIO_IOx_WKUEN_Pos(_pin(pin)));
-        } else if (flank == GPIO_BOTH) {
-            temp |= (3UL << GPIO_IOx_WKUEN_Pos(_pin(pin)));    
+        if (aFlank == GPIO_FALLING) {
+            temp |= (1UL << GPIO_IOx_WKUEN_Pos(_pin(aPin)));
+            temp1 |= (1UL << _pin(aPin));
+        } else if (aFlank == GPIO_RISING) {
+            temp |= (1UL << GPIO_IOx_WKUEN_Pos(_pin(aPin)));
+        } else if (aFlank == GPIO_BOTH) {
+            temp |= (3UL << GPIO_IOx_WKUEN_Pos(_pin(aPin)));    
         } else {
-            assert(0); /* unsupported gpio flank signal */
+            assert(0); /* unsupported gpio aFlank signal */
         }
 
         VC_GPIOA->WKUEN = temp;
         VC_GPIOA->DAT = temp1;
 
         /* set pin to EINT special function */
-        if (_pin(pin) < 8) {
+        if (_pin(aPin) < 8) {
             temp = VC_GPIOA->SEL0;
-            temp |= GPIO_SEL0_IOAx_EINTx(_pin(pin));
+            temp |= GPIO_SEL0_IOAx_EINTx(_pin(aPin));
             VC_GPIOA->SEL0 = temp;
         } else {
             temp = VC_GPIOA->SEL1;
-            temp |= GPIO_SEL1_IOAx_EINTx(_pin(pin));
+            temp |= GPIO_SEL1_IOAx_EINTx(_pin(aPin));
             VC_GPIOA->SEL1 = temp;
         }
 
@@ -292,16 +292,16 @@ int gpio_init_int(gpio_t pin,
         temp = VC_GPIOC->WKUEN;
         temp1 = VC_GPIOC->DAT;
 
-        temp &= ~GPIO_IOx_WKUEN_Msk(_pin(pin));
-        temp1 &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
+        temp &= ~GPIO_IOx_WKUEN_Msk(_pin(aPin));
+        temp1 &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
 
-        if (flank == GPIO_FALLING) {
-            temp |= (1UL << GPIO_IOx_WKUEN_Pos(_pin(pin)));
-            temp1 |= (1UL << _pin(pin));
-        } else if (flank == GPIO_RISING) {
-            temp |= (1UL << GPIO_IOx_WKUEN_Pos(_pin(pin)));
-        } else if (flank == GPIO_BOTH) {
-            temp |= (3UL << GPIO_IOx_WKUEN_Pos(_pin(pin)));    
+        if (aFlank == GPIO_FALLING) {
+            temp |= (1UL << GPIO_IOx_WKUEN_Pos(_pin(aPin)));
+            temp1 |= (1UL << _pin(aPin));
+        } else if (aFlank == GPIO_RISING) {
+            temp |= (1UL << GPIO_IOx_WKUEN_Pos(_pin(aPin)));
+        } else if (aFlank == GPIO_BOTH) {
+            temp |= (3UL << GPIO_IOx_WKUEN_Pos(_pin(aPin)));    
         } else {
             assert(0); /* unsupported gpio flank signal */
         }
@@ -310,90 +310,81 @@ int gpio_init_int(gpio_t pin,
         VC_GPIOC->DAT = temp1;
 
         /* set pin to EINT special function */
-        if (_pin(pin) < 8) {
+        if (_pin(aPin) < 8) {
             temp = VC_GPIOC->SEL0;
-            temp |= GPIO_SEL0_IOCx_EINTx(_pin(pin));
+            temp |= GPIO_SEL0_IOCx_EINTx(_pin(aPin));
             VC_GPIOC->SEL0 = temp;
         } else {
             temp = VC_GPIOC->SEL1;
-            temp |= GPIO_SEL1_IOCx_EINTx(_pin(pin));
+            temp |= GPIO_SEL1_IOCx_EINTx(_pin(aPin));
             VC_GPIOC->SEL1 = temp;
         }
     }
 
     /* enable global pin interrupt */
-    gpio_irq_enable(pin);
+    vcGpioIrqEnable(aPin);
 
     return 0;
 }
 
-void gpio_irq_set_prio(gpio_t pin, uint32_t prio)
-{
-    if (_port(pin) == PORTA) {
-        NVIC_SetPriority(Pmu_IRQn, prio);
-    } else {
-        NVIC_SetPriority(Gpio_IRQn, prio);
-    }
-}
-
-void gpio_irq_enable(gpio_t pin)
+void vcGpioIrqEnable(vcGpio aPin)
 {
     /* enable global pin interrupt */
-    if (_port(pin) == PORTA) {
+    if (_port(aPin) == PORTA) {
         NVIC_EnableIRQ(Pmu_IRQn);
     } else {
         NVIC_EnableIRQ(Gpio_IRQn);
     }
 }
 
-void gpio_irq_disable(gpio_t pin)
+void vcGpioIrqDisable(vcGpio aPin)
 {
-    assert((_port(pin) == PORTA) || (_port(pin) == PORTC));
+    assert((_port(aPin) == PORTA) || (_port(aPin) == PORTC));
 
     uint32_t temp, temp1 = 0;
 
-    if (_port(pin) == PORTA) {
+    if (_port(aPin) == PORTA) {
         /* enable back IOA de-glitch circuit as default config */
         temp = VC_PMU->IOANODEG;
-        temp &= ~(1 << _pin(pin));
+        temp &= ~(1 << _pin(aPin));
         VC_PMU->IOANODEG = temp;
 
         /* disable wake-up function */
         temp = VC_GPIOA->WKUEN;
         temp1 = VC_GPIOA->DAT;
 
-        temp &= ~GPIO_IOx_WKUEN_Msk(_pin(pin));
-        temp1 &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
+        temp &= ~GPIO_IOx_WKUEN_Msk(_pin(aPin));
+        temp1 &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
 
         VC_GPIOA->WKUEN = temp;
         VC_GPIOA->DAT = temp1;
 
         /* disable output and input function */
         temp = VC_GPIOA->OEN;
-        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(pin));
-        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(aPin));
+        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(aPin));
         VC_GPIOA->OEN = temp;
 
         temp = VC_GPIOA->IE;
-        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(pin));
-        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(aPin));
+        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(aPin));
         VC_GPIOA->IE = temp;
 
         temp = VC_GPIOA->ATT;
-        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(pin));
-        temp |= GPIO_IOX_ATT_IOXATT_CMOS(_pin(pin));
+        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_ATT_IOXATT_CMOS(_pin(aPin));
         VC_GPIOA->ATT = temp;
 
         /* set to gpio special function */
-        if (_pin(pin) < 8) {
+        if (_pin(aPin) < 8) {
             temp = VC_GPIOA->SEL0;
-            temp &= ~GPIO_IOA_SEL0_IOAx_SEL_Msk(_pin(pin));
-            temp |= GPIO_SEL0_IOAx_GPIO(_pin(pin));
+            temp &= ~GPIO_IOA_SEL0_IOAx_SEL_Msk(_pin(aPin));
+            temp |= GPIO_SEL0_IOAx_GPIO(_pin(aPin));
             VC_GPIOA->SEL0 = temp;
         } else {
             temp = VC_GPIOA->SEL1;
-            temp &= ~GPIO_IOA_SEL1_IOAx_SEL_Msk(_pin(pin));
-            temp |= GPIO_SEL1_IOAx_GPIO(_pin(pin));
+            temp &= ~GPIO_IOA_SEL1_IOAx_SEL_Msk(_pin(aPin));
+            temp |= GPIO_SEL1_IOAx_GPIO(_pin(aPin));
             VC_GPIOA->SEL1 = temp;
         }
    } else {
@@ -401,131 +392,131 @@ void gpio_irq_disable(gpio_t pin)
         temp = VC_GPIOC->WKUEN;
         temp1 = VC_GPIOC->DAT;
 
-        temp &= ~GPIO_IOx_WKUEN_Msk(_pin(pin));
-        temp1 &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
+        temp &= ~GPIO_IOx_WKUEN_Msk(_pin(aPin));
+        temp1 &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
 
         VC_GPIOC->WKUEN = temp;
         VC_GPIOC->DAT = temp1;
 
         /* disable output and input function */
         temp = VC_GPIOC->OEN;
-        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(pin));
-        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_OEN_IOXOEN_Msk(_pin(aPin));
+        temp |= GPIO_IOX_OEN_IOXOEN_Disabled(_pin(aPin));
         VC_GPIOC->OEN = temp;
 
         temp = VC_GPIOC->IE;
-        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(pin));
-        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(pin));
+        temp &= ~GPIO_IOX_IE_IOXIE_Msk(_pin(aPin));
+        temp |= GPIO_IOX_IE_IOXIE_Disabled(_pin(aPin));
         VC_GPIOC->IE = temp;
 
         temp = VC_GPIOC->ATT;
-        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(pin));
-        temp |= GPIO_IOX_ATT_IOXATT_CMOS(_pin(pin));
+        temp &= ~GPIO_IOX_ATT_IOXATT_Msk(_pin(aPin));
+        temp |= GPIO_IOX_ATT_IOXATT_CMOS(_pin(aPin));
         VC_GPIOC->ATT = temp;
 
         /* set to gpio special function */
-        if (_pin(pin) < 8) {
+        if (_pin(aPin) < 8) {
             temp = VC_GPIOC->SEL0;
-            temp &= ~GPIO_IOC_SEL0_IOCx_SEL_Msk(_pin(pin));
-            temp |= GPIO_SEL0_IOCx_GPIO(_pin(pin));
+            temp &= ~GPIO_IOC_SEL0_IOCx_SEL_Msk(_pin(aPin));
+            temp |= GPIO_SEL0_IOCx_GPIO(_pin(aPin));
             VC_GPIOC->SEL0 = temp;
         } else {
             temp = VC_GPIOC->SEL1;
-            temp &= ~GPIO_IOC_SEL1_IOCx_SEL_Msk(_pin(pin));
-            temp |= GPIO_SEL1_IOCx_GPIO(_pin(pin));
+            temp &= ~GPIO_IOC_SEL1_IOCx_SEL_Msk(_pin(aPin));
+            temp |= GPIO_SEL1_IOCx_GPIO(_pin(aPin));
             VC_GPIOC->SEL1 = temp;
         }
    }
 }
 
-int gpio_read(gpio_t pin)
+int vcGpioRead(vcGpio aPin)
 {
-    if (_port(pin) == PORTF) {
-        assert(_pin(pin) < 4);
+    if (_port(aPin) == PORTF) {
+        assert(_pin(aPin) < 4);
     }
 
     VC_GPIO_Type *gpio = NULL;
 
-    if (_port(pin) == PORTA) {
+    if (_port(aPin) == PORTA) {
         gpio = (VC_GPIO_Type *)VC_GPIOA;
     } else {
-        gpio = (VC_GPIO_Type *)VC_GPIO(_port(pin));
+        gpio = (VC_GPIO_Type *)VC_GPIO(_port(aPin));
     }
 
     assert(gpio != NULL);
 
-    return (gpio->DAT & GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin)));
+    return (gpio->DAT & GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin)));
 }
 
-void gpio_set(gpio_t pin)
+void vcGpioSet(vcGpio aPin)
 {
-    if (_port(pin) == PORTF) {
-        assert(_pin(pin) < 4);
+    if (_port(aPin) == PORTF) {
+        assert(_pin(aPin) < 4);
     }
 
     VC_GPIO_Type *gpio = NULL;
 
-    if (_port(pin) == PORTA) {
+    if (_port(aPin) == PORTA) {
         gpio = (VC_GPIO_Type *)VC_GPIOA;
     } else {
-        gpio = (VC_GPIO_Type *)VC_GPIO(_port(pin));
-    }
-
-    assert(gpio != NULL);
-
-    uint32_t temp = gpio->DAT;
-    temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
-    temp |= GPIO_IOX_DAT_IOXDAT_Enabled(_pin(pin));
-    gpio->DAT = temp;
-}
-
-void gpio_clear(gpio_t pin)
-{
-    if (_port(pin) == PORTF) {
-        assert(_pin(pin) < 4);
-    }
-
-    VC_GPIO_Type *gpio = NULL;
-
-    if (_port(pin) == PORTA) {
-        gpio = (VC_GPIO_Type *)VC_GPIOA;
-    } else {
-        gpio = (VC_GPIO_Type *)VC_GPIO(_port(pin));
+        gpio = (VC_GPIO_Type *)VC_GPIO(_port(aPin));
     }
 
     assert(gpio != NULL);
 
     uint32_t temp = gpio->DAT;
-    temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(pin));
-    temp |= GPIO_IOX_DAT_IOXDAT_Disabled(_pin(pin));
+    temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
+    temp |= GPIO_IOX_DAT_IOXDAT_Enabled(_pin(aPin));
     gpio->DAT = temp;
 }
 
-void gpio_toggle(gpio_t pin)
+void vcGpioClear(vcGpio aPin)
 {
-    if (gpio_read(pin)) {
-        gpio_clear(pin);
+    if (_port(aPin) == PORTF) {
+        assert(_pin(aPin) < 4);
+    }
+
+    VC_GPIO_Type *gpio = NULL;
+
+    if (_port(aPin) == PORTA) {
+        gpio = (VC_GPIO_Type *)VC_GPIOA;
     } else {
-        gpio_set(pin);
+        gpio = (VC_GPIO_Type *)VC_GPIO(_port(aPin));
+    }
+
+    assert(gpio != NULL);
+
+    uint32_t temp = gpio->DAT;
+    temp &= ~GPIO_IOX_DAT_IOXDAT_Msk(_pin(aPin));
+    temp |= GPIO_IOX_DAT_IOXDAT_Disabled(_pin(aPin));
+    gpio->DAT = temp;
+}
+
+void vcGpioToggle(vcGpio aPin)
+{
+    if (vcGpioRead(aPin)) {
+        vcGpioClear(aPin);
+    } else {
+        vcGpioSet(aPin);
     }
 }
 
-void gpio_write(gpio_t pin, int value)
+void vcGpioWrite(vcGpio aPin, int aValue)
 {
-    if (value) {
-        gpio_set(pin);
+    if (aValue) {
+        vcGpioSet(aPin);
     } else {
-        gpio_clear(pin);
+        vcGpioClear(aPin);
     }
 }
 
-static void irq_gpio_handler(gpio_t pin)
+static void _irqGpioHandler(vcGpio aPin)
 {
-    uint8_t index = (8 * _port(pin) + _pin(pin));
-    if (isr_gpio_ctx[index].cb != NULL) {
-        isr_gpio_ctx[index].cb(isr_gpio_ctx[index].arg);
+    uint8_t index = (8 * _port(aPin) + _pin(aPin));
+    if (sIsrGpioContext[index].mCallback != NULL) {
+        sIsrGpioContext[index].mCallback(sIsrGpioContext[index].mArg);
         /* check if context switch was requested */
-        cortexm_isr_end();
+        // TODO: cortexm_isr_end();
     }
 }
 
@@ -538,7 +529,7 @@ void isr_pmu(void)
             uint32_t temp = VC_GPIOA->INT;
             temp |= GPIO_IOX_INT_IOXINT_Msk(i);
             VC_GPIOA->INT = temp;
-            irq_gpio_handler(GPIO_PIN(PORTA, i));
+            _irqGpioHandler(GPIO_PIN(PORTA, i));
             return;
         }
     }
@@ -552,7 +543,7 @@ void isr_gpio(void)
             uint32_t temp = VC_GPIOC->INT;
             temp |= GPIO_IOX_INT_IOXINT_Msk(i);
             VC_GPIOC->INT = temp;
-            irq_gpio_handler(GPIO_PIN(PORTC, i));
+            _irqGpioHandler(GPIO_PIN(PORTC, i));
             return;
         }
     }

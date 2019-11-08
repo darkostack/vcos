@@ -3,5 +3,6 @@
 
 void assert_failure(const char *file, unsigned line)
 {
+    printf("%s:%u => ASSERT FAILED\n", file, line); \
     while (1); \
 }

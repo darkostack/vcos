@@ -9,11 +9,10 @@
 #include <stdint.h>
 #include <assert.h>
 
-#include <vcos/instance.h>
+#include <vcos/periph/uart.h>
 
 #include "cpu.h"
 #include "irq.h"
-#include "stdio_base.h"
 
 extern char _sheap;                 /* start of the heap */
 extern char _eheap;                 /* end of the heap */
@@ -46,16 +45,19 @@ void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
 
 _ssize_t _read_r(struct _reent *r, int fd, void *buffer, size_t count)
 {
-    (void) r;
     (void) fd;
-    return stdio_read(buffer, count);
+    (void) buffer;
+    (void) count;
+    r->_errno = ENODEV;
+    return -1;
 }
 
 _ssize_t _write_r(struct _reent *r, int fd, const void *data, size_t count)
 {
     (void) r;
     (void) fd;
-    return stdio_write(data, count);
+    vcUartWrite(UART_DEV(1), (const uint8_t *)data, count);
+    return count;
 }
 
 /* Stubs to avoid linking errors, these functions do not have any effect */

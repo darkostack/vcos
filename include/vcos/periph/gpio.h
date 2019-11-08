@@ -8,11 +8,11 @@
 extern "C" {
 #endif
 
-typedef unsigned int gpio_t;
+typedef unsigned int vcGpio;
 
-#define GPIO_UNDEF ((gpio_t)(UINT_MAX))
+#define GPIO_UNDEF ((vcGpio)(UINT_MAX))
 
-#define GPIO_PIN(port, pin) ((gpio_t)((port & 0xf) | ((pin & 0xf) << 4)))
+#define GPIO_PIN(port, pin) ((vcGpio)((port & 0xf) | ((pin & 0xf) << 4)))
 
 /**
  * GPIO port definition.
@@ -33,7 +33,7 @@ typedef enum {
     GPIO_OUT,           /* configure as output in push-pull mode */
     GPIO_OD,            /* configure as output in open-drain mode without pull resistor */
     GPIO_OD_PU          /* configure as output in open-drain mode with pull resistor enabled */
-} gpio_mode_t;
+} vcGpioMode;
 
 /**
  * Definition of possible active flanks for external interrupt mode.
@@ -42,41 +42,39 @@ typedef enum {
     GPIO_FALLING = 0,   /* emit interrupt on falling flank */
     GPIO_RISING = 1,    /* emit interrupt on rising flank */
     GPIO_BOTH = 2       /* emit interrupt on both flank */
-} gpio_flank_t;
+} vcGpioFlank;
 
 /**
  * Signature of event callback functions triggered from interrupts.
  */
-typedef void (*gpio_cb_t)(void *arg);
+typedef void (*vcGpioCallback)(void *aArg);
 
 typedef struct {
-    gpio_cb_t cb;
-    void *arg;
-} gpio_isr_ctx_t;
+    vcGpioCallback mCallback;
+    void *mArg;
+} vcGpioIsrContext;
 
-int gpio_init(gpio_t pin, gpio_mode_t mode);
+int vcGpioInit(vcGpio aPin, vcGpioMode aMode);
 
-int gpio_init_int(gpio_t pin,
-                  gpio_mode_t mode,
-                  gpio_flank_t flank,
-                  gpio_cb_t cb,
-                  void *arg);
+int vcGpioInitInt(vcGpio aPin,
+                  vcGpioMode aMode,
+                  vcGpioFlank aFlank,
+                  vcGpioCallback aCallback,
+                  void *aArg);
 
-void gpio_irq_set_prio(gpio_t pin, uint32_t prio);
+void vcGpioIrqEnable(vcGpio aPin);
 
-void gpio_irq_enable(gpio_t pin);
+void vcGpioIrqDisable(vcGpio aPin);
 
-void gpio_irq_disable(gpio_t pin);
+int vcGpioRead(vcGpio aPin);
 
-int gpio_read(gpio_t pin);
+void vcGpioSet(vcGpio aPin);
 
-void gpio_set(gpio_t pin);
+void vcGpioClear(vcGpio aPin);
 
-void gpio_clear(gpio_t pin);
+void vcGpioToggle(vcGpio apin);
 
-void gpio_toggle(gpio_t pin);
-
-void gpio_write(gpio_t pin, int value);
+void vcGpioWrite(vcGpio aPin, int aValue);
 
 #ifdef __cplusplus
 }

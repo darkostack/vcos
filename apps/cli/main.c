@@ -2,27 +2,20 @@
 #include <assert.h>
 
 #include <vcos/instance.h>
-
-#include "stdio_base.h"
-
-vcInstance *gInstancePtr = NULL;
+#include <vcos/isrpipe.h>
+#include <vcos/periph/uart.h>
 
 int main(int argc, char *argv[])
 {
-    gInstancePtr = vcInstanceInitSingle();
+    vcInstance *instance = vcInstanceInitSingle();
 
-    assert(gInstancePtr != NULL);
+    assert(instance != NULL);
 
-    stdio_init();
+    vcUartInit(UART_DEV(1), 115200, (vcUartRxCallback)vcIsrpipeUartWriteOne, (void *)instance);
 
-    printf("Hello World!\n");
+    printf("hello world!\n");
 
-    char temp[16];
     while (1) {
-        int res = stdio_read(&temp, 1);
-        if (res != 0) {
-            printf("%c\n", temp[0]);
-        }
     }
 
     return 0;
