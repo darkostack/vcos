@@ -6,6 +6,8 @@ PLATFORM_SIRIUS_C += $(addprefix sirius/,\
     periph/uart.c \
     assert.c \
     cpu_init.c \
+    stdio_uart.c \
+    syscalls.c \
     vectors.c \
     )
 

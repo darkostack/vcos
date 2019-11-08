@@ -6,10 +6,11 @@
 namespace vc {
 
 // Define the raw storage use for nesx instance (in single-instance case).
-static vcDEFINE_ALIGNED_VAR(sInstanceRaw, sizeof(Instance), uint64_t);
+vcDEFINE_ALIGNED_VAR(gInstanceRaw, sizeof(Instance), uint64_t);
 
 Instance::Instance(void)
-    : mIsInitialized(false)
+    : mIsrpipeUart(*this)
+    , mIsInitialized(false)
 {
 }
 
@@ -17,7 +18,7 @@ Instance &Instance::InitSingle(void)
 {
     Instance *instance = &Get();
     VerifyOrExit(instance->mIsInitialized == false);
-    instance = new (&sInstanceRaw) Instance();
+    instance = new (&gInstanceRaw) Instance();
     instance->AfterInit();
 exit:
     return *instance;
@@ -25,7 +26,7 @@ exit:
 
 Instance &Instance::Get(void)
 {
-    void *instance = &sInstanceRaw;
+    void *instance = &gInstanceRaw;
     return *static_cast<Instance *>(instance);
 }
 

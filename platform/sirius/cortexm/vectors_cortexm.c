@@ -72,6 +72,9 @@ void reset_handler_default(void)
     extern void __libc_init_array(void);
     __libc_init_array();
 
+    extern int main(int argc, char *argv[]);
+    main(0, NULL);
+
     /* startup the kernel */
     /* TODO */
 }

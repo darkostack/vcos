@@ -18,11 +18,15 @@ $(OBJS_DIR):
 
 $(BUILD)/%.o: %.c
 	$(ECHO) "CC $<"
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) -DFILE_RELATIVE=\"$(patsubst $(TOP)/%,%,$(abspath $<))\" \
+          -DFILE_NOPATH=\"$(notdir $<)\" \
+          $(CFLAGS) -c -o $@ $<
 
 $(BUILD)/%.o: %.cpp
 	$(ECHO) "CPP $<"
-	$(CPP) $(CPPFLAGS) -c -o $@ $<
+	$(CC) -DFILE_RELATIVE=\"$(patsubst $(TOP)/%,%,$(abspath $<))\" \
+          -DFILE_NOPATH=\"$(notdir $<)\" \
+          $(CPPFLAGS) -c -o $@ $<
 
 $(BUILD)/%.o: %.s
 	$(ECHO) "AS $<"

@@ -1,6 +1,8 @@
 SRC_CORE_CPP += $(addprefix core/,\
-    common/instance.cpp \
 	api/instance_api.cpp \
+    api/isrpipe_api.cpp \
+    common/instance.cpp \
+    utils/isrpipe.cpp \
     )
 
 OBJS_SRC_CORE += $(addprefix $(BUILD)/, $(SRC_CORE_CPP:.cpp=.o))

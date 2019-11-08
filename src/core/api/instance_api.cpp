@@ -1,5 +1,3 @@
-#include "vcos-core-config.h"
-
 #include <vcos/instance.h>
 
 #include "common/instance.hpp"

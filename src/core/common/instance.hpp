@@ -5,6 +5,8 @@
 
 #include "common/code_utils.hpp"
 
+#include "utils/isrpipe.hpp"
+
 typedef struct vcInstance
 {
 } vcInstance;
@@ -24,13 +26,22 @@ public:
 
     void Finalize(void);
 
+    template <typename Type> inline Type &Get(void);
+
 private:
     Instance(void);
 
     void AfterInit(void);
 
+    Utils::IsrpipeUart mIsrpipeUart;
+
     bool mIsInitialized;
 };
+
+template <> inline Utils::IsrpipeUart &Instance::Get(void)
+{
+    return mIsrpipeUart;
+}
 
 } // namespace vc
 

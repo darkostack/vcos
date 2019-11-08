@@ -128,7 +128,7 @@ BUILD_FINISHED_INFO:
 	$(ECHO) "---------------------------------------------------------------------"
 	$(ECHO) "\033[32mFinished Building\033[0m : [$(PLATFORM)] in $(HOST_MACHINE)"
 	$(ECHO) "---------------------------------------------------------------------"
-	$(ECHO) "Image            : build/$(PLATFORM)/\033[32mgobo-$(APPS).bin\033[0m"
+	$(ECHO) "Image            : build/$(PLATFORM)/\033[32mvcos-$(APPS).bin\033[0m"
 	$(ECHO) "---------------------------------------------------------------------"
 	$(ECHO) "Build Start Time : $(shell date +%b\ %0d\ %Y\ %0H:%0M:%0S)"
 	$(ECHO) "Build End Time   : $(shell date +%b\ %0d\ %Y\ %0H:%0M:%0S)"
