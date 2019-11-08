@@ -5,11 +5,9 @@
 extern "C" {
 #endif
 
-extern const char assert_crash_message[];
+extern void assertFailure(const char *aFile, unsigned aLine);
 
-extern void assert_failure(const char *file, unsigned line);
-
-#define assert(cond) ((cond) ? (void)0 : assert_failure(FILE_RELATIVE, __LINE__))
+#define assert(aCond) ((aCond) ? (void)0 : assertFailure(FILE_RELATIVE, __LINE__))
 
 #ifdef __cplusplus
 }

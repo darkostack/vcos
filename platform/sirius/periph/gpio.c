@@ -521,7 +521,7 @@ static void _irqGpioHandler(vcGpio aPin)
 }
 
 /* GPIO interrupt function entry */
-void isr_pmu(void)
+void isrPmu(void)
 {
     for (int i = 0; i < 16; i++) {
         if ((VC_GPIOA->INT & GPIO_IOX_INT_IOXINT_Msk(i)) != 0) {
@@ -535,7 +535,7 @@ void isr_pmu(void)
     }
 }
 
-void isr_gpio(void)
+void isrGpio(void)
 {
     for (int i = 0; i < 16; i++) {
         if ((VC_GPIOC->INT & GPIO_IOX_INT_IOXINT_Msk(i)) != 0) {

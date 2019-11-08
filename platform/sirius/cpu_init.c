@@ -2,10 +2,10 @@
 
 uint32_t SystemCoreClock = 0;
 
-void cpu_init(void)
+void cpuInit(void)
 {
     /* initialize the Cortex-M core */
-    cortexm_init();
+    cortexmInit();
 
     /* initialize sirius using internal HFRC0 */
     uint32_t temp = VC_MISC2->CLKSEL;

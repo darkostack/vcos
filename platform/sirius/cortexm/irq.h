@@ -7,13 +7,13 @@
 extern "C" {
 #endif
 
-unsigned irq_disable(void);
+unsigned irqDisable(void);
 
-unsigned irq_enable(void);
+unsigned irqEnable(void);
 
-void irq_restore(unsigned state);
+void irqRestore(unsigned aState);
 
-int irq_is_in(void);
+int irqIsIn(void);
 
 #ifdef __cplusplus
 }

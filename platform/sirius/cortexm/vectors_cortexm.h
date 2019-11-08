@@ -11,7 +11,7 @@ extern "C" {
  * Use this macro to make interrupt functions overridable with the dummy_handler
  * as fallback in case they are not implemented
  */
-#define WEAK_DEFAULT    __attribute__((weak,alias("dummy_handler")))
+#define WEAK_DEFAULT    __attribute__((weak,alias("dummyHandler")))
 
 /**
  * Use this macro to define the parts of the vector table
@@ -27,15 +27,15 @@ extern "C" {
 
 #define CPU_NONISR_EXCEPTIONS   (15)
 
-typedef void (*isr_t)(void);
+typedef void (*isrCallback)(void);
 
 /**
  * Structure of Cortex-M basic vector table
  */
 typedef struct {
-    void *_estack;                          /* exception stack pointer */
-    isr_t vectors[CPU_NONISR_EXCEPTIONS];   /* shared Cortex-M vectors */
-} cortexm_base_t;
+    void *mEstack;                          /* exception stack pointer */
+    isrCallback mVectors[CPU_NONISR_EXCEPTIONS];   /* shared Cortex-M vectors */
+} cortexmBase;
 
 /**
  * This function is the default entry point after a system reset
@@ -47,21 +47,21 @@ typedef struct {
  * 4. initialize the newlib (optional, on when newlib is used)
  * 5. initialize and start kernel
  */
-void reset_handler_default(void);
+void resetHandlerDefault(void);
 
-void nmi_default(void);
+void nmiDefault(void);
 
-void hard_fault_default(void);
+void hardFaultDefault(void);
 
-void mem_manage_default(void);
+void memManageDefault(void);
 
-void bus_fault_default(void);
+void busFaultDefault(void);
 
-void usage_fault_default(void);
+void usageFaultDefault(void);
 
-void debug_mon_default(void);
+void debugMonDefault(void);
 
-void dummy_handler_default(void);
+void dummyHandlerDefault(void);
 
 #ifdef __cplusplus
 }

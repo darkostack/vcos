@@ -5,7 +5,7 @@
  */
 extern const void *_isr_vectors;
 
-static inline void cortexm_init_isr_priorities(void)
+static inline void cortexmInitPriorities(void)
 {
     /* initialize the interrupt priorities */
     /* set pendSV interrupt to same priority as the rest */
@@ -18,7 +18,7 @@ static inline void cortexm_init_isr_priorities(void)
     }
 }
 
-static inline void cortexm_init_misc(void)
+static inline void cortexmInitMisc(void)
 {
     /* enable wake up on events for __WFE CPU sleep */
     SCB->SCR |= SCB_SCR_SEVONPEND_Msk;
@@ -32,9 +32,9 @@ static inline void cortexm_init_misc(void)
 #endif
 }
 
-void cortexm_init(void)
+void cortexmInit(void)
 {
     SCB->VTOR = (uint32_t)&_isr_vectors;
-    cortexm_init_isr_priorities();
-    cortexm_init_misc();
+    cortexmInitPriorities();
+    cortexmInitMisc();
 }

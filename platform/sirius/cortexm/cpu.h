@@ -16,58 +16,58 @@ extern "C" {
  */
 #define STACK_CANARY_WORD   (0xE7FEE7FEu)
 
-void cpu_init(void);
+void cpuInit(void);
 
-void cortexm_init(void);
+void cortexmInit(void);
 
-static inline void cpu_print_last_instruction(void)
+static inline void cpuPrintLastInstruction(void)
 {
     uint32_t *lr_ptr;
     __asm__ __volatile__("mov %0, lr" : "=r"(lr_ptr));
     printf("%p\n", (void*) lr_ptr);
 }
 
-static inline void cortexm_sleep_until_event(void)
+static inline void cortexmSleepUntilEvent(void)
 {
     __WFE();
 }
 
-static inline void cortexm_sleep(int deep)
+static inline void cortexmSleep(int aDeep)
 {
-    if (deep) {
+    if (aDeep) {
         SCB->SCR |=  (SCB_SCR_SLEEPDEEP_Msk);
     } else {
         SCB->SCR &= ~(SCB_SCR_SLEEPDEEP_Msk);
     }
 
     /* ensure that all memory accesses have completed and trigger sleeping */
-    unsigned state = irq_disable();
+    unsigned state = irqDisable();
     __DSB();
     __WFI();
-    irq_restore(state);
+    irqRestore(state);
 }
 
 /**
  * Trigger a conditional context scheduler run / context switch
  */
-static inline void cortexm_isr_end(void)
+static inline void cortexmIsrEnd(void)
 {
     /* TODO */
 }
 
-static inline void cpu_jump_to_image(uint32_t image_address)
+static inline void cpuJumpToImage(uint32_t aImageAddress)
 {
     /* Disable IRQ */
     __disable_irq();
 
     /* set MSP */
-    __set_MSP(*(uint32_t*)image_address);
+    __set_MSP(*(uint32_t*)aImageAddress);
 
     /* skip stack pointer */
-    image_address += 4;
+    aImageAddress += 4;
 
     /* load the images reset_vector address */
-    uint32_t destination_address = *(uint32_t*)image_address;
+    uint32_t destination_address = *(uint32_t*)aImageAddress;
 
     /* Make sure the Thumb State bit is set. */
     destination_address |= 0x1;
@@ -76,7 +76,7 @@ static inline void cpu_jump_to_image(uint32_t image_address)
     __asm("BX %0" :: "r" (destination_address));
 }
 
-static inline uint32_t cpu_get_image_baseaddr(void)
+static inline uint32_t cpuGetImageBaseAddr(void)
 {
     return SCB->VTOR;
 }

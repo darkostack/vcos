@@ -28,23 +28,23 @@ __attribute__((used,section(".isr_stack"))) uint8_t isr_stack[ISR_STACKSIZE];
 /**
  * Pre-start routine for CPU-specific settings
  */
-__attribute__((weak)) void pre_startup(void)
+__attribute__((weak)) void preStartup(void)
 {
 }
 
 /**
  * Post-start routine for CPU-specific settings
  */
-__attribute__((weak)) void post_startup(void)
+__attribute__((weak)) void postStartup(void)
 {
 }
 
-void reset_handler_default(void)
+void resetHandlerDefault(void)
 {
     uint32_t *dst;
     uint32_t *src = &_etext;
 
-    pre_startup();
+    preStartup();
 
     uint32_t *top;
     /* Fill stack space with canary values up until the current stack pointer */
@@ -65,9 +65,9 @@ void reset_handler_default(void)
         *(dst++) = 0;
     }
 
-    post_startup();
+    postStartup();
 
-    cpu_init();
+    cpuInit();
 
     extern void __libc_init_array(void);
     __libc_init_array();
@@ -79,69 +79,69 @@ void reset_handler_default(void)
     /* TODO */
 }
 
-void nmi_default(void)
+void nmiDefault(void)
 {
 
 }
 
-void hard_fault_default(void)
+void hardFaultDefault(void)
 {
 
 }
 
-void mem_manage_default(void)
+void memManageDefault(void)
 {
 
 }
 
-void bus_fault_default(void)
+void busFaultDefault(void)
 {
 
 }
 
-void usage_fault_default(void)
+void usageFaultDefault(void)
 {
 
 }
 
-void debug_mon_default(void)
+void debugMonDefault(void)
 {
 
 }
 
-void dummy_handler_default(void)
+void dummyHandlerDefault(void)
 {
 
 }
 
 /* Cortex-M common interrupt vectors */
-__attribute__((weak,alias("dummy_handler_default"))) void isr_svc(void);
-__attribute__((weak,alias("dummy_handler_default"))) void isr_pendsv(void);
-__attribute__((weak,alias("dummy_handler_default"))) void isr_systick(void);
+__attribute__((weak,alias("dummyHandlerDefault"))) void isrSvc(void);
+__attribute__((weak,alias("dummyHandlerDefault"))) void isrPendsv(void);
+__attribute__((weak,alias("dummyHandlerDefault"))) void isrSystick(void);
 
 /* define Cortex-M base interrupt vectors */
-ISR_VECTOR(0) const cortexm_base_t cortex_vector_base = {
+ISR_VECTOR(0) const cortexmBase cortexVectorBase = {
     &_estack,
     {
         /* entry point of the program */
-        [0] = reset_handler_default,
+        [0] = resetHandlerDefault,
         /* [-14] non maskable interrupt handler */
-        [1] = nmi_default,
+        [1] = nmiDefault,
         /* [-13] hard fault exception */
-        [2] = hard_fault_default,
+        [2] = hardFaultDefault,
         /* [-12] memory manage exception */
-        [3] = mem_manage_default,
+        [3] = memManageDefault,
         /* [-11] bus fault exception */
-        [4] = bus_fault_default,
+        [4] = busFaultDefault,
         /* [-10] usage fault exception */
-        [5] = usage_fault_default,
+        [5] = usageFaultDefault,
         /* [-5] SW interrupt use for triggering context switches */
-        [10] = isr_svc,
+        [10] = isrSvc,
         /* [-4] debug monitor exception */
-        [11] = debug_mon_default,
+        [11] = debugMonDefault,
         /* [-2] pendSV interrupt use to do the actual context switch */
-        [13] = isr_pendsv,
+        [13] = isrPendsv,
         /* [-1] SysTick interrupt not used */
-        [14] = isr_systick,
+        [14] = isrSystick,
     }
 };

@@ -290,37 +290,37 @@ static void _irqUartHandler(vcUart aUart)
 
 /* UART interrupt function entry  */
 
-void isr_uart0(void)
+void isrUart0(void)
 {
     _irqUartHandler(UART_DEV(0));
 }
 
-void isr_uart1(void)
+void isrUart1(void)
 {
     _irqUartHandler(UART_DEV(1));
 }
 
-void isr_uart2(void)
+void isrUart2(void)
 {
     _irqUartHandler(UART_DEV(2));
 }
 
-void isr_uart3(void)
+void isrUart3(void)
 {
     _irqUartHandler(UART_DEV(3));
 }
 
-void isr_uart4(void)
+void isrUart4(void)
 {
     _irqUartHandler(UART_DEV(4));
 }
 
-void isr_uart5(void)
+void isrUart5(void)
 {
     _irqUartHandler(UART_DEV(5));
 }
 
-void isr_uart6(void)
+void isrUart6(void)
 {
     _irqUartHandler(UART_DEV(6));
 }
