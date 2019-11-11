@@ -1,6 +1,11 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <assert.h>
+
+#include <vcos/instance.h>
+#include <vcos/isrpipe.h>
+#include <vcos/periph/uart.h>
 
 #include "cpu.h"
 #include "vectors_cortexm.h"
@@ -72,46 +77,53 @@ void resetHandlerDefault(void)
     extern void __libc_init_array(void);
     __libc_init_array();
 
-    extern int main(int argc, char *argv[]);
-    main(0, NULL);
+    vcInstance *instance = vcInstanceInitSingle();
+
+    assert(instance != NULL);
+
+    vcUartInit(UART_DEV(1),
+               115200,
+               (vcUartRxCallback)vcIsrpipeUartWriteOne,
+               (void *)instance);
 
     /* startup the kernel */
-    /* TODO */
+    extern void vcKernelInit(vcInstance *aInstance);
+    vcKernelInit(instance);
 }
 
 void nmiDefault(void)
 {
-
+    while (1);
 }
 
 void hardFaultDefault(void)
 {
-
+    while (1);
 }
 
 void memManageDefault(void)
 {
-
+    while (1);
 }
 
 void busFaultDefault(void)
 {
-
+    while (1);
 }
 
 void usageFaultDefault(void)
 {
-
+    while (1);
 }
 
 void debugMonDefault(void)
 {
-
+    while (1);
 }
 
 void dummyHandlerDefault(void)
 {
-
+    while (1);
 }
 
 /* Cortex-M common interrupt vectors */

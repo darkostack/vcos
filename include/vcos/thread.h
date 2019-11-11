@@ -24,7 +24,7 @@ int vcThreadIsrStackUsage(void);
 
 void *vcThreadIsrStackPointer(void);
 
-void *vcSchedGetActiveThread(void);
+void vcSchedGetActiveThreadUpdate(void);
 
 void vcSchedRun(void);
 

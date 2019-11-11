@@ -1,10 +1,17 @@
 #include <vcos/irq.h>
+#include <vcos/thread.h>
 
 #include "common/thread.hpp"
 #include "common/locator-getters.hpp"
 
 #define ENABLE_DEBUG (0)
 #include "common/debug.h"
+
+/**
+ * Note: this global pointer will be use in cortexm thread_arch.c assembly code
+ * to get the current active TCB.
+ */
+volatile void *gSchedActiveThread;
 
 namespace vc {
 
@@ -156,7 +163,7 @@ int ThreadScheduler::Run(void)
 
     DEBUG("ThreadScheduler::Run() active thread: %" PRIkernel_pid ", next thread: %" PRIkernel_pid ".\n",
           (KernelPid)((activeThread == NULL) ? KERNEL_PID_UNDEF : activeThread->mPid),
-          activeThread->mPid);
+          nextThread->mPid);
 
     if (activeThread == nextThread) {
         DEBUG("ThreadScheduler::Run() done, mSchedActiveThread was not changed.\n");
@@ -172,6 +179,9 @@ int ThreadScheduler::Run(void)
     nextThread->mStatus = STATUS_RUNNING;
     mSchedActivePid = nextThread->mPid;
     mSchedActiveThread = nextThread;
+
+    /* update global current TCB pointer to current active thread */
+    gSchedActiveThread = mSchedActiveThread;
 
     DEBUG("ThreadScheduler::Run() done, changed mSchedActiveThread.\n");
 

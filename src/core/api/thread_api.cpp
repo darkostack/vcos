@@ -3,19 +3,16 @@
 #include "common/locator-getters.hpp"
 #include "common/thread.hpp"
 
-using namespace vc;
+namespace vc {
 
-void vcThreadTaskExit(void)
+extern "C" void vcThreadTaskExit(void)
 {
     Instance::Get().Get<ThreadScheduler>().TaskExit();
 }
 
-void *vcSchedGetActiveThread(void)
-{
-    return static_cast<void *>(Instance::Get().Get<ThreadScheduler>().GetSchedActiveThread());
-}
-
-void vcSchedRun(void)
+extern "C" void vcSchedRun(void)
 {
     Instance::Get().Get<ThreadScheduler>().Run();
 }
+
+} // namespace vc

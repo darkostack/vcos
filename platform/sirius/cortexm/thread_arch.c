@@ -8,6 +8,8 @@
 extern uint32_t _estack;
 extern uint32_t _sstack;
 
+extern volatile void *gSchedActiveThread;
+
 /**
  * This marker is used e.g. by 'vcThreadSwitchContextExit' to identify the stacks
  * beginning.
@@ -151,10 +153,10 @@ void __attribute__((naked)) __attribute__((used)) isrPendsv(void) {
     "mrs    r0, psp                         \n" /* get stack pointer from user mode */
     "stmdb  r0!,{r4-r11}                    \n" /* save regs */
     "stmdb  r0!,{lr}                        \n" /* exception return value */
-    "ldr    r1, =vcSchedGetActiveThread     \n" /* load address of current tcb */
+    "ldr    r1, =gSchedActiveThread         \n" /* load address of current tcb */
     "ldr    r1, [r1]                        \n" /* dereference pdc */
     "str    r0, [r1]                        \n" /* write r0 to pdc->sp */
-    "bl     isrSvc                         \n" /* continue with svc */
+    "bl     isrSvc                           \n" /* continue with svc */
     );
 }
 
@@ -164,11 +166,11 @@ void __attribute__((naked)) __attribute__((used)) isrSvc(void) {
     /* PendSV will continue here as well (via jump) */
     ".thumb_func                        \n"
     /* perform scheduling */
-    "bl     vcSchedRun                  \n"
+    "bl vcSchedRun                      \n"
     /* restore context and return from exception */
     ".thumb_func                        \n"
     "context_restore:                   \n"
-    "ldr    r0, =vcSchedGetActiveThread \n" /* load address of current TCB */
+    "ldr    r0, =gSchedActiveThread     \n" /* load address of current TCB */
     "ldr    r0, [r0]                    \n" /* dereference TCB */
     "ldr    r1, [r0]                    \n" /* load tcb->sp to register 1 */
     "ldmia  r1!, {r0}                   \n" /* restore exception return value */
