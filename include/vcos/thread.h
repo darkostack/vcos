@@ -12,6 +12,8 @@ char *vcThreadStackInit(vcThreadHandlerFunc aFunction,
                         void *aStackStart,
                         int aStackSize);
 
+int vcThreadContexSwitchRequest(void);
+
 void vcThreadYieldHigher(void);
 
 void vcThreadSwitchContextExit(void);

@@ -5,6 +5,11 @@
 
 namespace vc {
 
+extern "C" int vcThreadContexSwitchRequest(void)
+{
+    return static_cast<int>(Instance::Get().Get<ThreadScheduler>().GetContextSwitchRequest());
+}
+
 extern "C" void vcThreadTaskExit(void)
 {
     Instance::Get().Get<ThreadScheduler>().TaskExit();

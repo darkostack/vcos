@@ -133,6 +133,8 @@ public:
 
     void SetSchedThreads(Thread *aThread, KernelPid aPid) { mSchedThreads[aPid] = aThread; }
 
+    unsigned int GetContextSwitchRequest(void) { return mSchedContextSwitchRequest; }
+
     void SetContexSwitchRequest(unsigned int aRequest) { mSchedContextSwitchRequest = aRequest; }
 
     int GetSchedNumThreads(void) { return mSchedNumThreads; }

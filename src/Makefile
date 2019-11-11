@@ -1,6 +1,6 @@
 SRC_CORE_CPP += $(addprefix core/,\
 	api/instance_api.cpp \
-    api/isrpipe_api.cpp \
+    api/stdiobase_api.cpp \
     api/thread_api.cpp \
     common/instance.cpp \
     common/thread.cpp \

@@ -10,6 +10,7 @@ vcDEFINE_ALIGNED_VAR(gInstanceRaw, sizeof(Instance), uint64_t);
 
 Instance::Instance(void)
     : mThreadScheduler()
+    , mUartIsrpipe(*this)
     , mIsInitialized(false)
 {
 }

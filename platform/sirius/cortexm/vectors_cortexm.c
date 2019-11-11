@@ -3,10 +3,6 @@
 #include <inttypes.h>
 #include <assert.h>
 
-#include <vcos/instance.h>
-#include <vcos/isrpipe.h>
-#include <vcos/periph/uart.h>
-
 #include "cpu.h"
 #include "vectors_cortexm.h"
 
@@ -77,18 +73,9 @@ void resetHandlerDefault(void)
     extern void __libc_init_array(void);
     __libc_init_array();
 
-    vcInstance *instance = vcInstanceInitSingle();
-
-    assert(instance != NULL);
-
-    vcUartInit(UART_DEV(1),
-               115200,
-               (vcUartRxCallback)vcIsrpipeUartWriteOne,
-               (void *)instance);
-
     /* startup the kernel */
-    extern void vcKernelInit(vcInstance *aInstance);
-    vcKernelInit(instance);
+    extern void vcKernelInit(void);
+    vcKernelInit();
 }
 
 void nmiDefault(void)

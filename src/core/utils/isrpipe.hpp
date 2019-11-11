@@ -53,9 +53,9 @@ private:
 class Isrpipe
 {
 public:
-    Isrpipe(char *aBuf, unsigned int aSize)
-        : mTsrb(aBuf, aSize)
-        , mMutex()
+    Isrpipe(Instance &aInstance, char *aBuf, unsigned int aSize)
+        : mMutex(aInstance)
+        , mTsrb(aBuf, aSize)
     {
     }
 
@@ -63,13 +63,25 @@ public:
 
     int Read(char *aBuf, size_t aCount);
 
-    Tsrb &GetTsrb(void) { return mTsrb; }
-
     Mutex &GetMutex(void) { return mMutex; }
 
+    Tsrb &GetTsrb(void) { return mTsrb; }
+
 private:
-    Tsrb mTsrb;
     Mutex mMutex;
+    Tsrb mTsrb;
+};
+
+class UartIsrpipe : public Isrpipe
+{
+public:
+    UartIsrpipe(Instance &aInstance)
+        : Isrpipe(aInstance, static_cast<char *>(&mBuf[0]), VCOS_CONFIG_TSRB_UART_MEMORY_SIZE)
+    {
+    }
+
+private:
+    char mBuf[VCOS_CONFIG_TSRB_UART_MEMORY_SIZE];
 };
 
 } // namespace Utils

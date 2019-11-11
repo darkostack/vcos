@@ -5,16 +5,18 @@
 #include <stdint.h>
 
 #include "common/list.hpp"
+#include "common/locator.hpp"
 #include "common/thread.hpp"
 
 #define MUTEX_LOCKED ((ListNode *)-1)
 
 namespace vc {
 
-class Mutex : public ThreadScheduler, public List
+class Mutex : public InstanceLocator, public List
 {
 public:
-    Mutex(void)
+    Mutex(Instance &aInstance)
+        : InstanceLocator(aInstance)
     {
         mQueue.mNext = NULL;
     }

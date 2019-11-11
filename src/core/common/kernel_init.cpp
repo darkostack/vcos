@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include <vcos/instance.h>
+#include <vcos/stdiobase.h>
 #include <vcos/thread.h>
 
 #include "cpu.h"
@@ -37,11 +39,15 @@ extern "C" void *idleThreadFunc(void *aArg)
     return NULL;
 }
 
-extern "C" void vcKernelInit(vcInstance *aInstance)
+extern "C" void vcKernelInit(void)
 {
-    Instance &instance = *static_cast<Instance *>(aInstance);
-
     (void) irqDisable();
+
+    Instance &instance = Instance::InitSingle();
+
+    assert(instance.IsInitialized());
+
+    vcStdioInit((vcInstance *)&instance);
 
     printf("\n\nkernel started (version: 0.0.1)\n\n");
 

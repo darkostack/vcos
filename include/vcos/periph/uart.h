@@ -57,7 +57,7 @@ int vcUartMode(vcUart aUart,
                vcUartParity aParity,
                vcUartStopBits aStopBits);
 
-void vcUartWrite(vcUart aUart, const uint8_t *aData, size_t aLen);
+size_t vcUartWrite(vcUart aUart, const uint8_t *aData, size_t aLen);
 
 void vcUartPowerOn(vcUart aUart);
 

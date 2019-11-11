@@ -10,7 +10,7 @@
 #include <assert.h>
 
 #include <vcos/irq.h>
-#include <vcos/periph/uart.h>
+#include <vcos/stdiobase.h>
 
 #include "cpu.h"
 
@@ -45,19 +45,16 @@ void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
 
 _ssize_t _read_r(struct _reent *r, int fd, void *buffer, size_t count)
 {
+    (void) r;
     (void) fd;
-    (void) buffer;
-    (void) count;
-    r->_errno = ENODEV;
-    return -1;
+    return vcStdioRead(buffer, count);
 }
 
 _ssize_t _write_r(struct _reent *r, int fd, const void *data, size_t count)
 {
     (void) r;
     (void) fd;
-    vcUartWrite(UART_DEV(1), (const uint8_t *)data, count);
-    return count;
+    return vcStdioWrite(data, count);
 }
 
 /* Stubs to avoid linking errors, these functions do not have any effect */

@@ -1,5 +1,6 @@
 #include <vcos/irq.h>
 
+#include "common/locator-getters.hpp"
 #include "common/mutex.hpp"
 
 #define ENABLE_DEBUG (0)
@@ -16,20 +17,20 @@ int Mutex::SetLock(int aBlocking)
     unsigned state = irqDisable();
 
     DEBUG("Mutex::SetLock() PID(%" PRIkernel_pid "): mutex in use.\n",
-          GetSchedActivePid());
+          Get<ThreadScheduler>().GetSchedActivePid());
 
     if (mQueue.mNext == NULL) {
         /* mutex is unlocked */
         mQueue.mNext = MUTEX_LOCKED;
-        DEBUG("Mutex::SetLock() PID(%" PRIkernel_pid "): mutex wait eary out.\n",
-              GetSchedActivePid());
+        DEBUG("Mutex::SetLock() PID(%" PRIkernel_pid "): mutex wait early out.\n",
+              Get<ThreadScheduler>().GetSchedActivePid());
         irqRestore(state);
         return 1;
     } else if (aBlocking) {
-        Thread *me = GetSchedActiveThread();
+        Thread *me = Get<ThreadScheduler>().GetSchedActiveThread();
         DEBUG("Mutex::SetLock() PID(%" PRIkernel_pid "): adding node to mutex queue prio: %" PRIu32 "\n",
-              GetSchedActivePid(), (uint32_t)me->GetPriority());
-        SetStatus(me, THREAD_STATUS_MUTEX_BLOCKED);
+              Get<ThreadScheduler>().GetSchedActivePid(), (uint32_t)me->GetPriority());
+        Get<ThreadScheduler>().SetStatus(me, THREAD_STATUS_MUTEX_BLOCKED);
         if (mQueue.mNext == MUTEX_LOCKED) {
             mQueue.mNext = (ListNode *)&me->GetRqEntry();
             mQueue.mNext->mNext = NULL;
@@ -52,7 +53,7 @@ void Mutex::Unlock(void)
     unsigned state = irqDisable();
 
     DEBUG("Mutex::Unlock() mQueue.mNext: %p pid: %" PRIkernel_pid "\n",
-          (void *)mQueue.mNext, GetSchedActivePid());
+          (void *)mQueue.mNext, Get<ThreadScheduler>().GetSchedActivePid());
 
     if (mQueue.mNext == NULL) {
         /* the mutex was not locked */
@@ -69,12 +70,12 @@ void Mutex::Unlock(void)
 
     ListNode *next = RemoveHead(&mQueue);
 
-    Thread *process = GetThreadPointerFromList(next);
+    Thread *process = Get<ThreadScheduler>().GetThreadPointerFromList(next);
 
     DEBUG("Mutex::Unlock() waking up waiting thread %" PRIkernel_pid "\n",
           process->GetPid());
 
-    SetStatus(process, THREAD_STATUS_PENDING);
+    Get<ThreadScheduler>().SetStatus(process, THREAD_STATUS_PENDING);
 
     if (!mQueue.mNext) {
         mQueue.mNext = MUTEX_LOCKED;
@@ -82,13 +83,13 @@ void Mutex::Unlock(void)
 
     uint16_t processPrio = process->GetPriority();
     irqRestore(state);
-    Switch(processPrio);
+    Get<ThreadScheduler>().Switch(processPrio);
 }
 
 void Mutex::UnlockAndSleep(void)
 {
     DEBUG("Mutex::UnlockAndSleep() PID(%" PRIkernel_pid "): unlocking mutex. mQueue.mNext: %p, and "
-          "taking a nap\n", GetSchedActivePid(), (void *)mQueue.mNext);
+          "taking a nap\n", Get<ThreadScheduler>().GetSchedActivePid(), (void *)mQueue.mNext);
 
     unsigned state = irqDisable();
 
@@ -97,17 +98,20 @@ void Mutex::UnlockAndSleep(void)
             mQueue.mNext = NULL;
         } else {
             ListNode *next = RemoveHead(&mQueue);
-            Thread *process = GetThreadPointerFromList(next);
+            Thread *process = Get<ThreadScheduler>().GetThreadPointerFromList(next);
             DEBUG("Mutex::UnlockAndSleep() PID(%" PRIkernel_pid "): waking up waiter.\n", process->GetPid());
-            SetStatus(process, THREAD_STATUS_PENDING);
+            Get<ThreadScheduler>().SetStatus(process, THREAD_STATUS_PENDING);
             if (!mQueue.mNext) {
                 mQueue.mNext = MUTEX_LOCKED;
             }
         }
     }
 
-    DEBUG("Mutex::UnlockAndSleep() PID(%" PRIkernel_pid "): going to sleep.\n", GetSchedActivePid());
-    SetStatus(GetSchedActiveThread(), THREAD_STATUS_SLEEPING);
+    DEBUG("Mutex::UnlockAndSleep() PID(%" PRIkernel_pid "): going to sleep.\n",
+          Get<ThreadScheduler>().GetSchedActivePid());
+
+    Get<ThreadScheduler>().SetStatus(Get<ThreadScheduler>().GetSchedActiveThread(), THREAD_STATUS_SLEEPING);
+
     irqRestore(state);
     vcThreadYieldHigher();
 }

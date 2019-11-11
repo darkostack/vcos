@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include <vcos/irq.h>
+#include <vcos/thread.h>
 
 #include "cpu_conf.h"
 
@@ -53,7 +54,9 @@ static inline void cortexmSleep(int aDeep)
  */
 static inline void cortexmIsrEnd(void)
 {
-    /* TODO */
+    if (vcThreadContexSwitchRequest()) {
+        vcThreadYieldHigher();
+    }
 }
 
 static inline void cpuJumpToImage(uint32_t aImageAddress)

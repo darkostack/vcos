@@ -6,6 +6,8 @@
 #include "common/code_utils.hpp"
 #include "common/thread.hpp"
 
+#include "utils/isrpipe.hpp"
+
 typedef struct vcInstance
 {
 } vcInstance;
@@ -34,12 +36,19 @@ private:
 
     ThreadScheduler mThreadScheduler;
 
+    Utils::UartIsrpipe mUartIsrpipe;
+
     bool mIsInitialized;
 };
 
 template <> inline ThreadScheduler &Instance::Get(void)
 {
     return mThreadScheduler;
+}
+
+template <> inline Utils::UartIsrpipe &Instance::Get(void)
+{
+    return mUartIsrpipe;
 }
 
 } // namespace vc

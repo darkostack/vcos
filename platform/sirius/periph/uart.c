@@ -242,13 +242,15 @@ static void _sendByte(vcUart aUart, uint8_t aByte)
     VC_UART(aUart)->STATE = temp;
 }
 
-void vcUartWrite(vcUart aUart, const uint8_t *aData, size_t aLen)
+size_t vcUartWrite(vcUart aUart, const uint8_t *aData, size_t aLen)
 {
     assert(aUart < UART_NUMOF);
 
     for (size_t i = 0; i < aLen; i++) {
         _sendByte(aUart, aData[i]);
     }
+
+    return aLen;
 }
 
 void vcUartPowerOn(vcUart aUart)
@@ -284,7 +286,7 @@ static void _irqUartHandler(vcUart aUart)
             sIsrUartContext[aUart].mCallback(sIsrUartContext[aUart].mArg, VC_UART(aUart)->DATA);
         }
         /* check if context switch was requested */
-        // TODO: cortexm_isr_end();
+        cortexmIsrEnd();
     }
 }
 
