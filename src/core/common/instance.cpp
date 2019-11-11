@@ -9,7 +9,7 @@ namespace vc {
 vcDEFINE_ALIGNED_VAR(gInstanceRaw, sizeof(Instance), uint64_t);
 
 Instance::Instance(void)
-    : mIsrpipeUart(*this)
+    : mThreadScheduler()
     , mIsInitialized(false)
 {
 }

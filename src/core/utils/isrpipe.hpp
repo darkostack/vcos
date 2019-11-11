@@ -9,7 +9,6 @@
 #include <assert.h>
 
 #include "common/code_utils.hpp"
-#include "common/locator.hpp"
 
 namespace vc {
 namespace Utils {
@@ -61,19 +60,6 @@ public:
     int WriteOne(char aChar);
 
     int Read(char *aBuf, size_t aCount);
-};
-
-class IsrpipeUart : public InstanceLocator, public Isrpipe
-{
-public:
-    IsrpipeUart(Instance &aInstance)
-        : InstanceLocator(aInstance)
-        , Isrpipe(static_cast<char*>(&mBuf[0]), static_cast<unsigned int>(VC_ARRAY_LENGTH(mBuf)))
-    {
-    }
-
-private:
-    char mBuf[VCOS_CONFIG_TSRB_UART_MEMORY_SIZE];
 };
 
 } // namespace Utils

@@ -1,11 +1,18 @@
 SRC_CORE_CPP += $(addprefix core/,\
 	api/instance_api.cpp \
     api/isrpipe_api.cpp \
+    api/thread_api.cpp \
     common/instance.cpp \
+    common/thread.cpp \
     utils/isrpipe.cpp \
     )
 
+SRC_CORE_C += $(addprefix core/,\
+    utils/bitarithm.c \
+    )
+
 OBJS_SRC_CORE += $(addprefix $(BUILD)/, $(SRC_CORE_CPP:.cpp=.o))
+OBJS_SRC_CORE += $(addprefix $(BUILD)/, $(SRC_CORE_C:.c=.o))
 
 OBJS_DIR += $(sort $(dir $(OBJS_SRC_CORE)))
 

@@ -3,7 +3,8 @@
 
 #include <stdio.h>
 
-#include "irq.h"
+#include <vcos/irq.h>
+
 #include "cpu_conf.h"
 
 #ifdef __cplusplus

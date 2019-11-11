@@ -4,8 +4,7 @@
 #include "vcos-core-config.h"
 
 #include "common/code_utils.hpp"
-
-#include "utils/isrpipe.hpp"
+#include "common/thread.hpp"
 
 typedef struct vcInstance
 {
@@ -33,14 +32,14 @@ private:
 
     void AfterInit(void);
 
-    Utils::IsrpipeUart mIsrpipeUart;
+    ThreadScheduler mThreadScheduler;
 
     bool mIsInitialized;
 };
 
-template <> inline Utils::IsrpipeUart &Instance::Get(void)
+template <> inline ThreadScheduler &Instance::Get(void)
 {
-    return mIsrpipeUart;
+    return mThreadScheduler;
 }
 
 } // namespace vc

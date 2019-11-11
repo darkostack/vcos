@@ -9,10 +9,10 @@
 #include <stdint.h>
 #include <assert.h>
 
+#include <vcos/irq.h>
 #include <vcos/periph/uart.h>
 
 #include "cpu.h"
-#include "irq.h"
 
 extern char _sheap;                 /* start of the heap */
 extern char _eheap;                 /* end of the heap */
