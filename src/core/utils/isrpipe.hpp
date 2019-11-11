@@ -50,18 +50,26 @@ private:
     volatile unsigned mWrites;
 };
 
-class Isrpipe : public Tsrb, public Mutex
+class Isrpipe
 {
 public:
     Isrpipe(char *aBuf, unsigned int aSize)
-        : Tsrb(aBuf, aSize)
-        , Mutex()
+        : mTsrb(aBuf, aSize)
+        , mMutex()
     {
     }
 
     int WriteOne(char aChar);
 
     int Read(char *aBuf, size_t aCount);
+
+    Tsrb &GetTsrb(void) { return mTsrb; }
+
+    Mutex &GetMutex(void) { return mMutex; }
+
+private:
+    Tsrb mTsrb;
+    Mutex mMutex;
 };
 
 } // namespace Utils

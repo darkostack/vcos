@@ -129,7 +129,7 @@ void Thread::AddToList(ListNode *aList)
     ListNode *newNode = static_cast<ListNode *>(&mRqEntry);
 
     while (aList->mNext) {
-        Thread *listEntry = GetThreadPointerFromList(aList->mNext);
+        Thread *listEntry = Get<ThreadScheduler>().GetThreadPointerFromList(aList->mNext);
         if (listEntry->GetPriority() > myPrio) {
             break;
         }
@@ -150,11 +150,6 @@ uintptr_t Thread::MeasureStackFree(char *aStack)
     }
     uintptr_t spacefree = (uintptr_t)stackp - (uintptr_t)aStack;
     return spacefree;
-}
-
-Thread *Thread::GetThreadPointerFromList(ListNode *aList)
-{
-    return container_of(static_cast<ClistNode *>(aList), Thread, mRqEntry);
 }
 
 int ThreadScheduler::Run(void)

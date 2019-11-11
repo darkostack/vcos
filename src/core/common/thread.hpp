@@ -97,8 +97,6 @@ public:
 
     ClistNode &GetRqEntry(void) { return mRqEntry; }
 
-    Thread *GetThreadPointerFromList(ListNode *aList);
-
 private:
     char *mSp;
     ThreadStatus mStatus;

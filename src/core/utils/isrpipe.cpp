@@ -7,12 +7,12 @@ namespace Utils {
 
 int Isrpipe::WriteOne(char aChar)
 {
-    int res = AddOne(aChar);
+    int res = GetTsrb().AddOne(aChar);
 
     /* `res` is either 0 on success or -1 when the buffer is full. Either way,
      * unlocking the mutex is fine.
      */
-    Unlock();
+    GetMutex().Unlock();
 
     return res;
 }
@@ -20,8 +20,8 @@ int Isrpipe::WriteOne(char aChar)
 int Isrpipe::Read(char *aBuf, size_t aCount)
 {
     int res;
-    while (!(res = Get(aBuf, aCount))) {
-        Lock();
+    while (!(res = GetTsrb().Get(aBuf, aCount))) {
+        GetMutex().Lock();
     }
     return res;
 }
