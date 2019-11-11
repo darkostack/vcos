@@ -12,8 +12,8 @@ extern int main(void);
 
 namespace vc {
 
-static char gMainStack[THREAD_STACKSIZE_MAIN + THREAD_EXTRA_STACKSIZE_PRINTF];
-static char gIdleStack[THREAD_STACKSIZE_IDLE];
+static char gMainStack[VCOS_CONFIG_THREAD_STACKSIZE_MAIN];
+static char gIdleStack[VCOS_CONFIG_THREAD_STACKSIZE_IDLE];
 
 extern "C" void *mainThreadFunc(void *aArg)
 {
@@ -46,13 +46,13 @@ extern "C" void vcKernelInit(vcInstance *aInstance)
     printf("\n\nkernel started (version: 0.0.1)\n\n");
 
     Thread mainThread(instance, gMainStack, sizeof(gMainStack),
-                      THREAD_PRIORITY_MAIN,
-                      THREAD_CREATE_WOUT_YIELD | THREAD_CREATE_STACKTEST,
+                      VCOS_CONFIG_THREAD_PRIORITY_MAIN,
+                      THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST,
                       mainThreadFunc, NULL, "main");
 
     Thread idleThread(instance, gIdleStack, sizeof(gIdleStack),
-                      THREAD_PRIORITY_IDLE,
-                      THREAD_CREATE_WOUT_YIELD | THREAD_CREATE_STACKTEST,
+                      VCOS_CONFIG_THREAD_PRIORITY_IDLE,
+                      THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST,
                       idleThreadFunc, NULL, "idle");
 
     vcThreadSwitchContextExit();

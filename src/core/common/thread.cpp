@@ -25,8 +25,8 @@ Thread::Thread(Instance &aInstance,
                const char *aName)
     : InstanceLocator(aInstance)
 {
-    if (aPriority >= SCHED_PRIO_LEVELS) {
-        DEBUG("Thread::Thread() priority level must less than %u\n", SCHED_PRIO_LEVELS);
+    if (aPriority >= VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS) {
+        DEBUG("Thread::Thread() priority level must less than %u\n", VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS);
         return;
     }
 
@@ -55,7 +55,7 @@ Thread::Thread(Instance &aInstance,
     /* allocate out thread control block at the top of our stackspace */
     Thread *cb = (Thread *)(aStack + aStackSize);
 
-    if (aFlags & THREAD_CREATE_STACKTEST) {
+    if (aFlags & THREAD_FLAGS_CREATE_STACKTEST) {
         /* assign each int of the stack the value of it's address */
         uintptr_t *stackmax = (uintptr_t *)(aStack + aStackSize);
         uintptr_t *stackp = (uintptr_t *)aStack;
@@ -96,7 +96,7 @@ Thread::Thread(Instance &aInstance,
     cb->mName = aName;
 
     cb->mPriority = aPriority;
-    cb->mStatus = STATUS_STOPPED;
+    cb->mStatus = THREAD_STATUS_STOPPED;
 
     cb->mRqEntry.mNext = NULL;
 
@@ -105,11 +105,11 @@ Thread::Thread(Instance &aInstance,
     DEBUG("Thread::Thread() created thread %s. PID %" PRIkernel_pid ". Priority: %u\n",
           aName, cb->mPid, aPriority);
 
-    if (aFlags & THREAD_CREATE_SLEEPING) {
-        Get<ThreadScheduler>().SetStatus(cb, STATUS_SLEEPING);
+    if (aFlags & THREAD_FLAGS_CREATE_SLEEPING) {
+        Get<ThreadScheduler>().SetStatus(cb, THREAD_STATUS_SLEEPING);
     } else {
-        Get<ThreadScheduler>().SetStatus(cb, STATUS_PENDING);
-        if (!(aFlags & THREAD_CREATE_WOUT_YIELD)) {
+        Get<ThreadScheduler>().SetStatus(cb, THREAD_STATUS_PENDING);
+        if (!(aFlags & THREAD_FLAGS_CREATE_WOUT_YIELD)) {
             irqRestore(state);
             Get<ThreadScheduler>().Switch(aPriority);
             return;
@@ -123,7 +123,7 @@ Thread::Thread(Instance &aInstance,
 
 void Thread::AddToList(ListNode *aList, Thread *aThread)
 {
-    assert(aThread->mStatus < STATUS_ON_RUNQUEUE);
+    assert(aThread->mStatus < THREAD_STATUS_ON_RUNQUEUE);
 
     uint16_t myPrio = aThread->mPriority;
     ListNode *newNode = static_cast<ListNode *>(&aThread->mRqEntry);
@@ -171,12 +171,12 @@ int ThreadScheduler::Run(void)
     }
 
     if (activeThread) {
-        if (activeThread->mStatus == STATUS_RUNNING) {
-            activeThread->mStatus = STATUS_PENDING;
+        if (activeThread->mStatus == THREAD_STATUS_RUNNING) {
+            activeThread->mStatus = THREAD_STATUS_PENDING;
         }
     }
 
-    nextThread->mStatus = STATUS_RUNNING;
+    nextThread->mStatus = THREAD_STATUS_RUNNING;
     mSchedActivePid = nextThread->mPid;
     mSchedActiveThread = nextThread;
 
@@ -190,15 +190,15 @@ int ThreadScheduler::Run(void)
 
 void ThreadScheduler::SetStatus(Thread *aThread, ThreadStatus aStatus)
 {
-    if (aStatus >= STATUS_ON_RUNQUEUE) {
-        if (!(aThread->mStatus >= STATUS_ON_RUNQUEUE)) {
+    if (aStatus >= THREAD_STATUS_ON_RUNQUEUE) {
+        if (!(aThread->mStatus >= THREAD_STATUS_ON_RUNQUEUE)) {
             DEBUG("ThreadScheduler::SetStatus() adding thread %" PRIkernel_pid " to runqueue %u.\n",
                   aThread->mPid, aThread->mPriority);
             RightPush(&mSchedRunqueues[aThread->mPriority], &(aThread->mRqEntry));
             mRunqueueBitCache |= 1 << aThread->mPriority;
         }
     } else {
-        if (aThread->mStatus >= STATUS_ON_RUNQUEUE) {
+        if (aThread->mStatus >= THREAD_STATUS_ON_RUNQUEUE) {
             DEBUG("ThreadScheduler::SetStatus() removing thread %" PRIkernel_pid " from runqueue %u.\n",
                   aThread->mPid, aThread->mPriority);
             LeftPop(&mSchedRunqueues[aThread->mPriority]);
@@ -215,7 +215,7 @@ void ThreadScheduler::Switch(uint16_t aOtherPrio)
 {
     Thread *activeThread = mSchedActiveThread;
     uint16_t currentPrio = activeThread->mPriority;
-    int onRunqueue = (activeThread->mStatus >= STATUS_ON_RUNQUEUE);
+    int onRunqueue = (activeThread->mStatus >= THREAD_STATUS_ON_RUNQUEUE);
 
     DEBUG("ThreadScheduler::Switch() active pid=%" PRIkernel_pid" prio=%" PRIu16 " on_runqueue=%i "
           ", other_prio=%" PRIu16 ".\n",
@@ -242,7 +242,7 @@ void ThreadScheduler::TaskExit(void)
     mSchedThreads[mSchedActivePid] = NULL;
     mSchedNumThreads--;
 
-    SetStatus(mSchedActiveThread, STATUS_STOPPED);
+    SetStatus(mSchedActiveThread, THREAD_STATUS_STOPPED);
 
     mSchedActiveThread = NULL;
     vcThreadSwitchContextExit();
@@ -259,7 +259,7 @@ Thread *ThreadScheduler::GetThread(KernelPid aPid)
 int ThreadScheduler::GetStatus(KernelPid aPid)
 {
     Thread *t = GetThread(aPid);
-    return t ? static_cast<int>(t->mStatus) : static_cast<int>(STATUS_NOT_FOUND);
+    return t ? static_cast<int>(t->mStatus) : static_cast<int>(THREAD_STATUS_NOT_FOUND);
 }
 
 const char *ThreadScheduler::GetName(KernelPid aPid)
@@ -274,7 +274,7 @@ void ThreadScheduler::Sleep(void)
         return;
     }
     unsigned state = irqDisable();
-    SetStatus(mSchedActiveThread, STATUS_SLEEPING);
+    SetStatus(mSchedActiveThread, THREAD_STATUS_SLEEPING);
     irqRestore(state);
     vcThreadYieldHigher();
 }
@@ -289,10 +289,10 @@ int ThreadScheduler::Wakeup(KernelPid aPid)
 
     if (!otherThread) {
         DEBUG("ThreadScheduler::Wakeup() thread does not exist!\n");
-    } else if (otherThread->mStatus == STATUS_SLEEPING) {
+    } else if (otherThread->mStatus == THREAD_STATUS_SLEEPING) {
         DEBUG("ThreadScheduler::Wakeup() thread is sleeping.\n");
 
-        SetStatus(otherThread, STATUS_RUNNING);
+        SetStatus(otherThread, THREAD_STATUS_RUNNING);
         irqRestore(state);
         Switch(otherThread->mPriority);
 
@@ -302,14 +302,14 @@ int ThreadScheduler::Wakeup(KernelPid aPid)
     }
 
     irqRestore(state);
-    return (int)STATUS_NOT_FOUND;
+    return (int)THREAD_STATUS_NOT_FOUND;
 }
 
 void ThreadScheduler::Yield(void)
 {
     unsigned state = irqDisable();
     Thread *me = mSchedActiveThread;
-    if (me->mStatus >= STATUS_ON_RUNQUEUE) {
+    if (me->mStatus >= THREAD_STATUS_ON_RUNQUEUE) {
         LeftPopRightPush(&mSchedRunqueues[me->mPriority]);
     }
     irqRestore(state);
