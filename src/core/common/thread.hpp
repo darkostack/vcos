@@ -75,7 +75,7 @@ public:
 
     void SetStackStart(char *aStackStart) { mStackStart = aStackStart; };
 
-    void AddToList(ListNode *aList, Thread *aThread);
+    void AddToList(ListNode *aList);
 
     uintptr_t MeasureStackFree(char *aStack);
 
@@ -94,6 +94,10 @@ public:
     ThreadStatus GetStatus(void) { return mStatus; }
 
     void SetStatus(ThreadStatus aStatus) { mStatus = aStatus; }
+
+    ClistNode &GetRqEntry(void) { return mRqEntry; }
+
+    Thread *GetThreadPointerFromList(ListNode *aList);
 
 private:
     char *mSp;
@@ -158,6 +162,8 @@ public:
     int Wakeup(KernelPid aPid);
 
     void Yield(void);
+
+    Thread *GetThreadPointerFromList(ListNode *aList);
 
 private:
     int mSchedNumThreads;

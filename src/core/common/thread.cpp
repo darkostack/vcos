@@ -121,16 +121,16 @@ Thread::Thread(Instance &aInstance,
     return;
 }
 
-void Thread::AddToList(ListNode *aList, Thread *aThread)
+void Thread::AddToList(ListNode *aList)
 {
-    assert(aThread->mStatus < THREAD_STATUS_ON_RUNQUEUE);
+    assert(GetStatus() < THREAD_STATUS_ON_RUNQUEUE);
 
-    uint16_t myPrio = aThread->GetPriority();
-    ListNode *newNode = static_cast<ListNode *>(&aThread->mRqEntry);
+    uint16_t myPrio = GetPriority();
+    ListNode *newNode = static_cast<ListNode *>(&mRqEntry);
 
     while (aList->mNext) {
-        Thread *listEntry = container_of(static_cast<ClistNode *>(aList->mNext), Thread, mRqEntry);
-        if (listEntry->mPriority > myPrio) {
+        Thread *listEntry = GetThreadPointerFromList(aList->mNext);
+        if (listEntry->GetPriority() > myPrio) {
             break;
         }
         aList = aList->mNext;
@@ -152,6 +152,11 @@ uintptr_t Thread::MeasureStackFree(char *aStack)
     return spacefree;
 }
 
+Thread *Thread::GetThreadPointerFromList(ListNode *aList)
+{
+    return container_of(static_cast<ClistNode *>(aList), Thread, mRqEntry);
+}
+
 int ThreadScheduler::Run(void)
 {
     SetContexSwitchRequest(0);
@@ -159,7 +164,7 @@ int ThreadScheduler::Run(void)
     Thread *activeThread = static_cast<Thread *>(GetSchedActiveThread());
 
     int nextrq = bitarithmLsb(mRunqueueBitCache);
-    Thread *nextThread = container_of(static_cast<ClistNode *>(mSchedRunqueues[nextrq].mNext->mNext), Thread, mRqEntry);
+    Thread *nextThread = GetThreadPointerFromList(mSchedRunqueues[nextrq].mNext->mNext);
 
     DEBUG("ThreadScheduler::Run() active thread: %" PRIkernel_pid ", next thread: %" PRIkernel_pid ".\n",
           (KernelPid)((activeThread == NULL) ? KERNEL_PID_UNDEF : activeThread->GetPid()),
@@ -319,6 +324,11 @@ void ThreadScheduler::Yield(void)
     }
     irqRestore(state);
     vcThreadYieldHigher();
+}
+
+Thread *ThreadScheduler::GetThreadPointerFromList(ListNode *aList)
+{
+    return container_of(static_cast<ClistNode *>(aList), Thread, mRqEntry);
 }
 
 } // namespace vc

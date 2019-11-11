@@ -5,11 +5,15 @@
 #include <stdint.h>
 
 #include "common/list.hpp"
+#include "common/thread.hpp"
+
+#define MUTEX_LOCKED ((ListNode *)-1)
 
 namespace vc {
 
-class Mutex
+class Mutex : public ThreadScheduler, public List
 {
+public:
     Mutex(void)
     {
         mQueue.mNext = NULL;
@@ -17,9 +21,11 @@ class Mutex
 
     int TryLock(void) { return SetLock(0); }
 
-    void Lock(void) { return SetLock(1); }
+    void Lock(void) { SetLock(1); }
 
     void Unlock(void);
+
+    void UnlockAndSleep(void);
 
 private:
     int SetLock(int aBlocking);

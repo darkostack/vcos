@@ -5,6 +5,7 @@ SRC_CORE_CPP += $(addprefix core/,\
     common/instance.cpp \
     common/thread.cpp \
     common/kernel_init.cpp \
+    common/mutex.cpp \
     utils/isrpipe.cpp \
     )
 
