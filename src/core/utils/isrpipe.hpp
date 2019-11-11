@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <assert.h>
 
+#include "common/mutex.hpp"
 #include "common/code_utils.hpp"
 
 namespace vc {
@@ -49,11 +50,12 @@ private:
     volatile unsigned mWrites;
 };
 
-class Isrpipe : public Tsrb
+class Isrpipe : public Tsrb, public Mutex
 {
 public:
     Isrpipe(char *aBuf, unsigned int aSize)
         : Tsrb(aBuf, aSize)
+        , Mutex()
     {
     }
 

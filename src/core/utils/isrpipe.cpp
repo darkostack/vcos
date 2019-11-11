@@ -8,14 +8,21 @@ namespace Utils {
 int Isrpipe::WriteOne(char aChar)
 {
     int res = AddOne(aChar);
-    /* TODO: unlock mutex here */
+
+    /* `res` is either 0 on success or -1 when the buffer is full. Either way,
+     * unlocking the mutex is fine.
+     */
+    Unlock();
+
     return res;
 }
 
 int Isrpipe::Read(char *aBuf, size_t aCount)
 {
-    int res = Get(aBuf, aCount);
-    /* TODO: lock mutex here if there is no-data to be read */
+    int res;
+    while (!(res = Get(aBuf, aCount))) {
+        Lock();
+    }
     return res;
 }
 
