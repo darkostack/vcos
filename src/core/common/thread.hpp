@@ -63,17 +63,37 @@ public:
            void *aArg,
            const char *aName);
 
+    char *GetStackPointer(void) { return mSp; }
+
+    void SetStackPointer(char *aStackPtr) { mSp = aStackPtr; }
+
+    int GetStackSize(void) { return mStackSize; }
+
+    void SetStackSize(int aStackSize) { mStackSize = aStackSize; }
+
+    char *GetStackStart(void) { return mStackStart; }
+
+    void SetStackStart(char *aStackStart) { mStackStart = aStackStart; };
+
     void AddToList(ListNode *aList, Thread *aThread);
 
     uintptr_t MeasureStackFree(char *aStack);
 
     KernelPid GetPid(void) { return mPid; }
 
+    void SetPid(KernelPid aPid) { mPid = aPid; }
+
     const char *GetName(void) { return mName; }
+
+    void SetName(const char *aName) { mName = aName; }
 
     uint8_t GetPriority(void) { return mPriority; }
 
+    void SetPriority(uint8_t aPriority) { mPriority = aPriority; }
+
     ThreadStatus GetStatus(void) { return mStatus; }
+
+    void SetStatus(ThreadStatus aStatus) { mStatus = aStatus; }
 
 private:
     char *mSp;
@@ -117,9 +137,15 @@ public:
 
     Thread *GetSchedActiveThread(void) { return mSchedActiveThread; }
 
+    void SetSchedActiveThread(Thread *aThread);
+
     KernelPid GetSchedActivePid(void) { return mSchedActivePid; }
 
-    void SchedNumThreadsAdd(void) { mSchedNumThreads++; }
+    void SetSchedActivePid(KernelPid aPid) { mSchedActivePid = aPid; }
+
+    void SchedNumThreadsAddOne(void) { mSchedNumThreads++; }
+
+    void SchedNumThreadsRemoveOne(void) { mSchedNumThreads--; }
 
     Thread *GetThread(KernelPid aPid);
 
