@@ -13,6 +13,7 @@
 #include "common/clist.hpp"
 #include "common/cib.hpp"
 #include "common/locator.hpp"
+#include "common/msg.hpp"
 
 #include "utils/bitarithm.h"
 
@@ -35,7 +36,7 @@ typedef enum {
     THREAD_STATUS_STOPPED,
     THREAD_STATUS_SLEEPING,
     THREAD_STATUS_MUTEX_BLOCKED,
-    THREAD_STATUS_RECEIVED_BLOCKED,
+    THREAD_STATUS_RECEIVE_BLOCKED,
     THREAD_STATUS_SEND_BLOCKED,
     THREAD_STATUS_REPLY_BLOCKED,
     THREAD_STATUS_FLAG_BLOCKED_ANY,
@@ -97,12 +98,32 @@ public:
 
     ClistNode &GetRqEntry(void) { return mRqEntry; }
 
+    Cib &GetMsgQueue(void) { return mMsgQueue; }
+
+    void SetWaitData(void *aData) { mWaitData = aData; }
+
+    void *GetWaitData(void) { return mWaitData; }
+
+    ListNode &GetMsgWaiters(void) { return mMsgWaiters; }
+
+    ListNode *GetMsgWaitersNext(void) { return mMsgWaiters.mNext; }
+
+    Msg &GetMsgArray(uint16_t aIndex) { return mMsgArray[aIndex]; }
+
+    void SetMsgArray(Msg *aArray) { mMsgArray = aArray; }
+
+    int HasMsgQueued(void) { return (mMsgArray != NULL); }
+
 private:
     char *mSp;
     ThreadStatus mStatus;
     uint8_t mPriority;
     KernelPid mPid;
     ClistNode mRqEntry;
+    void *mWaitData;
+    ListNode mMsgWaiters;
+    Cib mMsgQueue;
+    Msg *mMsgArray;
     char *mStackStart;
     const char *mName;
     int mStackSize;

@@ -20,6 +20,14 @@ public:
         assert(!(aSize & (aSize - 1)));
     }
 
+    void Init(unsigned int aSize)
+    {
+        assert(!(aSize & (aSize - 1)));
+        mReadCount = 0;
+        mWriteCount = 0;
+        mMask = aSize - 1;
+    }
+
     int Full(void) { return (static_cast<int>(Avail()) > static_cast<int>(mMask)); }
 
     int Get(void)
@@ -51,9 +59,15 @@ public:
 
     int PutUnsafe(void) { return static_cast<int>(mWriteCount++ & mMask); }
 
-private:
     unsigned int Avail(void) { return mWriteCount - mReadCount; }
 
+    unsigned int GetReadCount(void) { return mReadCount; }
+
+    unsigned int GetWriteCount(void) { return mWriteCount; }
+
+    unsigned int GetMask(void) { return mMask; }
+
+private:
     unsigned int mReadCount;
     unsigned int mWriteCount;
     unsigned int mMask;
