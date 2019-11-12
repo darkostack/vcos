@@ -30,8 +30,6 @@ extern "C" void *idleThreadFunc(void *aArg)
 {
     (void) aArg;
 
-    printf("kernel enter IDLE state\n");
-
     while (1) {
         cortexmSleep(0);
     }
