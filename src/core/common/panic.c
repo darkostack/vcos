@@ -23,8 +23,8 @@ __attribute__((noreturn)) void vcCorePanic(vcPanicType aType, const char *aMessa
             cpuPrintLastInstruction();
         }
 
-        LOG_ERROR("*** kernel panic:\n%s\n\n", aMessage);
-        LOG_ERROR("*** halted.\n\n");
+        LOG_ERROR("*** kernel panic:\r\n%s\r\n\r\n", aMessage);
+        LOG_ERROR("*** halted.\r\n\r\n");
     }
 
     irqDisable();

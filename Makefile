@@ -95,6 +95,7 @@ export LIB_APPS = libapps.a
 
 LIBS += $(BUILD)/platform/$(LIB_PLATFORM)
 LIBS += $(BUILD)/src/$(LIB_SRC_CORE)
+LIBS += $(BUILD)/src/$(LIB_SRC_CLI)
 LIBS += $(BUILD)/apps/$(LIB_APPS)
 
 LDSCRIPT = $(TOP)/platform/$(PLATFORM)/$(PLATFORM).ld

@@ -1,13 +1,11 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <vcos/cli.h>
+
 int main(void)
 {
-    printf("hello world!\n");
-
-    while (1) {
-        printf("%c\n", getchar());
-    }
+    vcCliUartRun();
 
     return 0;
 }
