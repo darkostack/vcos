@@ -20,13 +20,9 @@ void vcThreadSwitchContextExit(void);
 
 void vcThreadTaskExit(void);
 
-void vcThreadStackPrint(void);
-
 int vcThreadIsrStackUsage(void);
 
 void *vcThreadIsrStackPointer(void);
-
-void vcSchedGetActiveThreadUpdate(void);
 
 void vcSchedRun(void);
 

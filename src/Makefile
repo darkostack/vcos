@@ -10,6 +10,7 @@ SRC_CORE_CPP += $(addprefix core/,\
     )
 
 SRC_CORE_C += $(addprefix core/,\
+    common/panic.c \
     utils/bitarithm.c \
     )
 
