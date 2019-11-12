@@ -55,7 +55,7 @@ extern "C" void vcKernelInit(void)
     Thread mainThread(instance, gMainStack, sizeof(gMainStack),
                       VCOS_CONFIG_THREAD_PRIORITY_MAIN,
                       THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST,
-                      mainThreadFunc, NULL, "main");
+                      mainThreadFunc, (void *)&instance, "main");
 
     Thread idleThread(instance, gIdleStack, sizeof(gIdleStack),
                       VCOS_CONFIG_THREAD_PRIORITY_IDLE,
