@@ -10,7 +10,9 @@ extern "C" {
 
 typedef struct vcInstance vcInstance;
 
-const char *vcGetVersionString(void);
+vcInstance *vcInstanceGet(void);
+
+const char *vcInstanceGetVersionString(void);
 
 #ifdef __cplusplus
 }

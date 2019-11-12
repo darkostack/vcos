@@ -4,7 +4,17 @@
 
 using namespace vc;
 
-const char *vcGetVersionString(void)
+vcInstance *vcInstanceGet(void)
+{
+    Instance &instance = Instance::Get();
+    if (instance.IsInitialized()) {
+        return static_cast<vcInstance *>(&instance);
+    } else {
+        return NULL;
+    }
+}
+
+const char *vcInstanceGetVersionString(void)
 {
     static const char sVersion[] = PACKAGE_NAME "/" PACKAGE_VERSION "; " VCOS_CONFIG_PLATFORM_INFO
 #if defined(__DATE__)

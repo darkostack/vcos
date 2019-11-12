@@ -98,7 +98,7 @@ void Interpreter::ProcessVersion(int aArgc, char *aArgv[])
     (void) aArgc;
     (void) aArgv;
 
-    const char *version = vcGetVersionString();
+    const char *version = vcInstanceGetVersionString();
     mServer->OutputFormat("%s\r\n", static_cast<const char *>(version));
 }
 

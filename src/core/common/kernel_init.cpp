@@ -3,7 +3,6 @@
 
 #include <vcos/instance.h>
 #include <vcos/stdiobase.h>
-#include <vcos/cli.h>
 #include <vcos/thread.h>
 
 #include "cpu.h"
@@ -47,8 +46,6 @@ extern "C" void vcKernelInit(void)
     assert(instance.IsInitialized());
 
     vcStdioInit((vcInstance *)&instance);
-
-    vcCliUartInit((vcInstance *)&instance);
 
     printf("\r\n\r\nkernel started (version: 0.0.1)\r\n\r\n");
 
