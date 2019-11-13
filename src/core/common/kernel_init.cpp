@@ -10,18 +10,16 @@
 #include "common/instance.hpp"
 #include "common/thread.hpp"
 
-extern int main(void);
-
 namespace vc {
+
+extern int mainApp(void *aArg);
 
 static char gMainStack[VCOS_CONFIG_THREAD_STACKSIZE_MAIN];
 static char gIdleStack[VCOS_CONFIG_THREAD_STACKSIZE_IDLE];
 
 extern "C" void *mainThreadFunc(void *aArg)
 {
-    (void) aArg;
-
-    main();
+    mainApp(aArg);
 
     return NULL;
 }

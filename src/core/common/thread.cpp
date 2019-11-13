@@ -29,7 +29,7 @@ Thread::Thread(Instance &aInstance,
     , mMsgArray(NULL)
 {
     if (aPriority >= VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS) {
-        DEBUG("Thread::Thread() priority level must less than %u\n", VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS);
+        DEBUG("Thread::Thread() priority level must less than %u\r\n", VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS);
         return;
     }
 
@@ -52,7 +52,7 @@ Thread::Thread(Instance &aInstance,
     aStackSize -= aStackSize % ALIGN_OF(Thread);
 
     if (aStackSize < 0) {
-        DEBUG("Thread::Thread() stack size is too small!\n");
+        DEBUG("Thread::Thread() stack size is too small!\r\n");
     }
 
     /* allocate out thread control block at the top of our stackspace */
@@ -84,7 +84,7 @@ Thread::Thread(Instance &aInstance,
     }
 
     if (pid == KERNEL_PID_UNDEF) {
-        DEBUG("Thread::Thread() too many threads!\n");
+        DEBUG("Thread::Thread() too many threads!\r\n");
         irqRestore(state);
         return;
     }
@@ -106,7 +106,7 @@ Thread::Thread(Instance &aInstance,
 
     Get<ThreadScheduler>().SchedNumThreadsAddOne();
 
-    DEBUG("Thread::Thread() created thread %s. PID %" PRIkernel_pid ". Priority: %u\n",
+    DEBUG("Thread::Thread() created thread %s. PID %" PRIkernel_pid ". Priority: %u\r\n",
           aName, cb->GetPid(), aPriority);
 
     if (aFlags & THREAD_FLAGS_CREATE_SLEEPING) {

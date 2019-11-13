@@ -83,25 +83,6 @@ int Interpreter::ParseUnsignedLong(char *aString, unsigned long &aUnsignedLong)
     return (*endptr == '\0') ? 1 : 0;
 }
 
-void Interpreter::ProcessHelp(int aArgc, char *aArgv[])
-{
-    (void) aArgc;
-    (void) aArgv;
-
-    for (unsigned int i = 0; i < VC_ARRAY_LENGTH(sCommands); i++) {
-        mServer->OutputFormat("%s\r\n", sCommands[i].mName);
-    }
-}
-
-void Interpreter::ProcessVersion(int aArgc, char *aArgv[])
-{
-    (void) aArgc;
-    (void) aArgv;
-
-    const char *version = vcInstanceGetVersionString();
-    mServer->OutputFormat("%s\r\n", static_cast<const char *>(version));
-}
-
 void Interpreter::ProcessLine(char *aBuf, uint16_t aBufLength, Server &aServer)
 {
     char *argv[kMaxArgs];
@@ -148,6 +129,25 @@ Interpreter &Interpreter::GetOwner(void)
 {
     Interpreter &interpreter = Uart::sUartServer->GetInterpreter();
     return interpreter;
+}
+
+void Interpreter::ProcessHelp(int aArgc, char *aArgv[])
+{
+    (void) aArgc;
+    (void) aArgv;
+
+    for (unsigned int i = 0; i < VC_ARRAY_LENGTH(sCommands); i++) {
+        mServer->OutputFormat("%s\r\n", sCommands[i].mName);
+    }
+}
+
+void Interpreter::ProcessVersion(int aArgc, char *aArgv[])
+{
+    (void) aArgc;
+    (void) aArgv;
+
+    const char *version = vcInstanceGetVersionString();
+    mServer->OutputFormat("%s\r\n", static_cast<const char *>(version));
 }
 
 } // namespace vc

@@ -65,7 +65,7 @@ int Msg::Send(Msg *aMsg, KernelPid aTargetPid, bool aBlock, unsigned aState)
             newStatus = THREAD_STATUS_SEND_BLOCKED;
         }
 
-        me->SetStatus((ThreadStatus)newStatus);
+        Get<ThreadScheduler>().SetStatus(me, static_cast<ThreadStatus>(newStatus));
 
         me->AddToList(&target->GetMsgWaiters());
 
@@ -81,7 +81,7 @@ int Msg::Send(Msg *aMsg, KernelPid aTargetPid, bool aBlock, unsigned aState)
         /* copy msg to target */
         Msg *targetMessage = reinterpret_cast<Msg *>(target->GetWaitData());
         *targetMessage = *aMsg;
-        target->SetStatus(THREAD_STATUS_PENDING);
+        Get<ThreadScheduler>().SetStatus(target, THREAD_STATUS_PENDING);
 
         irqRestore(aState);
         vcThreadYieldHigher();
@@ -93,8 +93,6 @@ int Msg::Send(Msg *aMsg, KernelPid aTargetPid, bool aBlock, unsigned aState)
 int Msg::Receive(Msg *aMsg, int aBlock)
 {
     unsigned state = irqDisable();
-
-    DEBUG("Msg::Receive() %" PRIkernel_pid "\r\n", Get<ThreadScheduler>().GetSchedActivePid());
 
     Thread *me = Get<ThreadScheduler>().GetSchedActiveThread();
 
@@ -127,7 +125,7 @@ int Msg::Receive(Msg *aMsg, int aBlock)
         if (queueIndex < 0) {
             DEBUG("Msg::Receive() %" PRIkernel_pid ": No msg in queue. Going blocked.\r\n",
                   Get<ThreadScheduler>().GetSchedActivePid());
-            me->SetStatus(THREAD_STATUS_RECEIVE_BLOCKED);
+            Get<ThreadScheduler>().SetStatus(me, THREAD_STATUS_RECEIVE_BLOCKED);
 
             irqRestore(state);
             vcThreadYieldHigher();
@@ -160,7 +158,7 @@ int Msg::Receive(Msg *aMsg, int aBlock)
         uint16_t senderPrio = VCOS_CONFIG_THREAD_PRIORITY_IDLE;
         if (sender->GetStatus() != THREAD_STATUS_REPLY_BLOCKED) {
             sender->SetWaitData(NULL);
-            sender->SetStatus(THREAD_STATUS_PENDING);
+            Get<ThreadScheduler>().SetStatus(sender, THREAD_STATUS_PENDING);
             senderPrio = sender->GetPriority();
         }
 
@@ -242,7 +240,7 @@ int Msg::SendInt(KernelPid aTargetPid)
         /* copy msg to target */
         Msg *targetMessage = reinterpret_cast<Msg *>(target->GetWaitData());
         *targetMessage = *this;
-        target->SetStatus(THREAD_STATUS_PENDING);
+        Get<ThreadScheduler>().SetStatus(target, THREAD_STATUS_PENDING);
         Get<ThreadScheduler>().SetContexSwitchRequest(1);
         return 1;
     } else {
@@ -256,7 +254,7 @@ int Msg::SendReceive(Msg *aReply, KernelPid aTargetPid)
     assert(Get<ThreadScheduler>().GetSchedActivePid() != aTargetPid);
     unsigned state = irqDisable();
     Thread *me = Get<ThreadScheduler>().GetSchedActiveThread();
-    me->SetStatus(THREAD_STATUS_REPLY_BLOCKED);
+    Get<ThreadScheduler>().SetStatus(me, THREAD_STATUS_REPLY_BLOCKED);
     me->SetWaitData(reinterpret_cast<void *>(aReply));
 
     /* we re-use (abuse) reply for sending, because wait_data might be
@@ -287,7 +285,7 @@ int Msg::Reply(Msg *aReply)
     /* copy msg to target */
     Msg *targetMessage = reinterpret_cast<Msg *>(target->GetWaitData());
     *targetMessage = *aReply;
-    target->SetStatus(THREAD_STATUS_PENDING);
+    Get<ThreadScheduler>().SetStatus(target, THREAD_STATUS_PENDING);
     uint16_t targetPrio = target->GetPriority();
     irqRestore(state);
     Get<ThreadScheduler>().Switch(targetPrio);
@@ -308,7 +306,7 @@ int Msg::ReplyInt(Msg *aReply)
 
     Msg *targetMessage = reinterpret_cast<Msg *>(target->GetWaitData());
     *targetMessage = *aReply;
-    target->SetStatus(THREAD_STATUS_PENDING);
+    Get<ThreadScheduler>().SetStatus(target, THREAD_STATUS_PENDING);
     Get<ThreadScheduler>().SetContexSwitchRequest(1);
 
     return 1;
