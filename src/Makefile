@@ -2,6 +2,7 @@ SRC_CORE_CPP += $(addprefix core/,\
 	api/instance_api.cpp \
     api/stdiobase_api.cpp \
     api/thread_api.cpp \
+    api/msg_api.cpp \
     common/instance.cpp \
     common/thread.cpp \
     common/kernel_init.cpp \

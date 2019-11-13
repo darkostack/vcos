@@ -48,8 +48,6 @@ public:
 
     void InitQueue(int aNum);
 
-    void QueuePrint(void);
-
     void SetSenderPid(KernelPid aTargetPid) { mSenderPid = aTargetPid; }
 
     KernelPid GetSenderPid(void) { return mSenderPid; }

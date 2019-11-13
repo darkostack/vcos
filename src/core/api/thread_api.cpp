@@ -5,7 +5,7 @@
 
 namespace vc {
 
-extern "C" int vcThreadContexSwitchRequest(void)
+extern "C" int vcThreadGetContexSwitchRequest(void)
 {
     return static_cast<int>(Instance::Get().Get<ThreadScheduler>().GetContextSwitchRequest());
 }

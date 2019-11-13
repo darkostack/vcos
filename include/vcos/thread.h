@@ -12,7 +12,7 @@ char *vcThreadStackInit(vcThreadHandlerFunc aFunction,
                         void *aStackStart,
                         int aStackSize);
 
-int vcThreadContexSwitchRequest(void);
+int vcThreadGetContexSwitchRequest(void);
 
 void vcThreadYieldHigher(void);
 

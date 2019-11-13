@@ -54,7 +54,7 @@ static inline void cortexmSleep(int aDeep)
  */
 static inline void cortexmIsrEnd(void)
 {
-    if (vcThreadContexSwitchRequest()) {
+    if (vcThreadGetContexSwitchRequest()) {
         vcThreadYieldHigher();
     }
 }
