@@ -25,29 +25,13 @@
 #define THREAD_FLAGS_CREATE_STACKTEST (8)
 
 #define THREAD_STATUS_ON_RUNQUEUE THREAD_STATUS_RUNNING
-#define THREAD_STATUS_NOT_FOUND ((ThreadStatus)-1)
+#define THREAD_STATUS_NOT_FOUND ((vcThreadStatus)-1)
 
 namespace vc {
 
-typedef enum {
-    THREAD_STATUS_STOPPED,
-    THREAD_STATUS_SLEEPING,
-    THREAD_STATUS_MUTEX_BLOCKED,
-    THREAD_STATUS_RECEIVE_BLOCKED,
-    THREAD_STATUS_SEND_BLOCKED,
-    THREAD_STATUS_REPLY_BLOCKED,
-    THREAD_STATUS_FLAG_BLOCKED_ANY,
-    THREAD_STATUS_FLAG_BLOCKED_ALL,
-    THREAD_STATUS_MBOX_BLOCKED,
-    THREAD_STATUS_COND_BLOCKED,
-    THREAD_STATUS_RUNNING,
-    THREAD_STATUS_PENDING,
-    THREAD_STATUS_NUMOF
-} ThreadStatus;
-
 class ThreadScheduler;
 
-class Thread : public InstanceLocator
+class Thread : public vcThread, public InstanceLocator
 {
     friend class ThreadScheduler;
 
@@ -61,72 +45,24 @@ public:
            void *aArg,
            const char *aName);
 
-    char *GetStackPointer(void) { return mSp; }
-
-    void SetStackPointer(char *aStackPtr) { mSp = aStackPtr; }
-
-    int GetStackSize(void) { return mStackSize; }
-
-    void SetStackSize(int aStackSize) { mStackSize = aStackSize; }
-
-    char *GetStackStart(void) { return mStackStart; }
-
-    void SetStackStart(char *aStackStart) { mStackStart = aStackStart; };
-
     void AddToList(List *aList);
 
     uintptr_t MeasureStackFree(char *aStack);
 
-    vcKernelPid GetPid(void) { return mPid; }
+    Clist &GetRqEntry(void) { return *static_cast<Clist *>(&mRqEntry); }
 
-    void SetPid(vcKernelPid aPid) { mPid = aPid; }
+    Cib &GetMsgQueue(void) { return *static_cast<Cib *>(&mMsgQueue); }
 
-    const char *GetName(void) { return mName; }
+    List &GetMsgWaiters(void) { return *static_cast<List *>(&mMsgWaiters); }
 
-    void SetName(const char *aName) { mName = aName; }
+    List *GetMsgWaitersNext(void) { return static_cast<List *>(mMsgWaiters.mNext); }
 
-    uint8_t GetPriority(void) { return mPriority; }
-
-    void SetPriority(uint8_t aPriority) { mPriority = aPriority; }
-
-    ThreadStatus GetStatus(void) { return mStatus; }
-
-    void SetStatus(ThreadStatus aStatus) { mStatus = aStatus; }
-
-    ClistNode &GetRqEntry(void) { return mRqEntry; }
-
-    Cib &GetMsgQueue(void) { return mMsgQueue; }
-
-    void SetWaitData(void *aData) { mWaitData = aData; }
-
-    void *GetWaitData(void) { return mWaitData; }
-
-    List &GetMsgWaiters(void) { return mMsgWaiters; }
-
-    List *GetMsgWaitersNext(void) { return mMsgWaiters.GetNext(); }
-
-    Msg &GetMsgArray(uint16_t aIndex) { return mMsgArray[aIndex]; }
-
-    void SetMsgArray(Msg *aArray) { mMsgArray = aArray; }
+    Msg &GetMsgArray(uint16_t aIndex) { return *static_cast<Msg *>(&mMsgArray[aIndex]); }
 
     int HasMsgQueued(void) { return (mMsgArray != NULL); }
-
-private:
-    char *mSp;
-    ThreadStatus mStatus;
-    uint8_t mPriority;
-    vcKernelPid mPid;
-    ClistNode mRqEntry;
-    void *mWaitData;
-    List mMsgWaiters;
-    Cib mMsgQueue;
-    Msg *mMsgArray;
-    char *mStackStart;
-    const char *mName;
-    int mStackSize;
 };
 
-class ThreadScheduler : public ClistNode
+class ThreadScheduler : public Clist
 {
 public:
     ThreadScheduler(void)
@@ -139,7 +75,7 @@ public:
 
     int Run(void);
 
-    void SetStatus(Thread *aThread, ThreadStatus aStatus);
+    void SetStatus(Thread *aThread, vcThreadStatus aStatus);
 
     void Switch(uint16_t aOtherPrio);
 
@@ -189,7 +125,7 @@ private:
     Thread *mSchedThreads[KERNEL_PID_LAST + 1];
     Thread *mSchedActiveThread;
     vcKernelPid mSchedActivePid;
-    ClistNode mSchedRunqueues[VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS];
+    Clist mSchedRunqueues[VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS];
     uint32_t mRunqueueBitCache;
 };
 

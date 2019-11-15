@@ -42,10 +42,6 @@ public:
         }
         return static_cast<List *>(aList->mNext);
     }
-
-    List *GetNext(void) { return static_cast<List *>(mNext); }
-
-    void SetNext(List *aNext) { mNext = static_cast<vcListNode *>(aNext); }
 };
 
 } // namespace vc

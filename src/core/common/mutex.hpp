@@ -18,7 +18,7 @@ public:
     Mutex(Instance &aInstance)
         : InstanceLocator(aInstance)
     {
-        mQueue.SetNext(NULL);
+        mQueue.mNext = NULL;
     }
 
     int TryLock(void) { return SetLock(0); }

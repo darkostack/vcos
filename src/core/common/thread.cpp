@@ -24,15 +24,16 @@ Thread::Thread(Instance &aInstance,
                void *aArg,
                const char *aName)
     : InstanceLocator(aInstance)
-    , mWaitData(NULL)
-    , mMsgQueue(0)
-    , mMsgArray(NULL)
 {
     if (aPriority >= VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS)
     {
         DEBUG("Thread::Thread() priority level must less than %u\r\n", VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS);
         return;
     }
+
+    mWaitData = NULL;
+    (static_cast<Cib *>(&mMsgQueue))->Init(0);
+    mMsgArray = NULL;
 
     int totalStacksize = aStackSize;
 
@@ -101,23 +102,23 @@ Thread::Thread(Instance &aInstance,
 
     Get<ThreadScheduler>().SetSchedThreads(cb, pid); 
 
-    cb->SetPid(pid);
-    cb->SetStackPointer(vcThreadStackInit(aFunction, aArg, aStack, aStackSize));
+    cb->mPid = pid;
+    cb->mSp = vcThreadStackInit(aFunction, aArg, aStack, aStackSize);
 
-    cb->SetStackStart(aStack);
-    cb->SetStackSize(totalStacksize);
-    cb->SetName(aName);
+    cb->mStackStart = aStack;
+    cb->mStackSize = totalStacksize;
+    cb->mName = aName;
 
-    cb->SetPriority(aPriority);
-    cb->SetStatus(THREAD_STATUS_STOPPED);
+    cb->mPriority = aPriority;
+    cb->mStatus = THREAD_STATUS_STOPPED;
 
-    cb->mRqEntry.SetNext(NULL);
-    cb->mMsgWaiters.SetNext(NULL);
+    cb->mRqEntry.mNext = NULL;
+    cb->mMsgWaiters.mNext = NULL;
 
     Get<ThreadScheduler>().SchedNumThreadsAddOne();
 
     DEBUG("Thread::Thread() created thread %s. PID %" PRIkernel_pid ". Priority: %u\r\n",
-          aName, cb->GetPid(), aPriority);
+          aName, cb->mPid, aPriority);
 
     if (aFlags & THREAD_FLAGS_CREATE_SLEEPING)
     {
@@ -142,24 +143,24 @@ Thread::Thread(Instance &aInstance,
 
 void Thread::AddToList(List *aList)
 {
-    assert(GetStatus() < THREAD_STATUS_ON_RUNQUEUE);
+    assert(mStatus < THREAD_STATUS_ON_RUNQUEUE);
 
-    uint16_t myPrio = GetPriority();
+    uint16_t myPrio = mPriority;
     List *newNode = static_cast<List *>(&mRqEntry);
 
-    while (aList->GetNext())
+    while (aList->mNext)
     {
-        Thread *listEntry = Get<ThreadScheduler>().GetThreadPointerFromList(aList->GetNext());
+        Thread *listEntry = Get<ThreadScheduler>().GetThreadPointerFromList(static_cast<List *>(aList->mNext));
 
-        if (listEntry->GetPriority() > myPrio)
+        if (listEntry->mPriority > myPrio)
         {
             break;
         }
-        aList = aList->GetNext();
+        aList = static_cast<List *>(aList->mNext);
     }
 
-    newNode->SetNext(aList->GetNext());
-    aList->SetNext(newNode);
+    newNode->mNext = aList->mNext;
+    aList->mNext = newNode;
 }
 
 uintptr_t Thread::MeasureStackFree(char *aStack)
@@ -186,11 +187,11 @@ int ThreadScheduler::Run(void)
     Thread *activeThread = static_cast<Thread *>(GetSchedActiveThread());
 
     int nextrq = bitarithmLsb(mRunqueueBitCache);
-    Thread *nextThread = GetThreadPointerFromList((mSchedRunqueues[nextrq].GetNext())->GetNext());
+    Thread *nextThread = GetThreadPointerFromList(static_cast<List *>((mSchedRunqueues[nextrq].mNext)->mNext));
 
     DEBUG("ThreadScheduler::Run() active thread: %" PRIkernel_pid ", next thread: %" PRIkernel_pid ".\r\n",
-          (vcKernelPid)((activeThread == NULL) ? KERNEL_PID_UNDEF : activeThread->GetPid()),
-          nextThread->GetPid());
+          (vcKernelPid)((activeThread == NULL) ? KERNEL_PID_UNDEF : activeThread->mPid),
+          nextThread->mPid);
 
     if (activeThread == nextThread)
     {
@@ -200,15 +201,15 @@ int ThreadScheduler::Run(void)
 
     if (activeThread)
     {
-        if (activeThread->GetStatus() == THREAD_STATUS_RUNNING)
+        if (activeThread->mStatus == THREAD_STATUS_RUNNING)
         {
-            activeThread->SetStatus(THREAD_STATUS_PENDING);
+            activeThread->mStatus = THREAD_STATUS_PENDING;
         }
     }
 
-    nextThread->SetStatus(THREAD_STATUS_RUNNING);
+    nextThread->mStatus = THREAD_STATUS_RUNNING;
 
-    SetSchedActivePid(nextThread->GetPid());
+    SetSchedActivePid(nextThread->mPid);
     SetSchedActiveThread(nextThread);
 
     DEBUG("ThreadScheduler::Run() done, changed mSchedActiveThread.\r\n");
@@ -216,47 +217,47 @@ int ThreadScheduler::Run(void)
     return 1;
 }
 
-void ThreadScheduler::SetStatus(Thread *aThread, ThreadStatus aStatus)
+void ThreadScheduler::SetStatus(Thread *aThread, vcThreadStatus aStatus)
 {
     if (aStatus >= THREAD_STATUS_ON_RUNQUEUE)
     {
-        if (!(aThread->GetStatus() >= THREAD_STATUS_ON_RUNQUEUE))
+        if (!(aThread->mStatus >= THREAD_STATUS_ON_RUNQUEUE))
         {
             DEBUG("ThreadScheduler::SetStatus() adding thread %" PRIkernel_pid " to runqueue %u.\r\n",
-                  aThread->GetPid(), aThread->GetPriority());
+                  aThread->mPid, aThread->mPriority);
 
-            mSchedRunqueues[aThread->GetPriority()].RightPush(&(aThread->mRqEntry));
+            mSchedRunqueues[aThread->mPriority].RightPush(static_cast<Clist *>(&(aThread->mRqEntry)));
 
-            mRunqueueBitCache |= 1 << aThread->GetPriority();
+            mRunqueueBitCache |= 1 << aThread->mPriority;
         }
     }
     else
     {
-        if (aThread->GetStatus() >= THREAD_STATUS_ON_RUNQUEUE)
+        if (aThread->mStatus >= THREAD_STATUS_ON_RUNQUEUE)
         {
             DEBUG("ThreadScheduler::SetStatus() removing thread %" PRIkernel_pid " from runqueue %u.\r\n",
-                  aThread->GetPid(), aThread->GetPriority());
+                  aThread->mPid, aThread->mPriority);
 
-            mSchedRunqueues[aThread->GetPriority()].LeftPop();
+            mSchedRunqueues[aThread->mPriority].LeftPop();
 
-            if (!mSchedRunqueues[aThread->GetPriority()].GetNext())
+            if (!mSchedRunqueues[aThread->mPriority].mNext)
             {
-                mRunqueueBitCache &= ~(1 << aThread->GetPriority());
+                mRunqueueBitCache &= ~(1 << aThread->mPriority);
             }
         }
     }
 
-    aThread->SetStatus(aStatus);
+    aThread->mStatus = aStatus;
 }
 
 void ThreadScheduler::Switch(uint16_t aOtherPrio)
 {
     Thread *activeThread = GetSchedActiveThread();
-    uint16_t currentPrio = activeThread->GetPriority();
-    int onRunqueue = (activeThread->GetStatus() >= THREAD_STATUS_ON_RUNQUEUE);
+    uint16_t currentPrio = activeThread->mPriority;
+    int onRunqueue = (activeThread->mStatus >= THREAD_STATUS_ON_RUNQUEUE);
 
     DEBUG("ThreadScheduler::Switch() active pid=%" PRIkernel_pid" prio=%" PRIu16 " on_runqueue=%i "
-          ", other_prio=%" PRIu16 ".\r\n", activeThread->GetPid(), currentPrio, onRunqueue, aOtherPrio);
+          ", other_prio=%" PRIu16 ".\r\n", activeThread->mPid, currentPrio, onRunqueue, aOtherPrio);
 
     if (!onRunqueue || (currentPrio > aOtherPrio))
     {
@@ -282,7 +283,7 @@ void ThreadScheduler::Switch(uint16_t aOtherPrio)
 void ThreadScheduler::TaskExit(void)
 {
     DEBUG("ThreadScheduler::TaskExit() ending thread %" PRIkernel_pid "...\r\n",
-          GetSchedActiveThread()->GetPid());
+          GetSchedActiveThread()->mPid);
 
     (void) irqDisable();
 
@@ -319,7 +320,7 @@ int ThreadScheduler::GetStatus(vcKernelPid aPid)
 const char *ThreadScheduler::GetName(vcKernelPid aPid)
 {
     Thread *t = GetThread(aPid);
-    return t ? t->GetName() : NULL;
+    return t ? t->mName : NULL;
 }
 
 void ThreadScheduler::Sleep(void)
@@ -350,7 +351,7 @@ int ThreadScheduler::Wakeup(vcKernelPid aPid)
     {
         DEBUG("ThreadScheduler::Wakeup() thread does not exist!\r\n");
     }
-    else if (otherThread->GetStatus() == THREAD_STATUS_SLEEPING)
+    else if (otherThread->mStatus == THREAD_STATUS_SLEEPING)
     {
         DEBUG("ThreadScheduler::Wakeup() thread is sleeping.\r\n");
 
@@ -358,7 +359,7 @@ int ThreadScheduler::Wakeup(vcKernelPid aPid)
 
         irqRestore(state);
 
-        Switch(otherThread->GetPriority());
+        Switch(otherThread->mPriority);
 
         return 1;
     }
@@ -378,7 +379,7 @@ void ThreadScheduler::Yield(void)
 
     Thread *me = GetSchedActiveThread();
 
-    if (me->GetStatus() >= THREAD_STATUS_ON_RUNQUEUE)
+    if (me->mStatus >= THREAD_STATUS_ON_RUNQUEUE)
     {
         mSchedRunqueues[me->mPriority].LeftPopRightPush();
     }
@@ -390,7 +391,7 @@ void ThreadScheduler::Yield(void)
 
 Thread *ThreadScheduler::GetThreadPointerFromList(List *aList)
 {
-    return container_of(static_cast<ClistNode *>(aList), Thread, mRqEntry);
+    return container_of(static_cast<Clist *>(aList), Thread, mRqEntry);
 }
 
 } // namespace vc

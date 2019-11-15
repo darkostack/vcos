@@ -18,7 +18,7 @@ void vcMsgActiveThreadQueuePrint(void)
 
     unsigned int i = msgQueue->GetReadCount() & msgQueue->GetMask();
 
-    printf("Message queue of thread %" PRIkernel_pid "\r\n", thread->GetPid());
+    printf("Message queue of thread %" PRIkernel_pid "\r\n", thread->mPid);
     printf("    size: %u (avail: %d)\r\n", msgQueue->GetMask() + 1, msgQueue->Avail());
 
     for (; i != (msgQueue->GetWriteCount() & msgQueue->GetMask());

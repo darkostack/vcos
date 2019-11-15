@@ -19,10 +19,10 @@ int Mutex::SetLock(int aBlocking)
     DEBUG("Mutex::SetLock() PID(%" PRIkernel_pid "): mutex in use.\r\n",
           Get<ThreadScheduler>().GetSchedActivePid());
 
-    if (mQueue.GetNext() == NULL)
+    if (mQueue.mNext == NULL)
     {
         /* mutex is unlocked */
-        mQueue.SetNext(MUTEX_LOCKED);
+        mQueue.mNext = MUTEX_LOCKED;
 
         DEBUG("Mutex::SetLock() PID(%" PRIkernel_pid "): mutex wait early out.\r\n",
               Get<ThreadScheduler>().GetSchedActivePid());
@@ -36,14 +36,14 @@ int Mutex::SetLock(int aBlocking)
         Thread *me = Get<ThreadScheduler>().GetSchedActiveThread();
 
         DEBUG("Mutex::SetLock() PID(%" PRIkernel_pid "): adding node to mutex queue prio: %" PRIu32 "\r\n",
-              Get<ThreadScheduler>().GetSchedActivePid(), (uint32_t)me->GetPriority());
+              Get<ThreadScheduler>().GetSchedActivePid(), (uint32_t)me->mPriority);
 
         Get<ThreadScheduler>().SetStatus(me, THREAD_STATUS_MUTEX_BLOCKED);
 
-        if (mQueue.GetNext() == MUTEX_LOCKED)
+        if (mQueue.mNext == MUTEX_LOCKED)
         {
-            mQueue.SetNext((List *)&me->GetRqEntry());
-            (mQueue.GetNext())->SetNext(NULL);
+            mQueue.mNext = static_cast<List *>(&me->GetRqEntry());
+            mQueue.mNext->mNext = NULL;
         }
         else
         {
@@ -70,19 +70,19 @@ void Mutex::Unlock(void)
 {
     unsigned state = irqDisable();
 
-    DEBUG("Mutex::Unlock() mQueue.GetNext(): %p pid: %" PRIkernel_pid "\r\n",
-          (void *)mQueue.GetNext(), Get<ThreadScheduler>().GetSchedActivePid());
+    DEBUG("Mutex::Unlock() mQueue.mNext: %p pid: %" PRIkernel_pid "\r\n",
+          (void *)mQueue.mNext, Get<ThreadScheduler>().GetSchedActivePid());
 
-    if (mQueue.GetNext() == NULL)
+    if (mQueue.mNext == NULL)
     {
         /* the mutex was not locked */
         irqRestore(state);
         return;
     }
 
-    if (mQueue.GetNext() == MUTEX_LOCKED)
+    if (mQueue.mNext == MUTEX_LOCKED)
     {
-        mQueue.SetNext(NULL);
+        mQueue.mNext = NULL;
         /* the mutex was locked and no thread was waiting for it */
         irqRestore(state);
         return;
@@ -93,32 +93,34 @@ void Mutex::Unlock(void)
     Thread *process = Get<ThreadScheduler>().GetThreadPointerFromList(next);
 
     DEBUG("Mutex::Unlock() waking up waiting thread %" PRIkernel_pid "\r\n",
-          process->GetPid());
+          process->mPid);
 
     Get<ThreadScheduler>().SetStatus(process, THREAD_STATUS_PENDING);
 
-    if (!mQueue.GetNext())
+    if (!mQueue.mNext)
     {
-        mQueue.SetNext(MUTEX_LOCKED);
+        mQueue.mNext = MUTEX_LOCKED;
     }
 
-    uint16_t processPrio = process->GetPriority();
+    uint16_t processPrio = process->mPriority;
+
     irqRestore(state);
+
     Get<ThreadScheduler>().Switch(processPrio);
 }
 
 void Mutex::UnlockAndSleep(void)
 {
-    DEBUG("Mutex::UnlockAndSleep() PID(%" PRIkernel_pid "): unlocking mutex. mQueue.GetNext(): %p, and "
-          "taking a nap\r\n", Get<ThreadScheduler>().GetSchedActivePid(), (void *)mQueue.GetNext());
+    DEBUG("Mutex::UnlockAndSleep() PID(%" PRIkernel_pid "): unlocking mutex. mQueue.mNext: %p, and "
+          "taking a nap\r\n", Get<ThreadScheduler>().GetSchedActivePid(), (void *)mQueue.mNext);
 
     unsigned state = irqDisable();
 
-    if (mQueue.GetNext())
+    if (mQueue.mNext)
     {
-        if (mQueue.GetNext() == MUTEX_LOCKED)
+        if (mQueue.mNext == MUTEX_LOCKED)
         {
-            mQueue.SetNext(NULL);
+            mQueue.mNext = NULL;
         }
         else
         {
@@ -126,13 +128,13 @@ void Mutex::UnlockAndSleep(void)
 
             Thread *process = Get<ThreadScheduler>().GetThreadPointerFromList(next);
 
-            DEBUG("Mutex::UnlockAndSleep() PID(%" PRIkernel_pid "): waking up waiter.\r\n", process->GetPid());
+            DEBUG("Mutex::UnlockAndSleep() PID(%" PRIkernel_pid "): waking up waiter.\r\n", process->mPid);
 
             Get<ThreadScheduler>().SetStatus(process, THREAD_STATUS_PENDING);
 
-            if (!mQueue.GetNext())
+            if (!mQueue.mNext)
             {
-                mQueue.SetNext(MUTEX_LOCKED);
+                mQueue.mNext = MUTEX_LOCKED;
             }
         }
     }
