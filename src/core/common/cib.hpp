@@ -4,20 +4,19 @@
 #include <stdint.h>
 #include <assert.h>
 
+#include <vcos/types.h>
+
 namespace vc {
 
 /**
  * Circular integer buffer class.
  */
-class Cib
+class Cib : public vcCib
 {
 public:
     Cib(unsigned int aSize)
-        : mReadCount(0)
-        , mWriteCount(0)
-        , mMask(aSize - 1)
     {
-        assert(!(aSize & (aSize - 1)));
+        Init(aSize);
     }
 
     void Init(unsigned int aSize)
@@ -71,11 +70,6 @@ public:
     unsigned int GetWriteCount(void) { return mWriteCount; }
 
     unsigned int GetMask(void) { return mMask; }
-
-private:
-    unsigned int mReadCount;
-    unsigned int mWriteCount;
-    unsigned int mMask;
 };
 
 } // namespace vc

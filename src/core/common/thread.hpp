@@ -7,9 +7,6 @@
 
 #include "vcos-core-config.h"
 
-#include "kernel_defines.h"
-#include "kernel_types.h"
-
 #include "common/clist.hpp"
 #include "common/cib.hpp"
 #include "common/locator.hpp"
@@ -76,13 +73,13 @@ public:
 
     void SetStackStart(char *aStackStart) { mStackStart = aStackStart; };
 
-    void AddToList(ListNode *aList);
+    void AddToList(List *aList);
 
     uintptr_t MeasureStackFree(char *aStack);
 
-    KernelPid GetPid(void) { return mPid; }
+    vcKernelPid GetPid(void) { return mPid; }
 
-    void SetPid(KernelPid aPid) { mPid = aPid; }
+    void SetPid(vcKernelPid aPid) { mPid = aPid; }
 
     const char *GetName(void) { return mName; }
 
@@ -104,9 +101,9 @@ public:
 
     void *GetWaitData(void) { return mWaitData; }
 
-    ListNode &GetMsgWaiters(void) { return mMsgWaiters; }
+    List &GetMsgWaiters(void) { return mMsgWaiters; }
 
-    ListNode *GetMsgWaitersNext(void) { return mMsgWaiters.GetNext(); }
+    List *GetMsgWaitersNext(void) { return mMsgWaiters.GetNext(); }
 
     Msg &GetMsgArray(uint16_t aIndex) { return mMsgArray[aIndex]; }
 
@@ -118,10 +115,10 @@ private:
     char *mSp;
     ThreadStatus mStatus;
     uint8_t mPriority;
-    KernelPid mPid;
+    vcKernelPid mPid;
     ClistNode mRqEntry;
     void *mWaitData;
-    ListNode mMsgWaiters;
+    List mMsgWaiters;
     Cib mMsgQueue;
     Msg *mMsgArray;
     char *mStackStart;
@@ -150,9 +147,9 @@ public:
 
     void TaskExit(void);
 
-    Thread *GetSchedThreads(KernelPid aPid) { return mSchedThreads[aPid]; }
+    Thread *GetSchedThreads(vcKernelPid aPid) { return mSchedThreads[aPid]; }
 
-    void SetSchedThreads(Thread *aThread, KernelPid aPid) { mSchedThreads[aPid] = aThread; }
+    void SetSchedThreads(Thread *aThread, vcKernelPid aPid) { mSchedThreads[aPid] = aThread; }
 
     unsigned int GetContextSwitchRequest(void) { return mSchedContextSwitchRequest; }
 
@@ -164,34 +161,34 @@ public:
 
     void SetSchedActiveThread(Thread *aThread);
 
-    KernelPid GetSchedActivePid(void) { return mSchedActivePid; }
+    vcKernelPid GetSchedActivePid(void) { return mSchedActivePid; }
 
-    void SetSchedActivePid(KernelPid aPid) { mSchedActivePid = aPid; }
+    void SetSchedActivePid(vcKernelPid aPid) { mSchedActivePid = aPid; }
 
     void SchedNumThreadsAddOne(void) { mSchedNumThreads++; }
 
     void SchedNumThreadsRemoveOne(void) { mSchedNumThreads--; }
 
-    Thread *GetThread(KernelPid aPid);
+    Thread *GetThread(vcKernelPid aPid);
 
-    int GetStatus(KernelPid aPid);
+    int GetStatus(vcKernelPid aPid);
 
-    const char *GetName(KernelPid aPid);
+    const char *GetName(vcKernelPid aPid);
 
     void Sleep(void);
 
-    int Wakeup(KernelPid aPid);
+    int Wakeup(vcKernelPid aPid);
 
     void Yield(void);
 
-    Thread *GetThreadPointerFromList(ListNode *aList);
+    Thread *GetThreadPointerFromList(List *aList);
 
 private:
     int mSchedNumThreads;
     unsigned int mSchedContextSwitchRequest;
     Thread *mSchedThreads[KERNEL_PID_LAST + 1];
     Thread *mSchedActiveThread;
-    KernelPid mSchedActivePid;
+    vcKernelPid mSchedActivePid;
     ClistNode mSchedRunqueues[VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS];
     uint32_t mRunqueueBitCache;
 };

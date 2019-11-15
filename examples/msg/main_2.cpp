@@ -18,12 +18,12 @@ extern "C" void *testThreadFunc(void *aArg)
     Msg msg(instance);
     Msg reply(instance);
 
-    msg.SetType(0x20);
-    msg.SetContentPtr(NULL);
+    msg.mType = 0x20;
+    msg.mContent.mPtr = NULL;
 
     msg.SendReceive(&reply, 1);
 
-    if (reply.GetType() == 0x21 && reply.GetContentPtr() == NULL)
+    if (reply.mType == 0x21 && reply.mContent.mPtr == NULL)
     {
         printf("testThreadFunc(): got reply message\r\n");
     }
@@ -55,11 +55,11 @@ int mainApp(void *aArg)
     {
         if (msg.Receive())
         {
-            if (msg.GetType() == 0x20 && msg.GetContentPtr() == NULL)
+            if (msg.mType == 0x20 && msg.mContent.mPtr == NULL)
             {
-                printf("mainApp(): got message from %" PRIkernel_pid "\r\n", msg.GetSenderPid());
-                reply.SetType(0x21);
-                reply.SetContentPtr(NULL);
+                printf("mainApp(): got message from %" PRIkernel_pid "\r\n", msg.mSenderPid);
+                reply.mType = 0x21;
+                reply.mContent.mPtr = NULL;
                 msg.Reply(&reply);
                 break;
             }

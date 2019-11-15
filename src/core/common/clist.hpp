@@ -7,7 +7,7 @@
 
 namespace vc {
 
-class ClistNode : public ListNode
+class ClistNode : public List
 {
 public:
     void RightPush(ClistNode *aNode)
@@ -89,7 +89,7 @@ public:
     {
         if (this->mNext)
         {
-            ListNode *last = this->mNext;
+            List *last = static_cast<List *>(this->mNext);
 
             while (this->mNext->mNext != last)
             {

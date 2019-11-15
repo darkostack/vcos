@@ -42,7 +42,7 @@ int Mutex::SetLock(int aBlocking)
 
         if (mQueue.GetNext() == MUTEX_LOCKED)
         {
-            mQueue.SetNext((ListNode *)&me->GetRqEntry());
+            mQueue.SetNext((List *)&me->GetRqEntry());
             (mQueue.GetNext())->SetNext(NULL);
         }
         else
@@ -88,7 +88,7 @@ void Mutex::Unlock(void)
         return;
     }
 
-    ListNode *next = mQueue.RemoveHead();
+    List *next = mQueue.RemoveHead();
 
     Thread *process = Get<ThreadScheduler>().GetThreadPointerFromList(next);
 
@@ -122,7 +122,7 @@ void Mutex::UnlockAndSleep(void)
         }
         else
         {
-            ListNode *next = mQueue.RemoveHead();
+            List *next = mQueue.RemoveHead();
 
             Thread *process = Get<ThreadScheduler>().GetThreadPointerFromList(next);
 

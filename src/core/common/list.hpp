@@ -1,24 +1,26 @@
 #ifndef LIST_HPP
 #define LIST_HPP
 
+#include <vcos/types.h>
+
 namespace vc {
 
 class ClistNode;
 
-class ListNode
+class List : public vcListNode
 {
     friend class ClistNode;
 
 public:
-    void Add(ListNode *aNode)
+    void Add(List *aNode)
     {
         aNode->mNext = this->mNext;
         this->mNext = aNode;
     }
 
-    ListNode *RemoveHead(void)
+    List *RemoveHead(void)
     {
-        ListNode *head = this->mNext;
+        List *head = static_cast<List *>(this->mNext);
 
         if (head)
         {
@@ -27,7 +29,7 @@ public:
         return head;
     }
 
-    static ListNode *Remove(ListNode *aList, ListNode *aNode)
+    static List *Remove(List *aList, List *aNode)
     {
         while (aList->mNext)
         {
@@ -36,17 +38,14 @@ public:
                 aList->mNext = aNode->mNext;
                 return aNode;
             }
-            aList = aList->mNext;
+            aList = static_cast<List *>(aList->mNext);
         }
-        return aList->mNext;
+        return static_cast<List *>(aList->mNext);
     }
 
-    ListNode *GetNext(void) { return mNext; }
+    List *GetNext(void) { return static_cast<List *>(mNext); }
 
-    void SetNext(ListNode *aNext) { mNext = aNext; }
-
-private:
-    ListNode *mNext;
+    void SetNext(List *aNext) { mNext = static_cast<vcListNode *>(aNext); }
 };
 
 } // namespace vc

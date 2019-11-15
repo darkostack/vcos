@@ -81,9 +81,9 @@ Thread::Thread(Instance &aInstance,
 
     unsigned state = irqDisable();
 
-    KernelPid pid = KERNEL_PID_UNDEF;
+    vcKernelPid pid = KERNEL_PID_UNDEF;
 
-    for (KernelPid i = KERNEL_PID_FIRST; i <= KERNEL_PID_LAST; ++i)
+    for (vcKernelPid i = KERNEL_PID_FIRST; i <= KERNEL_PID_LAST; ++i)
     {
         if (Get<ThreadScheduler>().GetSchedThreads(i) == NULL)
         {
@@ -140,12 +140,12 @@ Thread::Thread(Instance &aInstance,
     return;
 }
 
-void Thread::AddToList(ListNode *aList)
+void Thread::AddToList(List *aList)
 {
     assert(GetStatus() < THREAD_STATUS_ON_RUNQUEUE);
 
     uint16_t myPrio = GetPriority();
-    ListNode *newNode = reinterpret_cast<ListNode *>(&mRqEntry);
+    List *newNode = static_cast<List *>(&mRqEntry);
 
     while (aList->GetNext())
     {
@@ -189,7 +189,7 @@ int ThreadScheduler::Run(void)
     Thread *nextThread = GetThreadPointerFromList((mSchedRunqueues[nextrq].GetNext())->GetNext());
 
     DEBUG("ThreadScheduler::Run() active thread: %" PRIkernel_pid ", next thread: %" PRIkernel_pid ".\r\n",
-          (KernelPid)((activeThread == NULL) ? KERNEL_PID_UNDEF : activeThread->GetPid()),
+          (vcKernelPid)((activeThread == NULL) ? KERNEL_PID_UNDEF : activeThread->GetPid()),
           nextThread->GetPid());
 
     if (activeThread == nextThread)
@@ -301,22 +301,22 @@ void ThreadScheduler::SetSchedActiveThread(Thread *aThread)
     gSchedActiveThread = mSchedActiveThread;
 }
 
-Thread *ThreadScheduler::GetThread(KernelPid aPid)
+Thread *ThreadScheduler::GetThread(vcKernelPid aPid)
 {
-    if (pidIsValid(aPid))
+    if (vcPidIsValid(aPid))
     {
         return GetSchedThreads(aPid);
     }
     return NULL;
 }
 
-int ThreadScheduler::GetStatus(KernelPid aPid)
+int ThreadScheduler::GetStatus(vcKernelPid aPid)
 {
     Thread *t = GetThread(aPid);
     return t ? static_cast<int>(t->mStatus) : static_cast<int>(THREAD_STATUS_NOT_FOUND);
 }
 
-const char *ThreadScheduler::GetName(KernelPid aPid)
+const char *ThreadScheduler::GetName(vcKernelPid aPid)
 {
     Thread *t = GetThread(aPid);
     return t ? t->GetName() : NULL;
@@ -338,7 +338,7 @@ void ThreadScheduler::Sleep(void)
     vcThreadYieldHigher();
 }
 
-int ThreadScheduler::Wakeup(KernelPid aPid)
+int ThreadScheduler::Wakeup(vcKernelPid aPid)
 {
     DEBUG("ThreadScheduler::Wakeup() trying to wakeup PID %" PRIkernel_pid "...\r\n", aPid);
 
@@ -388,9 +388,9 @@ void ThreadScheduler::Yield(void)
     vcThreadYieldHigher();
 }
 
-Thread *ThreadScheduler::GetThreadPointerFromList(ListNode *aList)
+Thread *ThreadScheduler::GetThreadPointerFromList(List *aList)
 {
-    return container_of(reinterpret_cast<ClistNode *>(aList), Thread, mRqEntry);
+    return container_of(static_cast<ClistNode *>(aList), Thread, mRqEntry);
 }
 
 } // namespace vc

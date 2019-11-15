@@ -4,11 +4,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include <vcos/types.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef struct vcInstance vcInstance;
 
 vcInstance *vcInstanceGet(void);
 

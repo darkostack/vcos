@@ -8,11 +8,11 @@
 #include "common/locator.hpp"
 #include "common/thread.hpp"
 
-#define MUTEX_LOCKED ((ListNode *)-1)
+#define MUTEX_LOCKED ((List *)-1)
 
 namespace vc {
 
-class Mutex : public InstanceLocator, public ListNode
+class Mutex : public InstanceLocator, public List
 {
 public:
     Mutex(Instance &aInstance)
@@ -32,7 +32,7 @@ public:
 private:
     int SetLock(int aBlocking);
 
-    ListNode mQueue;
+    List mQueue;
 };
 
 } // namespace vc

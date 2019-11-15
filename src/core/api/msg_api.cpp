@@ -25,8 +25,8 @@ void vcMsgActiveThreadQueuePrint(void)
          i = (i + 1) & msgQueue->GetMask()) {
         Msg *m = &msgArray[i];
         printf("    * %u: sender: %" PRIkernel_pid ", type: 0x%04" PRIu16
-               ", content: %" PRIu32 " (%p)\r\n", i, m->GetSenderPid(), m->GetType(),
-               m->GetContentValue(), m->GetContentPtr());
+               ", content: %" PRIu32 " (%p)\r\n", i, m->mSenderPid, m->mType,
+               m->mContent.mValue, m->mContent.mPtr);
     }
 
     irqRestore(state);

@@ -17,15 +17,15 @@ extern "C" void *testThreadFunc(void *aArg)
 
     Msg msg(instance);
 
-    msg.SetType(0x20);
-    msg.SetContentPtr(NULL);
+    msg.mType = 0x20;
+    msg.mContent.mPtr = NULL;
 
     assert(msg.Send(1));
 
     while (1) {
         if (msg.Receive()) {
-            if (msg.GetType() == 0x21 && msg.GetContentPtr() == NULL) {
-                printf("testThreadFunc(): get an acked from %" PRIkernel_pid "\r\n", msg.GetSenderPid());
+            if (msg.mType == 0x21 && msg.mContent.mPtr == NULL) {
+                printf("testThreadFunc(): get an acked from %" PRIkernel_pid "\r\n", msg.mSenderPid);
             }
         }
     }
@@ -48,11 +48,11 @@ int mainApp(void *aArg)
 
     while (1) {
         if (msg.Receive()) {
-            if (msg.GetType() == 0x20 && msg.GetContentPtr() == NULL) {
-                printf("mainApp(): got message from %" PRIkernel_pid "\r\n", msg.GetSenderPid());
-                msg.SetType(0x21);
-                msg.SetContentPtr(NULL);
-                assert(msg.Send(msg.GetSenderPid()));
+            if (msg.mType == 0x20 && msg.mContent.mPtr == NULL) {
+                printf("mainApp(): got message from %" PRIkernel_pid "\r\n", msg.mSenderPid);
+                msg.mType = 0x21;
+                msg.mContent.mPtr = NULL;
+                assert(msg.Send(msg.mSenderPid));
                 break;
             }
         }

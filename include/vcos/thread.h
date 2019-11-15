@@ -1,11 +1,11 @@
 #ifndef VCOS_THREAD_H
 #define VCOS_THREAD_H
 
+#include <vcos/types.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef void *(*vcThreadHandlerFunc)(void *aArg);
 
 char *vcThreadStackInit(vcThreadHandlerFunc aFunction,
                         void *aArg,
@@ -25,6 +25,11 @@ int vcThreadIsrStackUsage(void);
 void *vcThreadIsrStackPointer(void);
 
 void vcSchedRun(void);
+
+static inline int vcPidIsValid(vcKernelPid aPid)
+{
+    return ((KERNEL_PID_FIRST <= aPid) && (aPid <= KERNEL_PID_LAST));
+}
 
 #ifdef __cplusplus
 }
