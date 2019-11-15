@@ -21,7 +21,8 @@ unsigned bitarithmBitsSet(unsigned v)
 {
     unsigned c; /* c accumulates the total bits set in v */
 
-    for (c = 0; v; c++) {
+    for (c = 0; v; c++)
+    {
         v &= v - 1; /* clear the least significant bit set */
     }
 

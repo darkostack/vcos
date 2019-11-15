@@ -21,17 +21,23 @@ int Isrpipe::WriteOne(char aChar)
 int Isrpipe::Read(char *aBuf, size_t aCount)
 {
     int res;
-    while (!(res = GetTsrb().Get(aBuf, aCount))) {
+
+    while (!(res = GetTsrb().Get(aBuf, aCount)))
+    {
         GetMutex().Lock();
     }
+
     return res;
 }
 
 int Tsrb::GetOne(void)
 {
-    if (!IsEmpty()) {
+    if (!IsEmpty())
+    {
         return Pop();
-    } else {
+    }
+    else
+    {
         return -1;
     }
 }
@@ -39,29 +45,38 @@ int Tsrb::GetOne(void)
 int Tsrb::Get(char *aBuf, size_t aCount)
 {
     size_t tmp = aCount;
-    while (tmp && !IsEmpty()) {
+
+    while (tmp && !IsEmpty())
+    {
         *aBuf++ = Pop();
         tmp--;
     }
+
     return (aCount - tmp);
 }
 
 int Tsrb::Drop(size_t aCount)
 {
     size_t tmp = aCount;
-    while (tmp && !IsEmpty()) {
+
+    while (tmp && !IsEmpty())
+    {
         Pop();
         tmp--;
     }
+
     return (aCount - tmp);
 }
 
 int Tsrb::AddOne(char aChar)
 {
-    if (!IsFull()) {
+    if (!IsFull())
+    {
         Push(aChar);
         return 0;
-    } else {
+    }
+    else
+    {
         return -1;
     }
 }
@@ -69,10 +84,13 @@ int Tsrb::AddOne(char aChar)
 int Tsrb::Add(const char *aBuf, size_t aSize)
 {
     size_t tmp = aSize;
-    while (tmp && !IsFull()) {
+
+    while (tmp && !IsFull())
+    {
         Push(*aBuf++);
         tmp--;
     }
+
     return (aSize - tmp);
 }
 

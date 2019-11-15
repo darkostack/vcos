@@ -12,13 +12,13 @@
 
 namespace vc {
 
-class Mutex : public InstanceLocator, public List
+class Mutex : public InstanceLocator, public ListNode
 {
 public:
     Mutex(Instance &aInstance)
         : InstanceLocator(aInstance)
     {
-        mQueue.mNext = NULL;
+        mQueue.SetNext(NULL);
     }
 
     int TryLock(void) { return SetLock(0); }

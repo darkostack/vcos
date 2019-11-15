@@ -3,34 +3,36 @@
 
 namespace vc {
 
+class ClistNode;
+
 class ListNode
 {
-public:
-    ListNode *mNext;
-};
+    friend class ClistNode;
 
-class List : public ListNode
-{
 public:
-    void Add(ListNode *aList, ListNode *aNode)
+    void Add(ListNode *aNode)
     {
-        aNode->mNext = aList->mNext;
-        aList->mNext = aNode;
+        aNode->mNext = this->mNext;
+        this->mNext = aNode;
     }
 
-    ListNode *RemoveHead(ListNode *aList)
+    ListNode *RemoveHead(void)
     {
-        ListNode *head = aList->mNext;
-        if (head) {
-            aList->mNext = head->mNext;
+        ListNode *head = this->mNext;
+
+        if (head)
+        {
+            this->mNext = head->mNext;
         }
         return head;
     }
 
-    ListNode *Remove(ListNode *aList, ListNode *aNode)
+    static ListNode *Remove(ListNode *aList, ListNode *aNode)
     {
-        while (aList->mNext) {
-            if (aList->mNext == aNode) {
+        while (aList->mNext)
+        {
+            if (aList->mNext == aNode)
+            {
                 aList->mNext = aNode->mNext;
                 return aNode;
             }
@@ -38,6 +40,13 @@ public:
         }
         return aList->mNext;
     }
+
+    ListNode *GetNext(void) { return mNext; }
+
+    void SetNext(ListNode *aNext) { mNext = aNext; }
+
+private:
+    ListNode *mNext;
 };
 
 } // namespace vc

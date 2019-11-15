@@ -16,13 +16,19 @@ namespace vc {
 
 class Thread;
 
-class Msg : public InstanceLocator, public List
+class Msg : public InstanceLocator, public ListNode
 {
 public:
     Msg(Instance &aInstance)
         : InstanceLocator(aInstance)
     {
     }
+
+    int Send(KernelPid aTargetPid, bool aBlock, unsigned aState);
+
+    int Receive(int aBlock);
+
+    int QueueMsg(Thread *aTarget);
 
     int Send(KernelPid aTargetPid);
 
@@ -65,12 +71,6 @@ public:
     void SetContentValue(uint32_t aValue) { mContent.mValue = aValue; }
 
 private:
-    int Send(Msg *aMsg, KernelPid aTargetPid, bool aBlock, unsigned aState);
-
-    int Receive(Msg *aMsg, int aBlock);
-
-    int QueueMsg(Thread *aTarget, const Msg *aMsg);
-
     KernelPid mSenderPid;
     uint16_t mType;
     union {

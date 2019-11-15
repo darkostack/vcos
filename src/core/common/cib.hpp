@@ -32,7 +32,8 @@ public:
 
     int Get(void)
     {
-        if (Avail()) {
+        if (Avail())
+        {
             return static_cast<int>(mReadCount++ & mMask);
         }
         return -1;
@@ -40,7 +41,8 @@ public:
 
     int Peek(void)
     {
-        if (Avail()) {
+        if (Avail())
+        {
             return static_cast<int>(mReadCount & mMask);
         }
         return -1;
@@ -51,9 +53,12 @@ public:
     int Put(void)
     {
         int avail = Avail();
-        if (avail <= static_cast<int>(mMask)) {
+
+        if (avail <= static_cast<int>(mMask))
+        {
             return static_cast<int>(mWriteCount++ & mMask);
         }
+
         return -1;
     }
 

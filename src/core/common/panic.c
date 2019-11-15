@@ -17,9 +17,12 @@ void __attribute__((weak)) vcPanicArch(void) {}
 /* WARNING: this function NEVER returns! */
 __attribute__((noreturn)) void vcCorePanic(vcPanicType aType, const char *aMessage)
 {
-    if (crashed == 0) {
+    if (crashed == 0)
+    {
         crashed = 1;
-        if (aType == PANIC_ASSERT_FAIL) {
+
+        if (aType == PANIC_ASSERT_FAIL)
+        {
             cpuPrintLastInstruction();
         }
 
@@ -28,6 +31,7 @@ __attribute__((noreturn)) void vcCorePanic(vcPanicType aType, const char *aMessa
     }
 
     irqDisable();
+
     vcPanicArch();
 
     while (1);

@@ -9,138 +9,180 @@ namespace vc {
 
 class ClistNode : public ListNode
 {
-};
-
-class Clist : public ClistNode
-{
 public:
-    void RightPush(ClistNode *aList, ClistNode *aNode)
+    void RightPush(ClistNode *aNode)
     {
-        if (aList->mNext) {
-            aNode->mNext = aList->mNext->mNext;
-            aList->mNext->mNext = aNode;
-        } else {
+        if (this->mNext)
+        {
+            aNode->mNext = this->mNext->mNext;
+            this->mNext->mNext = aNode;
+        }
+        else
+        {
             aNode->mNext = aNode;
         }
-        aList->mNext = aNode;
+
+        this->mNext = aNode;
     }
 
-    void LeftPush(ClistNode *aList, ClistNode *aNode)
+    void LeftPush(ClistNode *aNode)
     {
-        if (aList->mNext) {
-            aNode->mNext = aList->mNext->mNext;
-            aList->mNext->mNext = aNode;
-        } else {
+        if (this->mNext)
+        {
+            aNode->mNext = this->mNext->mNext;
+            this->mNext->mNext = aNode;
+        }
+        else
+        {
             aNode->mNext = aNode;
-            aList->mNext = aNode;
+            this->mNext = aNode;
         }
     }
 
-    ClistNode *LeftPop(ClistNode *aList)
+    ClistNode *LeftPop(void)
     {
-        if (aList->mNext) {
-            ClistNode *first = static_cast<ClistNode *>(aList->mNext->mNext);
-            if (aList->mNext == first) {
-                aList->mNext = NULL;
-            } else {
-                aList->mNext->mNext = first->mNext;
+        if (this->mNext)
+        {
+            ClistNode *first = static_cast<ClistNode *>(this->mNext->mNext);
+
+            if (this->mNext == first)
+            {
+                this->mNext = NULL;
             }
+            else
+            {
+                this->mNext->mNext = first->mNext;
+            }
+
             return first;
-        } else {
+        }
+        else
+        {
             return NULL;
         }
     }
 
-    void LeftPopRightPush(ClistNode *aList)
+    void LeftPopRightPush(void)
     {
-        if (aList->mNext) {
-            aList->mNext = aList->mNext->mNext;
+        if (this->mNext)
+        {
+            this->mNext = this->mNext->mNext;
         }
     }
 
-    ClistNode *LeftPeek(const ClistNode *aList)
+    ClistNode *LeftPeek(void)
     {
-        if (aList->mNext) {
-            return static_cast<ClistNode *>(aList->mNext->mNext);
+        if (this->mNext)
+        {
+            return static_cast<ClistNode *>(this->mNext->mNext);
         }
+
         return NULL;
     }
 
-    ClistNode *RightPeek(const ClistNode *aList)
+    ClistNode *RightPeek(void)
     {
-        return static_cast<ClistNode *>(aList->mNext);
+        return static_cast<ClistNode *>(this->mNext);
     }
 
-    ClistNode *RightPop(ClistNode *aList)
+    ClistNode *RightPop(void)
     {
-        if (aList->mNext) {
-            ListNode *last = aList->mNext;
-            while (aList->mNext->mNext != last) {
-                LeftPopRightPush(aList);
+        if (this->mNext)
+        {
+            ListNode *last = this->mNext;
+
+            while (this->mNext->mNext != last)
+            {
+                this->LeftPopRightPush();
             }
-            return LeftPop(aList);
-        } else {
+
+            return this->LeftPop();
+        }
+        else
+        {
             return NULL;
         }
     }
 
-    ClistNode *FindBefore(const ClistNode *aList, const ClistNode *aNode)
+    ClistNode *FindBefore(const ClistNode *aNode)
     {
-        ClistNode *pos = static_cast<ClistNode *>(aList->mNext);
+        ClistNode *pos = static_cast<ClistNode *>(this->mNext);
 
-        if (!pos) {
+        if (!pos)
+        {
             return NULL;
         }
 
-        do {
+        do
+        {
             pos = static_cast<ClistNode *>(pos->mNext);
-            if (pos->mNext == aNode) {
+
+            if (pos->mNext == aNode)
+            {
                 return pos;
             }
-        } while (pos != aList->mNext);
+
+        } while (pos != this->mNext);
 
         return NULL;
     }
 
-    ClistNode *Find(const ClistNode *aList, const ClistNode *aNode)
+    ClistNode *Find(const ClistNode *aNode)
     {
-        ClistNode *tmp = FindBefore(aList, aNode);
-        if (tmp) {
+        ClistNode *tmp = this->FindBefore(aNode);
+
+        if (tmp)
+        {
             return static_cast<ClistNode *>(tmp->mNext);
-        } else {
+        }
+        else
+        {
             return NULL;
         }
     }
 
-    ClistNode *Remove(ClistNode *aList, ClistNode *aNode)
+    ClistNode *Remove(ClistNode *aNode)
     {
-        if (aList->mNext) {
-            if (aList->mNext->mNext == aNode) {
-                return LeftPop(aList);
-            } else {
-                ClistNode *tmp = FindBefore(aList, aNode);
-                if (tmp) {
+        if (this->mNext)
+        {
+            if (this->mNext->mNext == aNode)
+            {
+                return this->LeftPop();
+            }
+            else
+            {
+                ClistNode *tmp = this->FindBefore(aNode);
+
+                if (tmp)
+                {
                     tmp->mNext = tmp->mNext->mNext;
-                    if (aNode == aList->mNext) {
-                        aList->mNext = tmp;
+
+                    if (aNode == this->mNext)
+                    {
+                        this->mNext = tmp;
                     }
                     return aNode;
                 }
             }
         }
+
         return NULL;
     }
 
-    size_t Count(ClistNode *aList)
+    size_t Count(void)
     {
-        ClistNode *node = static_cast<ClistNode *>(aList->mNext);
+        ClistNode *node = static_cast<ClistNode *>(this->mNext);
         size_t cnt = 0;
-        if (node) {
-            do {
+
+        if (node)
+        {
+            do
+            {
                 node = static_cast<ClistNode *>(node->mNext);
                 ++cnt;
-            } while (node != aList->mNext);
+            } while (node != this->mNext);
         }
+
         return cnt;
     }
 };

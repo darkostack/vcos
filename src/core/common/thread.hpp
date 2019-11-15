@@ -106,7 +106,7 @@ public:
 
     ListNode &GetMsgWaiters(void) { return mMsgWaiters; }
 
-    ListNode *GetMsgWaitersNext(void) { return mMsgWaiters.mNext; }
+    ListNode *GetMsgWaitersNext(void) { return mMsgWaiters.GetNext(); }
 
     Msg &GetMsgArray(uint16_t aIndex) { return mMsgArray[aIndex]; }
 
@@ -129,7 +129,7 @@ private:
     int mStackSize;
 };
 
-class ThreadScheduler : public Clist
+class ThreadScheduler : public ClistNode
 {
 public:
     ThreadScheduler(void)
