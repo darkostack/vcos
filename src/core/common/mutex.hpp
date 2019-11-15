@@ -15,8 +15,7 @@ namespace vc {
 class Mutex : public InstanceLocator, public List
 {
 public:
-    Mutex(Instance &aInstance)
-        : InstanceLocator(aInstance)
+    Mutex(void)
     {
         mQueue.mNext = NULL;
     }

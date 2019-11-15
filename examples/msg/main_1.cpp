@@ -13,9 +13,9 @@ static char gTestStack[VCOS_CONFIG_THREAD_STACKSIZE_MAIN];
 
 extern "C" void *testThreadFunc(void *aArg)
 {
-    Instance &instance = *static_cast<Instance *>(aArg);
+    (void) aArg;
 
-    Msg msg(instance);
+    Msg msg;
 
     msg.mType = 0x20;
     msg.mContent.mPtr = NULL;
@@ -39,12 +39,12 @@ int mainApp(void *aArg)
 
     assert(instance.IsInitialized());
 
-    Thread testThread(instance, gTestStack, sizeof(gTestStack),
+    Thread testThread(gTestStack, sizeof(gTestStack),
                       VCOS_CONFIG_THREAD_PRIORITY_MAIN,
                       THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST,
-                      testThreadFunc, (void *)&instance, "test");
+                      testThreadFunc, NULL, "test");
 
-    Msg msg(instance);
+    Msg msg;
 
     while (1) {
         if (msg.Receive()) {

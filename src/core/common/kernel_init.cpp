@@ -47,12 +47,12 @@ extern "C" void vcKernelInit(void)
 
     printf("\r\n\r\nkernel started (version: 0.0.1)\r\n\r\n");
 
-    Thread mainThread(instance, gMainStack, sizeof(gMainStack),
+    Thread mainThread(gMainStack, sizeof(gMainStack),
                       VCOS_CONFIG_THREAD_PRIORITY_MAIN,
                       THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST,
                       mainThreadFunc, (void *)&instance, "main");
 
-    Thread idleThread(instance, gIdleStack, sizeof(gIdleStack),
+    Thread idleThread(gIdleStack, sizeof(gIdleStack),
                       VCOS_CONFIG_THREAD_PRIORITY_IDLE,
                       THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST,
                       idleThreadFunc, NULL, "idle");

@@ -15,20 +15,18 @@ volatile void *gSchedActiveThread;
 
 namespace vc {
 
-Thread::Thread(Instance &aInstance,
-               char *aStack,
-               int aStackSize,
-               char aPriority,
-               int aFlags,
-               vcThreadHandlerFunc aFunction,
-               void *aArg,
-               const char *aName)
-    : InstanceLocator(aInstance)
+vcKernelPid Thread::Create(char *aStack,
+                           int aStackSize,
+                           char aPriority,
+                           int aFlags,
+                           vcThreadHandlerFunc aFunction,
+                           void *aArg,
+                           const char *aName)
 {
     if (aPriority >= VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS)
     {
         DEBUG("Thread::Thread() priority level must less than %u\r\n", VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS);
-        return;
+        return KERNEL_PID_UNDEF;
     }
 
     mWaitData = NULL;
@@ -97,7 +95,7 @@ Thread::Thread(Instance &aInstance,
     {
         DEBUG("Thread::Thread() too many threads!\r\n");
         irqRestore(state);
-        return;
+        return KERNEL_PID_UNDEF;
     }
 
     Get<ThreadScheduler>().SetSchedThreads(cb, pid); 
@@ -132,13 +130,13 @@ Thread::Thread(Instance &aInstance,
         {
             irqRestore(state);
             Get<ThreadScheduler>().Switch(aPriority);
-            return;
+            return cb->mPid;
         }
     }
 
     irqRestore(state);
 
-    return;
+    return cb->mPid;
 }
 
 void Thread::AddToList(List *aList)

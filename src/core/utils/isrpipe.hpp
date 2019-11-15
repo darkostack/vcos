@@ -53,8 +53,8 @@ private:
 class Isrpipe
 {
 public:
-    Isrpipe(Instance &aInstance, char *aBuf, unsigned int aSize)
-        : mMutex(aInstance)
+    Isrpipe(char *aBuf, unsigned int aSize)
+        : mMutex()
         , mTsrb(aBuf, aSize)
     {
     }
@@ -75,8 +75,8 @@ private:
 class UartIsrpipe : public Isrpipe
 {
 public:
-    UartIsrpipe(Instance &aInstance)
-        : Isrpipe(aInstance, static_cast<char *>(&mBuf[0]), VCOS_CONFIG_TSRB_UART_MEMORY_SIZE)
+    UartIsrpipe(void)
+        : Isrpipe(static_cast<char *>(&mBuf[0]), VCOS_CONFIG_TSRB_UART_MEMORY_SIZE)
     {
     }
 

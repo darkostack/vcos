@@ -20,11 +20,6 @@ class Thread;
 class Msg : public vcMsg, public InstanceLocator, public List
 {
 public:
-    Msg(Instance &aInstance)
-        : InstanceLocator(aInstance)
-    {
-    }
-
     int Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState);
 
     int Receive(int aBlock);

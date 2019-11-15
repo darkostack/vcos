@@ -17,12 +17,6 @@ public:
     Instance &GetInstance(void) const { return *reinterpret_cast<Instance *>(&gInstanceRaw); }
 
     template <typename Type> inline Type &Get(void) const; // Implemented in `locator-getters.hpp`.
-
-protected:
-    explicit InstanceLocator(Instance &aInstance)
-    {
-        (void) aInstance;
-    }
 };
 
 } // namespace vc
