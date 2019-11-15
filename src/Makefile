@@ -1,5 +1,5 @@
 SRC_CORE_CPP += $(addprefix core/,\
-	api/instance_api.cpp \
+    api/instance_api.cpp \
     api/stdiobase_api.cpp \
     api/thread_api.cpp \
     api/msg_api.cpp \
@@ -11,7 +11,7 @@ SRC_CORE_CPP += $(addprefix core/,\
     )
 
 SRC_CORE_C += $(addprefix core/,\
-	common/kernel_init.c \
+    common/kernel_init.c \
     common/panic.c \
     utils/bitarithm.c \
     )
