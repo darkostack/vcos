@@ -47,9 +47,12 @@ Uart::Uart(Instance *aInstance)
 
 extern "C" void vcCliUartRun(void)
 {
-    while (1) {
+    while (1)
+    {
         int c = getchar();
+
         assert(c >= 0);
+
         Uart::sUartServer->ReceiveTask(reinterpret_cast<const uint8_t *>(&c), 1);
     }
 }
@@ -60,28 +63,35 @@ void Uart::ReceiveTask(const uint8_t *aBuf, uint16_t aBufLength)
 
     end = aBuf + aBufLength;
 
-    for (; aBuf < end; aBuf++) {
-        switch (*aBuf) {
+    for (; aBuf < end; aBuf++)
+    {
+        switch (*aBuf)
+        {
         case '\r':
         case '\n':
             Output(CRNL, sizeof(CRNL));
-            if (mRxLength > 0) {
+
+            if (mRxLength > 0)
+            {
                 mRxBuffer[mRxLength] = '\0';
                 ProcessCommand();
             }
+
             Output(sCommandPrompt, sizeof(sCommandPrompt));
             break;
 
         case '\b':
         case 127:
-            if (mRxLength > 0) {
+            if (mRxLength > 0)
+            {
                 Output(sEraseString, sizeof(sEraseString));
                 mRxBuffer[--mRxLength] = '\0';
             }
             break;
 
         default:
-            if (mRxLength < kRxBufferSize) {
+            if (mRxLength < kRxBufferSize)
+            {
                 Output(reinterpret_cast<const char *>(aBuf), 1);
                 mRxBuffer[mRxLength++] = static_cast<char>(*aBuf);
             }
@@ -92,11 +102,13 @@ void Uart::ReceiveTask(const uint8_t *aBuf, uint16_t aBufLength)
 
 int Uart::ProcessCommand(void)
 {
-    if (mRxBuffer[mRxLength - 1] == '\n') {
+    if (mRxBuffer[mRxLength - 1] == '\n')
+    {
         mRxBuffer[--mRxLength] = '\0';
     }
 
-    if (mRxBuffer[mRxLength - 1] == '\r') {
+    if (mRxBuffer[mRxLength - 1] == '\r')
+    {
         mRxBuffer[--mRxLength] = '\0';
     }
 
@@ -112,11 +124,13 @@ int Uart::Output(const char *aBuf, uint16_t aBufLength)
     uint16_t remaining = kTxBufferSize - mTxLength;
     uint16_t tail;
 
-    if (aBufLength > remaining) {
+    if (aBufLength > remaining)
+    {
         aBufLength = remaining;
     }
 
-    for (int i = 0; i < aBufLength; i++) {
+    for (int i = 0; i < aBufLength; i++)
+    {
         tail = (mTxHead + mTxLength) % kTxBufferSize;
         mTxBuffer[tail] = *aBuf++;
         mTxLength++;
@@ -146,20 +160,30 @@ int Uart::OutputFormatV(const char *aFmt, va_list aAp)
 
 void Uart::Send(void)
 {
-    while (mTxLength > 0) {
-        if (mTxLength > kTxBufferSize - mTxHead) {
+    while (mTxLength > 0)
+    {
+        if (mTxLength > kTxBufferSize - mTxHead)
+        {
             mSendLength = kTxBufferSize - mTxHead;
-        } else {
+        }
+        else
+        {
             mSendLength = mTxLength;
         }
-        if (mSendLength > 0) {
-            for (uint16_t i = 0; i < mSendLength; i++) {
+
+        if (mSendLength > 0)
+        {
+            for (uint16_t i = 0; i < mSendLength; i++)
+            {
                 putchar(mTxBuffer[mTxHead + i]);
                 fflush(stdout);
             }
         }
+
         mTxHead = (mTxHead + mSendLength) % kTxBufferSize;
+
         mTxLength -= mSendLength;
+
         mSendLength = 0;
     }
 }
