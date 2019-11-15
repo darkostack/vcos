@@ -30,8 +30,9 @@ vcKernelPid Thread::Create(char *aStack,
     }
 
     mWaitData = NULL;
-    (static_cast<Cib *>(&mMsgQueue))->Init(0);
     mMsgArray = NULL;
+
+    (static_cast<Cib *>(&mMsgQueue))->Init(0);
 
     int totalStacksize = aStackSize;
 
@@ -48,8 +49,7 @@ vcKernelPid Thread::Create(char *aStack,
     /* make room for the thread control block */
     aStackSize -= sizeof(Thread);
 
-    /* round down the stacksize to multiple of Thread aligments (usually 16/32
-     * bit) */
+    /* round down the stacksize to multiple of Thread aligments (usually 16/32 bit) */
     aStackSize -= aStackSize % ALIGN_OF(Thread);
 
     if (aStackSize < 0)

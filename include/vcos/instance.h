@@ -10,6 +10,10 @@
 extern "C" {
 #endif
 
+vcInstance *vcInstanceInit(void);
+
+bool vcInstanceIsInitialized(vcInstance *aInstance);
+
 vcInstance *vcInstanceGet(void);
 
 const char *vcInstanceGetVersionString(void);

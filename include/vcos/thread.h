@@ -7,6 +7,18 @@
 extern "C" {
 #endif
 
+extern vcKernelPid gMainThreadPid;
+extern vcKernelPid gIdleThreadPid;
+
+vcKernelPid vcThreadCreate(vcThread *aThread,
+                           char *aStack,
+                           int aStackSize,
+                           char aPriority,
+                           int aFlags,
+                           vcThreadHandlerFunc aFunction,
+                           void *aArg,
+                           const char *aName);
+
 char *vcThreadStackInit(vcThreadHandlerFunc aFunction,
                         void *aArg,
                         void *aStackStart,

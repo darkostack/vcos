@@ -1,8 +1,8 @@
-APPS_CLI_CPP += $(addprefix cli/,\
-    main.cpp \
+APPS_CLI_C += $(addprefix cli/,\
+    main.c \
     )
 
-OBJS_APPS_CLI += $(addprefix $(BUILD)/, $(APPS_CLI_CPP:.cpp=.o))
+OBJS_APPS_CLI += $(addprefix $(BUILD)/, $(APPS_CLI_C:.c=.o))
 
 OBJS_DIR += $(sort $(dir $(OBJS_APPS_CLI)))
 

@@ -4,14 +4,20 @@
 
 using namespace vc;
 
+vcInstance *vcInstanceInit(void)
+{
+    return &Instance::InitSingle();
+}
+
+bool vcInstanceIsInitialized(vcInstance *aInstance)
+{
+    Instance &instance = *static_cast<Instance *>(aInstance);
+    return instance.IsInitialized();
+}
+
 vcInstance *vcInstanceGet(void)
 {
-    Instance &instance = Instance::Get();
-    if (instance.IsInitialized()) {
-        return static_cast<vcInstance *>(&instance);
-    } else {
-        return NULL;
-    }
+    return &Instance::Get();
 }
 
 const char *vcInstanceGetVersionString(void)

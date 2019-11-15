@@ -8,6 +8,26 @@
 
 using namespace vc;
 
+int vcMsgReceive(vcMsg *aMsg)
+{
+    return (static_cast<Msg *>(aMsg))->Receive();
+}
+
+int vcMsgSend(vcMsg *aMsg, vcKernelPid aPid)
+{
+    return (static_cast<Msg *>(aMsg))->Send(aPid);
+}
+
+int vcMsgSendReceive(vcMsg *aMsg, vcMsg *aReply, vcKernelPid aPid)
+{
+    return (static_cast<Msg *>(aMsg))->SendReceive(static_cast<Msg *>(aReply), aPid);
+}
+
+int vcMsgReply(vcMsg *aMsg, vcMsg *aReply)
+{
+    return (static_cast<Msg *>(aMsg))->Reply(static_cast<Msg *>(aReply));
+}
+
 void vcMsgActiveThreadQueuePrint(void)
 {
     unsigned state = irqDisable();
