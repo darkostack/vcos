@@ -5,6 +5,7 @@
 
 #include "common/code_utils.hpp"
 #include "common/thread.hpp"
+#include "common/timer.hpp"
 
 #include "utils/isrpipe.hpp"
 
@@ -36,6 +37,8 @@ private:
 
     ThreadScheduler mThreadScheduler;
 
+    TimerScheduler mTimerScheduler;
+
     Utils::UartIsrpipe mUartIsrpipe;
 
     bool mIsInitialized;
@@ -44,6 +47,11 @@ private:
 template <> inline ThreadScheduler &Instance::Get(void)
 {
     return mThreadScheduler;
+}
+
+template <> inline TimerScheduler &Instance::Get(void)
+{
+    return mTimerScheduler;
 }
 
 template <> inline Utils::UartIsrpipe &Instance::Get(void)
