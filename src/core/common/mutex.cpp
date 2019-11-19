@@ -47,7 +47,7 @@ int Mutex::SetLock(int aBlocking)
         }
         else
         {
-            me->AddToList(&mQueue);
+            me->AddToList(static_cast<List *>(&mQueue));
         }
 
         vcIrqRestore(state);
@@ -88,7 +88,7 @@ void Mutex::Unlock(void)
         return;
     }
 
-    List *next = mQueue.RemoveHead();
+    List *next = (static_cast<List *>(&mQueue))->RemoveHead();
 
     Thread *process = Get<ThreadScheduler>().GetThreadPointerFromList(next);
 
@@ -124,7 +124,7 @@ void Mutex::UnlockAndSleep(void)
         }
         else
         {
-            List *next = mQueue.RemoveHead();
+            List *next = (static_cast<List *>(&mQueue))->RemoveHead();
 
             Thread *process = Get<ThreadScheduler>().GetThreadPointerFromList(next);
 

@@ -37,6 +37,10 @@ typedef struct vcListNode {
     struct vcListNode *mNext;
 } vcListNode;
 
+typedef struct vcMutex {
+    vcListNode mQueue;
+} vcMutex;
+
 typedef vcListNode vcClistNode;
 
 typedef struct vcCib {
@@ -97,6 +101,8 @@ typedef struct vcTimer {
 #define KERNEL_PID_LAST  (KERNEL_PID_FIRST + KERNEL_MAXTHREADS - 1)
 
 #define PRIkernel_pid PRIi16
+
+#define MUTEX_LOCKED ((vcListNode *)-1)
 
 /**
  * Optional flags for controlling a threads initial state.

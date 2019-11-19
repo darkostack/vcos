@@ -4,15 +4,15 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <vcos/mutex.h>
+
 #include "common/list.hpp"
 #include "common/locator.hpp"
 #include "common/thread.hpp"
 
-#define MUTEX_LOCKED ((List *)-1)
-
 namespace vc {
 
-class Mutex : public InstanceLocator, public List
+class Mutex : public vcMutex, public InstanceLocator
 {
 public:
     Mutex(void)
@@ -30,8 +30,6 @@ public:
 
 private:
     int SetLock(int aBlocking);
-
-    List mQueue;
 };
 
 } // namespace vc
