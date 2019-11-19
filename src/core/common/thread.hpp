@@ -25,17 +25,6 @@ class Thread : public vcThread, public InstanceLocator
     friend class ThreadScheduler;
 
 public:
-    Thread(char *aStack,
-           int aStackSize,
-           char aPriority,
-           int aFlags,
-           vcThreadHandlerFunc aFunction,
-           void *aArg,
-           const char *aName)
-    {
-        (void) Create(aStack, aStackSize, aPriority, aFlags, aFunction, aArg, aName);
-    }
-
     vcKernelPid Create(char *aStack,
                        int aStackSize,
                        char aPriority,
