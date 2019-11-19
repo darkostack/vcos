@@ -4,6 +4,7 @@ SRC_CORE_CPP += $(addprefix core/,\
     api/thread_api.cpp \
     api/msg_api.cpp \
     api/timer_api.cpp \
+    api/mutex_api.cpp \
     common/instance.cpp \
     common/thread.cpp \
     common/mutex.cpp \
