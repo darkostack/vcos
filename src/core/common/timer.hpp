@@ -21,10 +21,6 @@ class Timer: public vcTimer, public InstanceLocator
 public:
     Timer(void);
 
-    uint32_t Now(void);
-
-    uint64_t Now64(void);
-
     void Set(uint32_t aOffset);
 
     void Set64(uint32_t aOffset, uint32_t aLongOffset);

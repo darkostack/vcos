@@ -15,16 +15,6 @@ Timer::Timer(void)
     mArg = NULL;
 }
 
-uint32_t Timer::Now(void)
-{
-    return Get<TimerScheduler>().Now();
-}
-
-uint64_t Timer::Now64(void)
-{
-    return Get<TimerScheduler>().Now64();
-}
-
 void Timer::Set(uint32_t aOffset)
 {
     DEBUG("Timer::Set() offset=%lu now=%lu\r\n", aOffset, Get<TimerScheduler>().Now());
@@ -44,7 +34,7 @@ void Timer::Set(uint32_t aOffset)
     }
     else
     {
-        uint32_t target = Now() + aOffset;
+        uint32_t target = Get<TimerScheduler>().Now() + aOffset;
         Get<TimerScheduler>().SetAbsolute(this, target);
     }
 }
