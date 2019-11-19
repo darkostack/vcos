@@ -43,10 +43,10 @@ static inline void cortexmSleep(int aDeep)
     }
 
     /* ensure that all memory accesses have completed and trigger sleeping */
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
     __DSB();
     __WFI();
-    irqRestore(state);
+    vcIrqRestore(state);
 }
 
 /**

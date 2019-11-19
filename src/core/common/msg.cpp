@@ -24,7 +24,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
     if (target == NULL)
     {
         DEBUG("Msg::Send() target thread does not exist\r\n");
-        irqRestore(aState);
+        vcIrqRestore(aState);
         return -1;
     }
 
@@ -43,7 +43,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
         {
             DEBUG("Msg::Send() Target %" PRIkernel_pid " has a mMsgQueue. Queueing message.\r\n", aTargetPid);
 
-            irqRestore(aState);
+            vcIrqRestore(aState);
 
             if (me->mStatus == THREAD_STATUS_REPLY_BLOCKED)
             {
@@ -55,7 +55,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
         if (!aBlock)
         {
             DEBUG("Msg::Send() %" PRIkernel_pid ": Receiver not waiting, block=%u\r\n", me->mPid, aBlock);
-            irqRestore(aState);
+            vcIrqRestore(aState);
             return 0;
         }
 
@@ -78,7 +78,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
 
         me->AddToList(&target->GetMsgWaiters());
 
-        irqRestore(aState);
+        vcIrqRestore(aState);
 
         vcThreadYieldHigher();
 
@@ -98,7 +98,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
 
         Get<ThreadScheduler>().SetStatus(target, THREAD_STATUS_PENDING);
 
-        irqRestore(aState);
+        vcIrqRestore(aState);
 
         vcThreadYieldHigher();
     }
@@ -108,7 +108,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
 
 int Msg::Receive(int aBlock)
 {
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     Thread *me = Get<ThreadScheduler>().GetSchedActiveThread();
 
@@ -122,7 +122,7 @@ int Msg::Receive(int aBlock)
     /* no message, fail */
     if ((!aBlock) && ((!me->GetMsgWaitersNext()) && (queueIndex == -1)))
     {
-        irqRestore(state);
+        vcIrqRestore(state);
         return -1;
     }
 
@@ -151,7 +151,7 @@ int Msg::Receive(int aBlock)
 
             Get<ThreadScheduler>().SetStatus(me, THREAD_STATUS_RECEIVE_BLOCKED);
 
-            irqRestore(state);
+            vcIrqRestore(state);
 
             vcThreadYieldHigher();
 
@@ -160,7 +160,7 @@ int Msg::Receive(int aBlock)
         }
         else
         {
-            irqRestore(state);
+            vcIrqRestore(state);
         }
 
         return 1;
@@ -207,7 +207,7 @@ int Msg::Receive(int aBlock)
             senderPrio = sender->mPriority;
         }
 
-        irqRestore(state);
+        vcIrqRestore(state);
 
         if (senderPrio < VCOS_CONFIG_THREAD_PRIORITY_IDLE)
         {
@@ -241,7 +241,7 @@ int Msg::QueueMsg(Thread *aTarget)
 
 int Msg::Send(vcKernelPid aTargetPid)
 {
-    if (irqIsIn())
+    if (vcIrqIsIn())
     {
         return SendInt(aTargetPid);
     }
@@ -251,12 +251,12 @@ int Msg::Send(vcKernelPid aTargetPid)
         return SendToSelf();
     }
 
-    return Send(aTargetPid, true, irqDisable());
+    return Send(aTargetPid, true, vcIrqDisable());
 }
 
 int Msg::TrySend(vcKernelPid aTargetPid)
 {
-    if (irqIsIn())
+    if (vcIrqIsIn())
     {
         return SendInt(aTargetPid);
     }
@@ -266,18 +266,18 @@ int Msg::TrySend(vcKernelPid aTargetPid)
         return SendToSelf();
     }
 
-    return Send(aTargetPid, false, irqDisable());
+    return Send(aTargetPid, false, vcIrqDisable());
 }
 
 int Msg::SendToSelf(void)
 {
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     mSenderPid = Get<ThreadScheduler>().GetSchedActivePid();
 
     int res = this->QueueMsg(Get<ThreadScheduler>().GetSchedActiveThread());
 
-    irqRestore(state);
+    vcIrqRestore(state);
 
     return res;
 }
@@ -325,7 +325,7 @@ int Msg::SendReceive(Msg *aReply, vcKernelPid aTargetPid)
 {
     assert(Get<ThreadScheduler>().GetSchedActivePid() != aTargetPid);
 
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     Thread *me = Get<ThreadScheduler>().GetSchedActiveThread();
 
@@ -344,7 +344,7 @@ int Msg::SendReceive(Msg *aReply, vcKernelPid aTargetPid)
 
 int Msg::Reply(Msg *aReply)
 {
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     Thread *target = Get<ThreadScheduler>().GetSchedThreads(this->mSenderPid);
 
@@ -356,7 +356,7 @@ int Msg::Reply(Msg *aReply)
               " not waiting for reply.\r\n",
               Get<ThreadScheduler>().GetSchedActivePid(), target->mPid);
 
-        irqRestore(state);
+        vcIrqRestore(state);
 
         return -1;
     }
@@ -373,7 +373,7 @@ int Msg::Reply(Msg *aReply)
 
     uint16_t targetPrio = target->mPriority;
 
-    irqRestore(state);
+    vcIrqRestore(state);
 
     Get<ThreadScheduler>().Switch(targetPrio);
 

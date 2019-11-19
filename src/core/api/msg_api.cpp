@@ -30,7 +30,7 @@ int vcMsgReply(vcMsg *aMsg, vcMsg *aReply)
 
 void vcMsgActiveThreadQueuePrint(void)
 {
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     Thread *thread = Instance::Get().Get<ThreadScheduler>().GetSchedActiveThread();
     Cib *msgQueue = &thread->GetMsgQueue();
@@ -49,5 +49,5 @@ void vcMsgActiveThreadQueuePrint(void)
                m->mContent.mValue, m->mContent.mPtr);
     }
 
-    irqRestore(state);
+    vcIrqRestore(state);
 }

@@ -129,7 +129,7 @@ void *vcThreadIsrStackPointer(void)
 __attribute__((naked)) void vcThreadSwitchContextExit(void)
 {
      __asm__ volatile (
-    "bl     irqEnable                     \n" /* enable IRQs to make the SVC
+    "bl     vcIrqEnable                   \n" /* enable IRQs to make the SVC
                                                * interrupt is reachable */
     "svc    #1                            \n" /* trigger the SVC interrupt */
     "unreachable%=:                       \n" /* this loop is unreachable */

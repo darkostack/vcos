@@ -14,7 +14,7 @@ namespace vc {
 
 int Mutex::SetLock(int aBlocking)
 {
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     DEBUG("Mutex::SetLock() PID(%" PRIkernel_pid "): mutex in use.\r\n",
           Get<ThreadScheduler>().GetSchedActivePid());
@@ -27,7 +27,7 @@ int Mutex::SetLock(int aBlocking)
         DEBUG("Mutex::SetLock() PID(%" PRIkernel_pid "): mutex wait early out.\r\n",
               Get<ThreadScheduler>().GetSchedActivePid());
 
-        irqRestore(state);
+        vcIrqRestore(state);
 
         return 1;
     }
@@ -50,7 +50,7 @@ int Mutex::SetLock(int aBlocking)
             me->AddToList(&mQueue);
         }
 
-        irqRestore(state);
+        vcIrqRestore(state);
 
         vcThreadYieldHigher();
 
@@ -61,14 +61,14 @@ int Mutex::SetLock(int aBlocking)
     }
     else
     {
-        irqRestore(state);
+        vcIrqRestore(state);
         return 0;
     }
 }
 
 void Mutex::Unlock(void)
 {
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     DEBUG("Mutex::Unlock() mQueue.mNext: %p pid: %" PRIkernel_pid "\r\n",
           (void *)mQueue.mNext, Get<ThreadScheduler>().GetSchedActivePid());
@@ -76,7 +76,7 @@ void Mutex::Unlock(void)
     if (mQueue.mNext == NULL)
     {
         /* the mutex was not locked */
-        irqRestore(state);
+        vcIrqRestore(state);
         return;
     }
 
@@ -84,7 +84,7 @@ void Mutex::Unlock(void)
     {
         mQueue.mNext = NULL;
         /* the mutex was locked and no thread was waiting for it */
-        irqRestore(state);
+        vcIrqRestore(state);
         return;
     }
 
@@ -104,7 +104,7 @@ void Mutex::Unlock(void)
 
     uint16_t processPrio = process->mPriority;
 
-    irqRestore(state);
+    vcIrqRestore(state);
 
     Get<ThreadScheduler>().Switch(processPrio);
 }
@@ -114,7 +114,7 @@ void Mutex::UnlockAndSleep(void)
     DEBUG("Mutex::UnlockAndSleep() PID(%" PRIkernel_pid "): unlocking mutex. mQueue.mNext: %p, and "
           "taking a nap\r\n", Get<ThreadScheduler>().GetSchedActivePid(), (void *)mQueue.mNext);
 
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     if (mQueue.mNext)
     {
@@ -144,7 +144,7 @@ void Mutex::UnlockAndSleep(void)
 
     Get<ThreadScheduler>().SetStatus(Get<ThreadScheduler>().GetSchedActiveThread(), THREAD_STATUS_SLEEPING);
 
-    irqRestore(state);
+    vcIrqRestore(state);
 
     vcThreadYieldHigher();
 }

@@ -78,7 +78,7 @@ vcKernelPid Thread::Create(char *aStack,
         *(uintptr_t *)aStack = (uintptr_t)aStack;
     }
 
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     vcKernelPid pid = KERNEL_PID_UNDEF;
 
@@ -94,7 +94,7 @@ vcKernelPid Thread::Create(char *aStack,
     if (pid == KERNEL_PID_UNDEF)
     {
         DEBUG("Thread::Create() too many threads!\r\n");
-        irqRestore(state);
+        vcIrqRestore(state);
         return KERNEL_PID_UNDEF;
     }
 
@@ -128,13 +128,13 @@ vcKernelPid Thread::Create(char *aStack,
 
         if (!(aFlags & THREAD_FLAGS_CREATE_WOUT_YIELD))
         {
-            irqRestore(state);
+            vcIrqRestore(state);
             Get<ThreadScheduler>().Switch(aPriority);
             return cb->mPid;
         }
     }
 
-    irqRestore(state);
+    vcIrqRestore(state);
 
     return cb->mPid;
 }
@@ -259,7 +259,7 @@ void ThreadScheduler::Switch(uint16_t aOtherPrio)
 
     if (!onRunqueue || (currentPrio > aOtherPrio))
     {
-        if (irqIsIn())
+        if (vcIrqIsIn())
         {
             DEBUG("ThreadScheduler::Switch() setting mSchedContextSwitchRequest.\r\n");
 
@@ -283,7 +283,7 @@ void ThreadScheduler::TaskExit(void)
     DEBUG("ThreadScheduler::TaskExit() ending thread %" PRIkernel_pid "...\r\n",
           GetSchedActiveThread()->mPid);
 
-    (void) irqDisable();
+    (void) vcIrqDisable();
 
     SetSchedThreads(NULL, GetSchedActivePid());
     SchedNumThreadsRemoveOne();
@@ -323,16 +323,16 @@ const char *ThreadScheduler::GetName(vcKernelPid aPid)
 
 void ThreadScheduler::Sleep(void)
 {
-    if (irqIsIn())
+    if (vcIrqIsIn())
     {
         return;
     }
 
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     SetStatus(GetSchedActiveThread(), THREAD_STATUS_SLEEPING);
 
-    irqRestore(state);
+    vcIrqRestore(state);
 
     vcThreadYieldHigher();
 }
@@ -341,7 +341,7 @@ int ThreadScheduler::Wakeup(vcKernelPid aPid)
 {
     DEBUG("ThreadScheduler::Wakeup() trying to wakeup PID %" PRIkernel_pid "...\r\n", aPid);
 
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     Thread *otherThread = GetThread(aPid);
 
@@ -355,7 +355,7 @@ int ThreadScheduler::Wakeup(vcKernelPid aPid)
 
         SetStatus(otherThread, THREAD_STATUS_RUNNING);
 
-        irqRestore(state);
+        vcIrqRestore(state);
 
         Switch(otherThread->mPriority);
 
@@ -366,14 +366,14 @@ int ThreadScheduler::Wakeup(vcKernelPid aPid)
         DEBUG("ThreadScheduler::Wakeup() thread is not sleeping!\r\n");
     }
 
-    irqRestore(state);
+    vcIrqRestore(state);
 
     return (int)THREAD_STATUS_NOT_FOUND;
 }
 
 void ThreadScheduler::Yield(void)
 {
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     Thread *me = GetSchedActiveThread();
 
@@ -382,7 +382,7 @@ void ThreadScheduler::Yield(void)
         mSchedRunqueues[me->mPriority].LeftPopRightPush();
     }
 
-    irqRestore(state);
+    vcIrqRestore(state);
 
     vcThreadYieldHigher();
 }

@@ -47,13 +47,13 @@ void Timer::Set64(uint32_t aOffset, uint32_t aLongOffset)
 
 void Timer::Remove(void)
 {
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     if (this->IsSet()) {
         Get<TimerScheduler>().Remove(this);
     }
 
-    irqRestore(state);
+    vcIrqRestore(state);
 }
 
 extern "C" void vcPeriphTimerCallback(void *aArg, int aChannel)
@@ -113,7 +113,7 @@ void TimerScheduler::SetAbsolute(Timer *aTimer, uint32_t aTarget)
         return;
     }
 
-    unsigned state = irqDisable();
+    unsigned state = vcIrqDisable();
 
     if (aTimer->IsSet())
     {
@@ -162,7 +162,7 @@ void TimerScheduler::SetAbsolute(Timer *aTimer, uint32_t aTarget)
         }
     }
 
-    irqRestore(state);
+    vcIrqRestore(state);
 }
 
 void TimerScheduler::Set64(Timer *aTimer, uint32_t aOffset, uint32_t aLongOffset)
@@ -176,7 +176,7 @@ void TimerScheduler::Set64(Timer *aTimer, uint32_t aOffset, uint32_t aLongOffset
     }
     else
     {
-        unsigned state = irqDisable();
+        unsigned state = vcIrqDisable();
 
         if (aTimer->IsSet()) {
             Remove(aTimer);
@@ -194,7 +194,7 @@ void TimerScheduler::Set64(Timer *aTimer, uint32_t aOffset, uint32_t aLongOffset
 
         AddTimerToLongList(&mLongListHead, aTimer);
 
-        irqRestore(state);
+        vcIrqRestore(state);
 
         DEBUG("TimerScheduler::Set64() added long term timer (longTarget=%lu, target=%lu)\r\n",
               aTimer->mLongTarget, aTimer->mTarget);
@@ -423,7 +423,7 @@ extern "C" void sleep64UnlockMutexCallback(void *aArg)
 
 void TimerScheduler::Sleep64(uint32_t aOffset, uint32_t aLongOffset)
 {
-    if (irqIsIn())
+    if (vcIrqIsIn())
     {
         assert(!aLongOffset);
         Spin(aOffset);

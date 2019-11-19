@@ -28,7 +28,7 @@ void _exit(int n)
  */
 void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
 {
-    unsigned int state = irqDisable();
+    unsigned int state = vcIrqDisable();
     void *res = heap_top;
 
     if ((heap_top + incr > &_eheap) || (heap_top + incr < &_sheap)) {
@@ -39,7 +39,7 @@ void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
         heap_top += incr;
     }
 
-    irqRestore(state);
+    vcIrqRestore(state);
     return res;
 }
 

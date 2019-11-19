@@ -39,7 +39,7 @@ void *idleThreadFunc(void *aArg)
 
 void vcKernelInit(void)
 {
-    (void) irqDisable();
+    (void) vcIrqDisable();
 
     vcInstance *instance = vcInstanceInit();
 

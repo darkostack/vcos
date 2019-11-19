@@ -7,13 +7,13 @@
 extern "C" {
 #endif
 
-unsigned irqDisable(void);
+unsigned vcIrqDisable(void);
 
-unsigned irqEnable(void);
+unsigned vcIrqEnable(void);
 
-void irqRestore(unsigned aState);
+void vcIrqRestore(unsigned aState);
 
-int irqIsIn(void);
+int vcIrqIsIn(void);
 
 #ifdef __cplusplus
 }

@@ -30,7 +30,7 @@ __attribute__((noreturn)) void vcCorePanic(vcPanicType aType, const char *aMessa
         LOG_ERROR("*** halted.\r\n\r\n");
     }
 
-    irqDisable();
+    vcIrqDisable();
 
     vcPanicArch();
 
