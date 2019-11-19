@@ -70,6 +70,14 @@ typedef struct vcThread
     int            mStackSize;
 } vcThread;
 
+typedef struct {
+    uint64_t mTicks64;
+} vcTimerTicsk64;
+
+typedef struct {
+    uint32_t mTicks32;
+} vcTimerTicks32;
+
 typedef void (*vcTimerCallbackFunc)(void*);
 
 typedef struct vcTimer {
