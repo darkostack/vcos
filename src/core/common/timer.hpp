@@ -4,9 +4,10 @@
 #include <vcos/types.h>
 #include <vcos/timer.h>
 #include <vcos/irq.h>
-#include <vcos/periph/timer.h>
+#include <vcos/periph/tim.h>
 
 #include "common/locator.hpp"
+#include "common/mutex.hpp"
 
 #include "vcos-core-config.h"
 
@@ -19,7 +20,7 @@ class Timer: public vcTimer, public InstanceLocator
     friend class TimerScheduler;
 
 public:
-    Timer(void);
+    void Init(vcTimerCallback aCallback, void *aArg);
 
     void Set(uint32_t aOffset);
 
@@ -54,6 +55,8 @@ public:
     uint32_t GetTimerBackoff(void) { return kTimerBackoff; }
 
     void NowInternal(uint32_t *aShortTerm, uint32_t *aLongTerm);
+
+    void Sleep64(uint32_t aOffset, uint32_t aLongOffset);
 
 private:
     static void AddTimerToList(Timer **aListHead, Timer *aTimer);

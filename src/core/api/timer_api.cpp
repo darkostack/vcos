@@ -7,6 +7,12 @@
 
 using namespace vc;
 
+void vcTimerInit(vcTimer *aTimer, vcTimerCallback aCallback, void *aArg)
+{
+    Timer &timer = *static_cast<Timer *>(aTimer);
+    timer.Init(aCallback, aArg);
+}
+
 vcTimerTicks32 vcTimerNow(void)
 {
     vcTimerTicks32 ret;
@@ -43,4 +49,15 @@ void vcTimerSet64(vcTimer *aTimer, uint32_t aOffset, uint32_t aLongOffset)
 {
     Timer &timer = *static_cast<Timer *>(aTimer);
     timer.Set64(aOffset, aLongOffset);
+}
+
+void vcTimerSleepUsec(uint32_t aUsec)
+{
+    Instance::Get().Get<TimerScheduler>().Sleep64(aUsec, 0);
+}
+
+void vcTimerSleepUsec64(uint64_t aUsec)
+{
+    Instance::Get().Get<TimerScheduler>().Sleep64(static_cast<uint32_t>(aUsec),
+                                                  static_cast<uint32_t>(aUsec >> 32));
 }

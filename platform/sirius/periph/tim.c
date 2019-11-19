@@ -1,29 +1,28 @@
 #include <assert.h>
 
-#include <vcos/periph/timer.h>
+#include <vcos/periph/tim.h>
 
 #include "cpu.h"
 
-#define TIMER_NUMOF      (4U)
-#define TIMER_CHAN_NUMOF (3U)
+#define TIM_NUMOF      (4U)
+#define TIM_CHAN_NUMOF (3U)
 
-
-static int sTimerIrqn[TIMER_NUMOF] = {
+static int sTimIrqn[TIM_NUMOF] = {
     Pwm0_IRQn,
     Pwm1_IRQn,
     Pwm2_IRQn,
     Pwm3_IRQn
 };
 
-static vcTimerIsrContext sIsrTimerCtx[TIMER_NUMOF];
+static vcTimIsrContext sIsrTimCtx[TIM_NUMOF];
 
-int vcTimerInit(vcTim aDev, unsigned long aFreq, vcTimerCallback aCallback, void *aArg)
+int vcTimInit(vcTim aDev, unsigned long aFreq, vcTimCallback aCallback, void *aArg)
 {
-    assert(aDev < TIMER_NUMOF);
+    assert(aDev < TIM_NUMOF);
 
     /* remember the interrupt context */
-    sIsrTimerCtx[aDev].mCallback = aCallback;
-    sIsrTimerCtx[aDev].mArg = aArg;
+    sIsrTimCtx[aDev].mCallback = aCallback;
+    sIsrTimCtx[aDev].mArg = aArg;
 
     /* enable the peripheral clock */
     uint32_t temp = VC_MISC2->PCLKEN;
@@ -46,14 +45,14 @@ int vcTimerInit(vcTim aDev, unsigned long aFreq, vcTimerCallback aCallback, void
     VC_PWM(aDev)->CTL = temp;
 
     /* start pwm timer */
-    vcTimerStart(aDev);
+    vcTimStart(aDev);
 
     return 0;
 }
 
-int vcTimerSetAbsolute(vcTim aDev, int aChannel, unsigned int aValue)
+int vcTimSetAbsolute(vcTim aDev, int aChannel, unsigned int aValue)
 {
-    assert(aDev < TIMER_NUMOF && aChannel < TIMER_CHAN_NUMOF);
+    assert(aDev < TIM_NUMOF && aChannel < TIM_CHAN_NUMOF);
 
     /* config capture/compare register (ccr) period */
     VC_PWM(aDev)->CCR[aChannel] = aValue;
@@ -67,15 +66,15 @@ int vcTimerSetAbsolute(vcTim aDev, int aChannel, unsigned int aValue)
     VC_PWM(aDev)->CCTL[aChannel] = temp;
 
     /* enable global timer interrupt */
-    NVIC_EnableIRQ(sTimerIrqn[aDev]);
+    NVIC_EnableIRQ(sTimIrqn[aDev]);
 
     return 0;
 
 }
 
-int vcTimerClear(vcTim aDev, int aChannel)
+int vcTimClear(vcTim aDev, int aChannel)
 {
-    assert(aDev < TIMER_NUMOF && aChannel < TIMER_CHAN_NUMOF);
+    assert(aDev < TIM_NUMOF && aChannel < TIM_CHAN_NUMOF);
 
     /* clear capture/compare register period to it's default value */
     VC_PWM(aDev)->CCR[aChannel] = (PWM_CCR_CCR_Msk);
@@ -92,14 +91,14 @@ int vcTimerClear(vcTim aDev, int aChannel)
 
 }
 
-uint32_t vcTimerRead(vcTim aDev)
+uint32_t vcTimRead(vcTim aDev)
 {
     return VC_PWM(aDev)->TAR;
 }
 
-void vcTimerStart(vcTim aDev)
+void vcTimStart(vcTim aDev)
 {
-    assert(aDev < TIMER_NUMOF);
+    assert(aDev < TIM_NUMOF);
 
     uint32_t temp = VC_PWM(aDev)->CTL;
 
@@ -109,9 +108,9 @@ void vcTimerStart(vcTim aDev)
     VC_PWM(aDev)->CTL = temp;
 }
 
-void vcTimerStop(vcTim aDev)
+void vcTimStop(vcTim aDev)
 {
-    assert(aDev < TIMER_NUMOF);
+    assert(aDev < TIM_NUMOF);
 
     uint32_t temp = VC_PWM(aDev)->CTL;
 
@@ -121,9 +120,9 @@ void vcTimerStop(vcTim aDev)
     VC_PWM(aDev)->CTL = temp;
 }
 
-static void _irqTimerHandler(vcTim aDev)
+static void _irqTimHandler(vcTim aDev)
 {
-    for (uint8_t ch = 0; ch < TIMER_CHAN_NUMOF; ch++) {
+    for (uint8_t ch = 0; ch < TIM_CHAN_NUMOF; ch++) {
         if ((VC_PWM(aDev)->CCTL[ch] & PWM_CCTL_CCIFG_Msk) != 0) {
             /* clear CCIFG interrupt status & disable CC interupt*/
             uint32_t temp = VC_PWM(aDev)->CCTL[ch];
@@ -132,9 +131,9 @@ static void _irqTimerHandler(vcTim aDev)
             temp |= PWM_CCTL_CCIE_Disabled;
             VC_PWM(aDev)->CCTL[ch] = temp;
             /* disable timer global interrupt */
-            NVIC_DisableIRQ(sTimerIrqn[aDev]);
-            if (sIsrTimerCtx[aDev].mCallback != NULL && VC_PWM(aDev)->CCR[ch] != 0) {
-                sIsrTimerCtx[aDev].mCallback(sIsrTimerCtx[aDev].mArg, ch);
+            NVIC_DisableIRQ(sTimIrqn[aDev]);
+            if (sIsrTimCtx[aDev].mCallback != NULL && VC_PWM(aDev)->CCR[ch] != 0) {
+                sIsrTimCtx[aDev].mCallback(sIsrTimCtx[aDev].mArg, ch);
                 /* check if context switch was requested */
                 cortexmIsrEnd();
                 break;
@@ -146,20 +145,20 @@ static void _irqTimerHandler(vcTim aDev)
 /* PWM TIMER interrupt function entry */
 void isrPwm0(void)
 {
-    _irqTimerHandler(TIMER_DEV(0));
+    _irqTimHandler(TIM_DEV(0));
 }
 
 void isrPwm1(void)
 {
-    _irqTimerHandler(TIMER_DEV(1));
+    _irqTimHandler(TIM_DEV(1));
 }
 
 void isrPwm2(void)
 {
-    _irqTimerHandler(TIMER_DEV(2));
+    _irqTimHandler(TIM_DEV(2));
 }
 
 void isrPwm3(void)
 {
-    _irqTimerHandler(TIMER_DEV(3));
+    _irqTimHandler(TIM_DEV(3));
 }

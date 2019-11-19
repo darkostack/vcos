@@ -78,14 +78,14 @@ typedef struct {
     uint32_t mTicks32;
 } vcTimerTicks32;
 
-typedef void (*vcTimerCallbackFunc)(void*);
+typedef void (*vcTimerCallback)(void*);
 
 typedef struct vcTimer {
-    struct vcTimer *    mNext;
-    uint32_t            mTarget;
-    uint32_t            mLongTarget;
-    vcTimerCallbackFunc mCallback;
-    void *              mArg;
+    struct vcTimer *mNext;
+    uint32_t        mTarget;
+    uint32_t        mLongTarget;
+    vcTimerCallback mCallback;
+    void *          mArg;
 } vcTimer;
 
 #ifndef KERNEL_MAXTHREADS

@@ -6,13 +6,14 @@
 
 namespace vc {
 
-Timer::Timer(void)
+void Timer::Init(vcTimerCallback aCallback, void *aArg)
 {
-    mNext = NULL;
-    mTarget = 0;
-    mLongTarget = 0;
-    mCallback = NULL;
-    mArg = NULL;
+    this->mNext = NULL;
+    this->mTarget = 0;
+    this->mLongTarget = 0;
+
+    this->mCallback = aCallback;
+    this->mArg = aArg;
 }
 
 void Timer::Set(uint32_t aOffset)
@@ -73,7 +74,7 @@ TimerScheduler::TimerScheduler(Instance &aInstance)
         , mLongListHead(NULL)
 {
     /* Initialize low-level timer */
-    vcTimerInit(VCOS_CONFIG_TIMER_DEV,
+    vcTimInit(VCOS_CONFIG_TIMER_DEV,
                 kTimerHz,
                 vcPeriphTimerCallback,
                 static_cast<void *>(&aInstance));
@@ -414,6 +415,35 @@ void TimerScheduler::NowInternal(uint32_t *aShortTerm, uint32_t *aLongTerm)
     *aLongTerm = longValue;
 }
 
+extern "C" void sleep64UnlockMutexCallback(void *aArg)
+{
+    Mutex *mutex = static_cast<Mutex *>(aArg);
+    mutex->Unlock();
+}
+
+void TimerScheduler::Sleep64(uint32_t aOffset, uint32_t aLongOffset)
+{
+    if (irqIsIn())
+    {
+        assert(!aLongOffset);
+        Spin(aOffset);
+        return;
+    }
+
+    Timer timer;
+    Mutex mutex;
+
+    timer.mCallback = sleep64UnlockMutexCallback;
+    timer.mArg = static_cast<void *>(&mutex);
+
+    timer.mTarget = 0;
+    timer.mLongTarget = 0;
+
+    mutex.Lock();
+    timer.Set64(aOffset, aLongOffset);
+    mutex.Lock();
+}
+
 void TimerScheduler::AddTimerToList(Timer **aListHead, Timer *aTimer)
 {
     while (*aListHead && (*aListHead)->mTarget <= aTimer->mTarget)
@@ -455,7 +485,7 @@ int TimerScheduler::RemoveTimerFromList(Timer **aListHead, Timer *aTimer)
 
 uint32_t TimerScheduler::LowLevelTimerNow(void)
 {
-    return vcTimerRead(VCOS_CONFIG_TIMER_DEV);
+    return vcTimRead(VCOS_CONFIG_TIMER_DEV);
 }
 
 uint32_t TimerScheduler::LowLevelTimerMask(uint32_t aVal)
@@ -469,7 +499,7 @@ void TimerScheduler::LowLevelTimerSet(uint32_t aTarget)
     {
         return;
     }
-    vcTimerSetAbsolute(VCOS_CONFIG_TIMER_DEV, VCOS_CONFIG_TIMER_CHAN, LowLevelTimerMask(aTarget));
+    vcTimSetAbsolute(VCOS_CONFIG_TIMER_DEV, VCOS_CONFIG_TIMER_CHAN, LowLevelTimerMask(aTarget));
 }
 
 int TimerScheduler::ThisHighPeriod(uint32_t aTarget)
