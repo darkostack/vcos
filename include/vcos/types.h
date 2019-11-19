@@ -70,6 +70,24 @@ typedef struct vcThread
     int            mStackSize;
 } vcThread;
 
+typedef struct {
+    uint64_t mTicks64;
+} vcTimerTicks64;
+
+typedef struct {
+    uint32_t mTicks32;
+} vcTimerTicks32;
+
+typedef void (*vcTimerCallbackFunc)(void*);
+
+typedef struct vcTimer {
+    struct vcTimer *    mNext;
+    uint32_t            mTarget;
+    uint32_t            mLongTarget;
+    vcTimerCallbackFunc mCallback;
+    void *              mArg;
+} vcTimer;
+
 #ifndef KERNEL_MAXTHREADS
 #define KERNEL_MAXTHREADS   (32)
 #endif

@@ -5,6 +5,7 @@ PLATFORM_SIRIUS_C += $(addprefix sirius/,\
     cortexm/vectors_cortexm.c \
     periph/gpio.c \
     periph/uart.c \
+    periph/timer.c \
     assert.c \
     cpu_init.c \
     syscalls.c \
