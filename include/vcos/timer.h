@@ -15,6 +15,10 @@ uint32_t vcTimerNowUsec(void);
 
 uint64_t vcTimerNowUsec64(void);
 
+void vcTimerSet(vcTimer *aTimer, uint32_t aOffset);
+
+void vcTimerSet64(vcTimer *aTimer, uint32_t aOffset, uint32_t aLongOffset);
+
 #ifdef __cplusplus
 }
 #endif

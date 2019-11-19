@@ -32,3 +32,15 @@ uint64_t vcTimerNowUsec64(void)
     assert(VCOS_CONFIG_TIMER_HZ == VCOS_CONFIG_TIMER_HZ_BASE);
     return vcTimerNow64().mTicks64;
 }
+
+void vcTimerSet(vcTimer *aTimer, uint32_t aOffset)
+{
+    Timer &timer = *static_cast<Timer *>(aTimer);
+    timer.Set(aOffset);
+}
+
+void vcTimerSet64(vcTimer *aTimer, uint32_t aOffset, uint32_t aLongOffset)
+{
+    Timer &timer = *static_cast<Timer *>(aTimer);
+    timer.Set64(aOffset, aLongOffset);
+}
