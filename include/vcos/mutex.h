@@ -1,5 +1,5 @@
-#ifndef MUTEX_H
-#define MUTEX_H
+#ifndef VCOS_MUTEX_H
+#define VCOS_MUTEX_H
 
 #include <vcos/types.h>
 
@@ -15,4 +15,4 @@ void vcMutexUnlock(vcMutex *aMutex);
 }
 #endif
 
-#endif /* MUTEX_H */
+#endif /* VCOS_MUTEX_H */
