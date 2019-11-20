@@ -36,14 +36,19 @@ public:
 
     int Add(const char *aBuf, size_t aSize);
 
-private:
-    bool IsEmpty(void) const { return mReads == mWrites; }
     int Avail(void) { return mWrites - mReads; }
+
+    bool IsEmpty(void) const { return mReads == mWrites; }
+
     bool IsFull(void) const { return (mWrites - mReads) == mSize; }
+
     int Free(void) { return (mSize - mWrites + mReads); }
+
     void Push(char aChar) { mBuf[mWrites++ & (mSize -1)] = aChar; }
+
     char Pop(void) { return mBuf[mReads++ & (mSize - 1)]; }
 
+private:
     char *mBuf;
     unsigned int mSize;
     volatile unsigned mReads;

@@ -5,12 +5,27 @@
 #include <vcos/instance.h>
 #include <vcos/stdiobase.h>
 
+#include <arduino/base.hpp>
+
 #include "common/instance.hpp"
 #include "common/thread.hpp"
 
 #include "vcos-core-config.h"
 
 namespace vc {
+
+static int sLoopFunctionUndefined = 0;
+
+extern "C" __attribute__((weak)) void loop(void)
+{
+    sLoopFunctionUndefined = 1;
+    return;
+}
+
+extern "C" __attribute__((weak)) void setup(void)
+{
+    return;
+}
 
 extern "C" __attribute__((weak)) int main(void)
 {
@@ -19,7 +34,20 @@ extern "C" __attribute__((weak)) int main(void)
 
 void *mainThreadFunc(void *aArg)
 {
+    setup();
+
+    loop();
+
+    if (sLoopFunctionUndefined == 0)
+    {
+        while (1)
+        {
+            loop();
+        }
+    }
+
     main();
+
     return NULL;
 }
 

@@ -89,6 +89,10 @@ extern "C" {
 #define SSIZE_MAX ((ssize_t) (SIZE_MAX / 2))
 #endif
 
+#ifdef ARRAY_SIZE
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
+#endif
+
 #ifdef __cplusplus
 }
 #endif

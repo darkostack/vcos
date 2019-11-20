@@ -13,7 +13,7 @@ namespace Utils {
 class RingBuffer : public vcRingBuffer
 {
 public:
-    RingBuffer(char *aBuffer, unsigned aSize)
+    void Init(char *aBuffer, unsigned aSize)
     {
         mBuf = aBuffer;
         mSize = aSize;

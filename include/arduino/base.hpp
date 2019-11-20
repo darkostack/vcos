@@ -1,6 +1,7 @@
 #ifndef ARDUINO_BASE_HPP
 #define ARDUINO_BASE_HPP
 
+#include <vcos/stdiobase.h>
 #include <vcos/periph/gpio.h>
 
 #include <arduino/serialport.hpp>
@@ -19,23 +20,27 @@ enum {
 };
 
 #ifndef ARDUINO_UART_DEV
-#define ARDUINO_UART_DEV  UART_DEV(1)
+#define ARDUINO_UART_DEV  STDIOBASE_UART_DEV
 #endif
 
 static SerialPort Serial(ARDUINO_UART_DEV);
 
-void pinMode(int pin, int mode);
+void pinMode(int aPin, int aMode);
 
-void digitalWrite(int pin, int state);
+void digitalWrite(int aPin, int aState);
 
-int digitalRead(int pin);
+int digitalRead(int aPin);
 
-void delay(unsigned long msec);
+void delay(unsigned long aMsec);
 
-void delayMicroseconds(unsigned long usec);
+void delayMicroseconds(unsigned long aUsec);
 
 unsigned long micros();
 
-int analogRead(int pin);
+int analogRead(int aPin);
+
+extern "C" void setup(void);
+
+extern "C" void loop(void);
 
 #endif /* ARDUINO_BASE_HPP */

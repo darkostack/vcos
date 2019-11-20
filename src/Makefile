@@ -26,13 +26,21 @@ SRC_CLI_CPP += $(addprefix cli/,\
     cli_uart.cpp \
     )
 
+SRC_ARDUINO_CPP += $(addprefix arduino/,\
+    base.cpp \
+    serialport.cpp \
+    )
+
 OBJS_SRC_CORE += $(addprefix $(BUILD)/, $(SRC_CORE_CPP:.cpp=.o))
 OBJS_SRC_CORE += $(addprefix $(BUILD)/, $(SRC_CORE_C:.c=.o))
 
 OBJS_SRC_CLI += $(addprefix $(BUILD)/, $(SRC_CLI_CPP:.cpp=.o))
 
+OBJS_SRC_ARDUINO += $(addprefix $(BUILD)/, $(SRC_ARDUINO_CPP:.cpp=.o))
+
 OBJS_DIR += $(sort $(dir $(OBJS_SRC_CORE)))
 OBJS_DIR += $(sort $(dir $(OBJS_SRC_CLI)))
+OBJS_DIR += $(sort $(dir $(OBJS_SRC_ARDUINO)))
 
 LIB_SRC_CORE_ARCHIVE = $(BUILD)/$(LIB_SRC_CORE)
 LIB_SRC_CORE_OBJS += $(OBJS_SRC_CORE)
@@ -40,8 +48,12 @@ LIB_SRC_CORE_OBJS += $(OBJS_SRC_CORE)
 LIB_SRC_CLI_ARCHIVE = $(BUILD)/$(LIB_SRC_CLI)
 LIB_SRC_CLI_OBJS += $(OBJS_SRC_CLI)
 
+LIB_SRC_ARDUINO_ARCHIVE = $(BUILD)/$(LIB_SRC_ARDUINO)
+LIB_SRC_ARDUINO_OBJS += $(OBJS_SRC_ARDUINO)
+
 ARCHIVE_FILES += $(LIB_SRC_CORE_ARCHIVE)
 ARCHIVE_FILES += $(LIB_SRC_CLI_ARCHIVE)
+ARCHIVE_FILES += $(LIB_SRC_ARDUINO_ARCHIVE)
 
 all: | $(OBJS_DIR) $(ARCHIVE_FILES)
 
@@ -72,5 +84,8 @@ $(LIB_SRC_CORE_ARCHIVE): $(LIB_SRC_CORE_OBJS)
 
 $(LIB_SRC_CLI_ARCHIVE): $(LIB_SRC_CLI_OBJS)
 
+$(LIB_SRC_ARDUINO_ARCHIVE): $(LIB_SRC_ARDUINO_OBJS)
+
 -include $(OBJS_SRC_CORE:%.o=%.d)
 -include $(OBJS_SRC_CLI:%.o=%.d)
+-include $(OBJS_SRC_ARDUINO:%.o=%.d)

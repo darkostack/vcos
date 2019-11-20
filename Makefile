@@ -34,7 +34,7 @@ export TOP = $(shell pwd)
 
 VCOS = vcos
 PLATFORM ?= sirius
-APPS ?= cli
+APPS ?= arduino
 
 BUILD = $(TOP)/build/$(PLATFORM)
 IMAGE = $(BUILD)/vcos-$(APPS)
@@ -91,12 +91,14 @@ LDFLAGS += -Wl,--gc-sections
 export LIB_PLATFORM = libplatform.a
 export LIB_SRC_CORE = libsrc_core.a
 export LIB_SRC_CLI = libsrc_cli.a
+export LIB_SRC_ARDUINO = libsrc_arduino.a
 export LIB_APPS = libapps.a
 
 LIBS += $(BUILD)/platform/$(LIB_PLATFORM)
 LIBS += $(BUILD)/src/$(LIB_SRC_CORE)
 LIBS += $(BUILD)/src/$(LIB_SRC_CLI)
-LIBS += $(BUILD)/apps/$(LIB_APPS)
+LIBS += $(BUILD)/src/$(LIB_SRC_ARDUINO)
+LIBS += $(BUILD)/apps/$(APPS)/$(LIB_APPS)
 
 LDSCRIPT = $(TOP)/platform/$(PLATFORM)/$(PLATFORM).ld
 
@@ -108,7 +110,7 @@ $(BUILD):
 OBJS:
 	$(MAKE) -C platform BUILD="$(BUILD)/platform" CFLAGS="$(CFLAGS)" ASFLAGS="$(ASFLAGS)"
 	$(MAKE) -C src BUILD="$(BUILD)/src" CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
-	$(MAKE) -C apps BUILD="$(BUILD)/apps" CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
+	$(MAKE) -C apps/$(APPS) BUILD="$(BUILD)/apps/$(APPS)" CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
 
 $(IMAGE).elf: $(LIBS)
 	$(CC) $(LDFLAGS) $(patsubst %,-L%,$(patsubst %/,%,$(sort $(dir $(LIBS)))))  \

@@ -7,7 +7,7 @@ using namespace vc;
 
 void vcStdioInit(vcInstance *aInstance)
 {
-    vcUartInit(UART_DEV(1),
+    vcUartInit(STDIOBASE_UART_DEV,
                115200,
                (vcUartRxCallback)vcStdioWriteOne,
                (void *)aInstance);
@@ -19,12 +19,19 @@ int vcStdioWriteOne(vcInstance *aInstance, char aChar)
     return instance.Get<Utils::UartIsrpipe>().WriteOne(aChar);
 }
 
-ssize_t vcStdioRead(void *aBuffer, size_t aCount)
-{
-    return Instance::Get().Get<Utils::UartIsrpipe>().Read(static_cast<char *>(aBuffer), aCount);
-}
-
 ssize_t vcStdioWrite(const void *aBuffer, size_t aLen)
 {
-    return vcUartWrite(UART_DEV(1), (const uint8_t *)aBuffer, aLen);
+    return vcUartWrite(STDIOBASE_UART_DEV, (const uint8_t *)aBuffer, aLen);
+}
+
+ssize_t vcStdioRead(void *aBuffer, size_t aCount)
+{
+    Instance &instance = Instance::Get();
+    return instance.Get<Utils::UartIsrpipe>().Read(static_cast<char *>(aBuffer), aCount);
+}
+
+int vcStdioReadAvailable(void)
+{
+    Instance &instance = Instance::Get();
+    return instance.Get<Utils::UartIsrpipe>().GetTsrb().Avail();
 }

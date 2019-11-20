@@ -1,13 +1,11 @@
-APPS_CLI_C += $(addprefix cli/,\
-    main.c \
-    )
+APPS_ARDUINO_CPP += main.cpp
 
-OBJS_APPS_CLI += $(addprefix $(BUILD)/, $(APPS_CLI_C:.c=.o))
+OBJS_APPS_ARDUINO += $(addprefix $(BUILD)/, $(APPS_ARDUINO_CPP:.cpp=.o))
 
-OBJS_DIR += $(sort $(dir $(OBJS_APPS_CLI)))
+OBJS_DIR += $(sort $(dir $(OBJS_APPS_ARDUINO)))
 
 LIB_APPS_ARCHIVE = $(BUILD)/$(LIB_APPS)
-LIB_APPS_OBJS += $(OBJS_APPS_CLI)
+LIB_APPS_OBJS += $(OBJS_APPS_ARDUINO)
 
 ARCHIVE_FILES += $(LIB_APPS_ARCHIVE)
 
@@ -38,4 +36,4 @@ $(BUILD)/%.a:
 
 $(LIB_APPS_ARCHIVE): $(LIB_APPS_OBJS)
 
--include $(OBJS_APPS_CLI:%.o=%.d)
+-include $(OBJS_APPS_ARDUINO:%.o=%.d)
