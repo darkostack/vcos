@@ -1,8 +1,7 @@
 #include <assert.h>
 
+#include <vcos/cpu.h>
 #include <vcos/periph/tim.h>
-
-#include "cpu.h"
 
 #define TIM_NUMOF      (4U)
 #define TIM_CHAN_NUMOF (3U)

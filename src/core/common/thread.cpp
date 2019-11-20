@@ -8,8 +8,8 @@
 #include "common/debug.h"
 
 /**
- * Note: this global pointer will be use in cortexm thread_arch.c assembly code
- * to get the current active TCB.
+ * Note: this global pointer will be use in SVC and PendSV handler assembly code
+ * to get the current active TCB (Thread Control Block).
  */
 volatile void *gSchedActiveThread;
 
@@ -269,6 +269,7 @@ int ThreadScheduler::Run(void)
     Thread *activeThread = static_cast<Thread *>(GetSchedActiveThread());
 
     int nextrq = bitarithmLsb(mRunqueueBitCache);
+
     Thread *nextThread = GetThreadPointerFromList(static_cast<List *>((mSchedRunqueues[nextrq].mNext)->mNext));
 
     DEBUG("ThreadScheduler::Run() active thread: %" PRIkernel_pid ", next thread: %" PRIkernel_pid ".\r\n",
@@ -292,6 +293,7 @@ int ThreadScheduler::Run(void)
     nextThread->mStatus = THREAD_STATUS_RUNNING;
 
     SetSchedActivePid(nextThread->mPid);
+
     SetSchedActiveThread(nextThread);
 
     DEBUG("ThreadScheduler::Run() done, changed mSchedActiveThread.\r\n");
@@ -335,7 +337,9 @@ void ThreadScheduler::SetStatus(Thread *aThread, vcThreadStatus aStatus)
 void ThreadScheduler::Switch(uint16_t aOtherPrio)
 {
     Thread *activeThread = GetSchedActiveThread();
+
     uint16_t currentPrio = activeThread->mPriority;
+
     int onRunqueue = (activeThread->mStatus >= THREAD_STATUS_ON_RUNQUEUE);
 
     DEBUG("ThreadScheduler::Switch() active pid=%" PRIkernel_pid" prio=%" PRIu16 " on_runqueue=%i "
@@ -368,11 +372,13 @@ void ThreadScheduler::TaskExit(void)
     (void) vcIrqDisable();
 
     SetSchedThreads(NULL, GetSchedActivePid());
+
     SchedNumThreadsRemoveOne();
 
     SetStatus(GetSchedActiveThread(), THREAD_STATUS_STOPPED);
 
     SetSchedActiveThread(NULL);
+
     SwitchContextExit();
 }
 

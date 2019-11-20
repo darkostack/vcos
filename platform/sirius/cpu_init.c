@@ -1,4 +1,4 @@
-#include "cpu.h"
+#include <vcos/cpu.h>
 
 uint32_t SystemCoreClock = 0;
 

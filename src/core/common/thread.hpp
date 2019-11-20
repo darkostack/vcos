@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include <vcos/cpu.h>
 #include <vcos/thread.h>
 
 #include "vcos-core-config.h"
@@ -13,8 +14,6 @@
 #include "common/msg.hpp"
 
 #include "utils/bitarithm.h"
-
-#include "cpu.h"
 
 namespace vc {
 

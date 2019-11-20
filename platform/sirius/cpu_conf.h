@@ -5,9 +5,7 @@
 extern "C" {
 #endif
 
-/* CPU interrupt priority configuration */
-#define ISR_STACKSIZE (1024)
-
+#define CPU_ISR_STACKSIZE (1024)
 #define CPU_DEFAULT_IRQ_PRIO (63U)
 #define CPU_IRQ_NUMOF (64U)
 

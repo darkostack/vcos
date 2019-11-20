@@ -1,9 +1,8 @@
 #include <assert.h>
 
+#include <vcos/cpu.h>
 #include <vcos/periph/gpio.h>
 #include <vcos/periph/uart.h>
-
-#include "cpu.h"
 
 /**
  * Number of UART peripheral interface.

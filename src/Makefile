@@ -15,6 +15,7 @@ SRC_CORE_CPP += $(addprefix core/,\
     )
 
 SRC_CORE_C += $(addprefix core/,\
+    api/assert_api.c \
     common/panic.c \
     utils/bitarithm.c \
     )

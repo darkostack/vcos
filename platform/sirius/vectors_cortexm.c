@@ -3,9 +3,9 @@
 #include <inttypes.h>
 #include <assert.h>
 
+#include <vcos/cpu.h>
 #include <vcos/panic.h>
 
-#include "cpu.h"
 #include "vectors_cortexm.h"
 
 /**
@@ -26,7 +26,7 @@ extern uint8_t _eram;
 /**
  * Allocation of the interrupt stack
  */
-__attribute__((used,section(".isr_stack"))) uint8_t isr_stack[ISR_STACKSIZE];
+__attribute__((used,section(".isr_stack"))) uint8_t isr_stack[CPU_ISR_STACKSIZE];
 
 /**
  * Pre-start routine for CPU-specific settings

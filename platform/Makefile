@@ -1,13 +1,12 @@
 PLATFORM_SIRIUS_C += $(addprefix sirius/,\
-    cortexm/irq.c \
-    cortexm/vectors_cortexm.c \
     periph/gpio.c \
     periph/uart.c \
     periph/tim.c \
-    assert.c \
     cpu_init.c \
+    irq.c \
     syscalls.c \
     vectors.c \
+    vectors_cortexm.c \
     )
 
 OBJS_PLATFORM_SIRIUS += $(addprefix $(BUILD)/, $(PLATFORM_SIRIUS_C:.c=.o))

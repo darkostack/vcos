@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <vcos/cpu.h>
 #include <vcos/instance.h>
 #include <vcos/stdiobase.h>
 
 #include "common/instance.hpp"
 #include "common/thread.hpp"
-
-#include "cpu.h"
 
 #include "vcos-core-config.h"
 

@@ -1,8 +1,7 @@
 #include <assert.h>
 
+#include <vcos/cpu.h>
 #include <vcos/periph/gpio.h>
-
-#include "cpu.h"
 
 /**
  * Sirius has 32 external interupt lines, 16 pins of PORTA and 16 pins of PORTC.

@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <vcos/cpu.h>
 #include <vcos/panic.h>
 #include <vcos/log.h>
 #include <vcos/irq.h>
-
-#include "cpu.h"
 
 const char assertCrashMessage[] = "FAILED ASSERTION.";
 
