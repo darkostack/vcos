@@ -12,6 +12,7 @@ SRC_CORE_CPP += $(addprefix core/,\
     common/timer.cpp \
     common/kernel_init.cpp \
     utils/isrpipe.cpp \
+    utils/ringbuffer.cpp \
     )
 
 SRC_CORE_C += $(addprefix core/,\

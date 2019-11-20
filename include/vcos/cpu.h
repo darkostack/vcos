@@ -1,5 +1,5 @@
-#ifndef CPU_H
-#define CPU_H
+#ifndef VCOS_CPU_H
+#define VCOS_CPU_H
 
 #include <stdio.h>
 
@@ -96,4 +96,4 @@ static inline uint32_t vcCpuGetImageBaseAddr(void)
 }
 #endif
 
-#endif /* CPU_H */
+#endif /* VCOS_CPU_H */

@@ -1,5 +1,6 @@
 INC += -I$(TOP)/platform/sirius
 INC += -I$(TOP)/platform/sirius/cmsis
+INC += -I$(TOP)/platform/sirius/arduino
 
 DEF += -DVCOS_PROJECT_CORE_CONFIG_FILE='\"vcos-core-sirius-config.h\"'
 
