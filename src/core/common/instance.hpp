@@ -18,7 +18,7 @@ namespace vc {
 class Instance : public vcInstance
 {
 public:
-    static Instance &InitSingle(void);
+    static Instance &Init(void);
     
     static Instance &Get(void);
 

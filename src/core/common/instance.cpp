@@ -16,7 +16,7 @@ Instance::Instance(void)
 {
 }
 
-Instance &Instance::InitSingle(void)
+Instance &Instance::Init(void)
 {
     Instance *instance = &Get();
     VerifyOrExit(instance->mIsInitialized == false);

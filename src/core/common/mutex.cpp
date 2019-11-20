@@ -52,7 +52,7 @@ int Mutex::SetLock(int aBlocking)
 
         vcIrqRestore(state);
 
-        vcThreadYieldHigher();
+        ThreadScheduler::YieldHigher();
 
         /* We were woken up by scheduler. Waker removed us from queue.
          * We have the mutex now. */
@@ -146,7 +146,7 @@ void Mutex::UnlockAndSleep(void)
 
     vcIrqRestore(state);
 
-    vcThreadYieldHigher();
+    ThreadScheduler::YieldHigher();
 }
 
 } // namespace vc

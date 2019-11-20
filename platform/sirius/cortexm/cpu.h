@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 #include <vcos/irq.h>
-#include <vcos/thread.h>
 
 #include "cpu_conf.h"
 
@@ -18,23 +17,41 @@ extern "C" {
  */
 #define STACK_CANARY_WORD   (0xE7FEE7FEu)
 
-void cpuInit(void);
+/**
+ * Stack start and end address defined in linker script.
+ */
+extern uint32_t _estack;
+extern uint32_t _sstack;
 
-void cortexmInit(void);
+/**
+ * Interrupt vector base address, defined by the linker
+ */
+extern const void *_isr_vectors;
 
-static inline void cpuPrintLastInstruction(void)
+/**
+ * Global pointer to current active thread
+ */
+extern volatile void *gSchedActiveThread;
+
+void vcCpuInit(void);
+
+void vcCpuIsrEnd(void);
+
+void vcThreadSchedulerRun(void);
+
+static inline void vcCpuPrintLastInstruction(void)
 {
     uint32_t *lr_ptr;
     __asm__ __volatile__("mov %0, lr" : "=r"(lr_ptr));
     printf("%p\n", (void*) lr_ptr);
 }
 
-static inline void cortexmSleepUntilEvent(void)
+static inline void vcCpuSleepUntilEvent(void)
 {
     __WFE();
 }
 
-static inline void cortexmSleep(int aDeep)
+static inline void vcCpuSleep(int aDeep)
 {
     if (aDeep) {
         SCB->SCR |=  (SCB_SCR_SLEEPDEEP_Msk);
@@ -49,17 +66,7 @@ static inline void cortexmSleep(int aDeep)
     vcIrqRestore(state);
 }
 
-/**
- * Trigger a conditional context scheduler run / context switch
- */
-static inline void cortexmIsrEnd(void)
-{
-    if (vcThreadGetContexSwitchRequest()) {
-        vcThreadYieldHigher();
-    }
-}
-
-static inline void cpuJumpToImage(uint32_t aImageAddress)
+static inline void vcCpuJumpToImage(uint32_t aImageAddress)
 {
     /* Disable IRQ */
     __disable_irq();
@@ -80,7 +87,7 @@ static inline void cpuJumpToImage(uint32_t aImageAddress)
     __asm("BX %0" :: "r" (destination_address));
 }
 
-static inline uint32_t cpuGetImageBaseAddr(void)
+static inline uint32_t vcCpuGetImageBaseAddr(void)
 {
     return SCB->VTOR;
 }

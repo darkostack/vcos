@@ -70,7 +70,7 @@ void resetHandlerDefault(void)
 
     postStartup();
 
-    cpuInit();
+    vcCpuInit();
 
     extern void __libc_init_array(void);
     __libc_init_array();

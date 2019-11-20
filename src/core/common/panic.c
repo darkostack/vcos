@@ -23,7 +23,7 @@ __attribute__((noreturn)) void vcCorePanic(vcPanicType aType, const char *aMessa
 
         if (aType == PANIC_ASSERT_FAIL)
         {
-            cpuPrintLastInstruction();
+            vcCpuPrintLastInstruction();
         }
 
         LOG_ERROR("*** kernel panic:\r\n%s\r\n\r\n", aMessage);

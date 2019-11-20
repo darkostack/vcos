@@ -6,7 +6,7 @@ using namespace vc;
 
 vcInstance *vcInstanceInit(void)
 {
-    return &Instance::InitSingle();
+    return &Instance::Init();
 }
 
 bool vcInstanceIsInitialized(vcInstance *aInstance)

@@ -10,11 +10,11 @@ SRC_CORE_CPP += $(addprefix core/,\
     common/mutex.cpp \
     common/msg.cpp \
     common/timer.cpp \
+    common/kernel_init.cpp \
     utils/isrpipe.cpp \
     )
 
 SRC_CORE_C += $(addprefix core/,\
-    common/kernel_init.c \
     common/panic.c \
     utils/bitarithm.c \
     )

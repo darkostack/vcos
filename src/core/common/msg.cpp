@@ -47,7 +47,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
 
             if (me->mStatus == THREAD_STATUS_REPLY_BLOCKED)
             {
-                vcThreadYieldHigher();
+                ThreadScheduler::YieldHigher();
             }
             return 1;
         }
@@ -80,7 +80,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
 
         vcIrqRestore(aState);
 
-        vcThreadYieldHigher();
+        ThreadScheduler::YieldHigher();
 
         DEBUG("Msg::Send() %" PRIkernel_pid ": Back from send block.\r\n",
               me->mPid);
@@ -100,7 +100,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
 
         vcIrqRestore(aState);
 
-        vcThreadYieldHigher();
+        ThreadScheduler::YieldHigher();
     }
 
     return 1;
@@ -153,7 +153,7 @@ int Msg::Receive(int aBlock)
 
             vcIrqRestore(state);
 
-            vcThreadYieldHigher();
+            ThreadScheduler::YieldHigher();
 
             /* sender copied message */
             assert(Get<ThreadScheduler>().GetSchedActiveThread()->mStatus != THREAD_STATUS_RECEIVE_BLOCKED);

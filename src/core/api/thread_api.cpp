@@ -22,19 +22,3 @@ vcKernelPid vcThreadCreate(vcThread *aThread,
                                                     aArg,
                                                     aName);
 }
-
-
-int vcThreadGetContexSwitchRequest(void)
-{
-    return static_cast<int>(Instance::Get().Get<ThreadScheduler>().GetContextSwitchRequest());
-}
-
-void vcThreadTaskExit(void)
-{
-    Instance::Get().Get<ThreadScheduler>().TaskExit();
-}
-
-void vcSchedRun(void)
-{
-    Instance::Get().Get<ThreadScheduler>().Run();
-}

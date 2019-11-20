@@ -135,7 +135,7 @@ static void _irqTimHandler(vcTim aDev)
             if (sIsrTimCtx[aDev].mCallback != NULL && VC_PWM(aDev)->CCR[ch] != 0) {
                 sIsrTimCtx[aDev].mCallback(sIsrTimCtx[aDev].mArg, ch);
                 /* check if context switch was requested */
-                cortexmIsrEnd();
+                vcCpuIsrEnd();
                 break;
             }
         }

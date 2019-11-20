@@ -516,7 +516,7 @@ static void _irqGpioHandler(vcGpio aPin)
     if (sIsrGpioContext[index].mCallback != NULL) {
         sIsrGpioContext[index].mCallback(sIsrGpioContext[index].mArg);
         /* check if context switch was requested */
-        cortexmIsrEnd();
+        vcCpuIsrEnd();
     }
 }
 

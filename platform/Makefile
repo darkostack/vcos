@@ -1,7 +1,5 @@
 PLATFORM_SIRIUS_C += $(addprefix sirius/,\
-    cortexm/cortexm_init.c \
     cortexm/irq.c \
-    cortexm/thread_arch.c \
     cortexm/vectors_cortexm.c \
     periph/gpio.c \
     periph/uart.c \

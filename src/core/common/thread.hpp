@@ -14,7 +14,7 @@
 
 #include "utils/bitarithm.h"
 
-#include "cpu_conf.h"
+#include "cpu.h"
 
 namespace vc {
 
@@ -25,6 +25,17 @@ class Thread : public vcThread, public InstanceLocator
     friend class ThreadScheduler;
 
 public:
+    Thread(char *aStack,
+           int aStackSize,
+           char aPriority,
+           int aFlags,
+           vcThreadHandlerFunc aFunction,
+           void *aArg,
+           const char *aName)
+    {
+        (void) Create(aStack, aStackSize, aPriority, aFlags, aFunction, aArg, aName);
+    }
+
     vcKernelPid Create(char *aStack,
                        int aStackSize,
                        char aPriority,
@@ -48,6 +59,8 @@ public:
     Msg &GetMsgArray(uint16_t aIndex) { return *static_cast<Msg *>(&mMsgArray[aIndex]); }
 
     int HasMsgQueued(void) { return (mMsgArray != NULL); }
+
+    char *StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackStart, int aStackSize);
 };
 
 class ThreadScheduler : public Clist
@@ -106,6 +119,14 @@ public:
     void Yield(void);
 
     Thread *GetThreadPointerFromList(List *aList);
+
+    static int IsrStackUsage(void);
+
+    static void *IsrStackPointer(void);
+
+    static void SwitchContextExit(void);
+
+    static void YieldHigher(void);
 
 private:
     int mSchedNumThreads;

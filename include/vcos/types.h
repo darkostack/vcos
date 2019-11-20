@@ -116,6 +116,23 @@ typedef struct vcTimer {
 #define THREAD_STATUS_NOT_FOUND ((vcThreadStatus)-1)
 
 /**
+ * This marker is used e.g. by 'Thread::SwitchContextExit()' to identify the stacks
+ * beginning.
+ */
+#define STACK_MARKER (0x77777777)
+
+/**
+ * Initial program status register value for a newly created thread
+ */ 
+#define INITIAL_XPSR (0x01000000)
+
+/**
+ * ARM Cortex-M specific exception return value, that triggers the return to the
+ * task mode stack pointer.
+ */
+#define EXCEPT_RET_TASK_MODE (0xfffffffd)
+
+/**
  * Toolchain related defines.
  */
 #ifdef __GNUC__

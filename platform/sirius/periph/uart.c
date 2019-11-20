@@ -286,7 +286,7 @@ static void _irqUartHandler(vcUart aUart)
             sIsrUartContext[aUart].mCallback(sIsrUartContext[aUart].mArg, VC_UART(aUart)->DATA);
         }
         /* check if context switch was requested */
-        cortexmIsrEnd();
+        vcCpuIsrEnd();
     }
 }
 

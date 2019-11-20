@@ -7,9 +7,6 @@
 extern "C" {
 #endif
 
-extern vcKernelPid gMainThreadPid;
-extern vcKernelPid gIdleThreadPid;
-
 vcKernelPid vcThreadCreate(vcThread *aThread,
                            char *aStack,
                            int aStackSize,
@@ -18,25 +15,6 @@ vcKernelPid vcThreadCreate(vcThread *aThread,
                            vcThreadHandlerFunc aFunction,
                            void *aArg,
                            const char *aName);
-
-char *vcThreadStackInit(vcThreadHandlerFunc aFunction,
-                        void *aArg,
-                        void *aStackStart,
-                        int aStackSize);
-
-int vcThreadGetContexSwitchRequest(void);
-
-void vcThreadYieldHigher(void);
-
-void vcThreadSwitchContextExit(void);
-
-void vcThreadTaskExit(void);
-
-int vcThreadIsrStackUsage(void);
-
-void *vcThreadIsrStackPointer(void);
-
-void vcSchedRun(void);
 
 static inline int vcPidIsValid(vcKernelPid aPid)
 {
