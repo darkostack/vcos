@@ -390,7 +390,7 @@ void ThreadScheduler::SetSchedActiveThread(Thread *aThread)
 
 Thread *ThreadScheduler::GetThread(vcKernelPid aPid)
 {
-    if (vcPidIsValid(aPid))
+    if (vcThreadPidIsValid(aPid))
     {
         return GetSchedThreads(aPid);
     }

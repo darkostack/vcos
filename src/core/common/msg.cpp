@@ -12,7 +12,7 @@ namespace vc {
 
 int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
 {
-    if (!vcPidIsValid(aTargetPid))
+    if (!vcThreadPidIsValid(aTargetPid))
     {
         DEBUG("Msg::Send() aTargetPid is invalid, continuing anyways\r\n");
     }
@@ -284,7 +284,7 @@ int Msg::SendToSelf(void)
 
 int Msg::SendInt(vcKernelPid aTargetPid)
 {
-    if (!vcPidIsValid(aTargetPid))
+    if (!vcThreadPidIsValid(aTargetPid))
     {
         DEBUG("Msg::SendInt() aTargetPid is invalid, continuing anyways.\r\n");
     }

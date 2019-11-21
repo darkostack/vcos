@@ -182,11 +182,19 @@ if (${PLATFORM_NAME} STREQUAL sirius)
         DEPENDS vcos_apps_cli
     )
     add_custom_target(vcos_apps_cli_bin ALL DEPENDS vcos_apps_cli.bin)
+    add_custom_target(vcos_apps_cli_size ALL
+        COMMAND arm-none-eabi-size --format=berkeley vcos_apps_cli
+        DEPENDS vcos_apps_cli
+    )
 
     add_custom_command(OUTPUT vcos_apps_arduino.bin
         COMMAND arm-none-eabi-objcopy -O binary vcos_apps_arduino vcos_apps_arduino.bin
         DEPENDS vcos_apps_arduino
     )
     add_custom_target(vcos_apps_arduino_bin ALL DEPENDS vcos_apps_arduino.bin)
+    add_custom_target(vcos_apps_arduino_size ALL
+        COMMAND arm-none-eabi-size --format=berkeley vcos_apps_arduino
+        DEPENDS vcos_apps_arduino
+    )
 
 endif()
