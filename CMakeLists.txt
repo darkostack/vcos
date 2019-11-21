@@ -36,7 +36,6 @@ set(PLATFORM_INCLUDE_DIRECTORIES
 if (${PLATFORM_NAME} STREQUAL sirius)
     set(PLATFORM_INCLUDE_DIRECTORIES
         ${PLATFORM_INCLUDE_DIRECTORIES}
-        ${PLATFORM_DIR}/arduino
         ${PLATFORM_DIR}/cmsis
     )
 endif()
@@ -129,7 +128,7 @@ add_executable(vcos_apps_cli
 )
 
 target_link_libraries(vcos_apps_cli
-    PUBLIC
+    PRIVATE
         vcos_src_core
         vcos_src_cli
         vcos_platform_${PLATFORM_NAME}
@@ -140,7 +139,7 @@ add_executable(vcos_apps_arduino
 )
 
 target_link_libraries(vcos_apps_arduino
-    PUBLIC
+    PRIVATE
         vcos_src_core
         vcos_src_arduino
         vcos_platform_${PLATFORM_NAME}
