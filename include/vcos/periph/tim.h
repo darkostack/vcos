@@ -1,9 +1,9 @@
 #ifndef PERIPH_TIM_H
 #define PERIPH_TIM_H
 
+#include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <limits.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,9 +17,10 @@ typedef unsigned int vcTim;
 
 typedef void (*vcTimCallback)(void *aArg, int aChannel);
 
-typedef struct {
+typedef struct
+{
     vcTimCallback mCallback;
-    void *mArg;
+    void *        mArg;
 } vcTimIsrContext;
 
 int vcTimInit(vcTim aDev, unsigned long aFreq, vcTimCallback aCallback, void *aArg);

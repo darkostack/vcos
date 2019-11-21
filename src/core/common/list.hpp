@@ -15,7 +15,7 @@ public:
     void Add(List *aNode)
     {
         aNode->mNext = this->mNext;
-        this->mNext = aNode;
+        this->mNext  = aNode;
     }
 
     List *RemoveHead(void)

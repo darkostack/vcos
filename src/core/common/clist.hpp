@@ -14,7 +14,7 @@ public:
     {
         if (this->mNext)
         {
-            aNode->mNext = this->mNext->mNext;
+            aNode->mNext       = this->mNext->mNext;
             this->mNext->mNext = aNode;
         }
         else
@@ -29,13 +29,13 @@ public:
     {
         if (this->mNext)
         {
-            aNode->mNext = this->mNext->mNext;
+            aNode->mNext       = this->mNext->mNext;
             this->mNext->mNext = aNode;
         }
         else
         {
             aNode->mNext = aNode;
-            this->mNext = aNode;
+            this->mNext  = aNode;
         }
     }
 
@@ -80,10 +80,7 @@ public:
         return NULL;
     }
 
-    Clist *RightPeek(void)
-    {
-        return static_cast<Clist *>(this->mNext);
-    }
+    Clist *RightPeek(void) { return static_cast<Clist *>(this->mNext); }
 
     Clist *RightPop(void)
     {
@@ -172,7 +169,7 @@ public:
     size_t Count(void)
     {
         Clist *node = static_cast<Clist *>(this->mNext);
-        size_t cnt = 0;
+        size_t cnt  = 0;
 
         if (node)
         {

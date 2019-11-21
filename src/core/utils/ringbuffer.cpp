@@ -113,7 +113,7 @@ unsigned RingBuffer::Remove(unsigned aSize)
 {
     if (aSize > mAvail)
     {
-        aSize = mAvail;
+        aSize  = mAvail;
         mStart = mAvail = 0;
     }
     else

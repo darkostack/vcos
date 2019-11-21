@@ -36,7 +36,8 @@ public:
     void OutputBytes(const uint8_t *aBytes, uint8_t aLength) const;
 
 private:
-    enum {
+    enum
+    {
         kMaxArgs = 32,
     };
 
@@ -47,10 +48,9 @@ private:
     static Interpreter &GetOwner(void);
 
     static const struct Command sCommands[];
-    Server *mServer;
-    Instance *mInstance;
+    Server *                    mServer;
+    Instance *                  mInstance;
 };
-
 
 } // namespace Cli
 } // namespace vc

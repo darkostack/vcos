@@ -30,19 +30,20 @@ public:
     static Uart *sUartServer;
 
 private:
-    enum {
-        kRxBufferSize = VCOS_CONFIG_CLI_UART_RX_BUFFER_SIZE,
-        kTxBufferSize = VCOS_CONFIG_CLI_UART_TX_BUFFER_SIZE,
+    enum
+    {
+        kRxBufferSize  = VCOS_CONFIG_CLI_UART_RX_BUFFER_SIZE,
+        kTxBufferSize  = VCOS_CONFIG_CLI_UART_TX_BUFFER_SIZE,
         kMaxLineLength = VCOS_CONFIG_CLI_MAX_LINE_LENGTH,
     };
 
-    int ProcessCommand(void);
+    int  ProcessCommand(void);
     void Send(void);
 
-    char mRxBuffer[kRxBufferSize];
+    char     mRxBuffer[kRxBufferSize];
     uint16_t mRxLength;
 
-    char mTxBuffer[kTxBufferSize];
+    char     mTxBuffer[kTxBufferSize];
     uint16_t mTxHead;
     uint16_t mTxLength;
 

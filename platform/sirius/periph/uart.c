@@ -9,30 +9,19 @@
  */
 #define UART_NUMOF (7U)
 
-typedef struct {
+typedef struct
+{
     uint8_t mPort;
     uint8_t mPin;
 } vcUartIo;
 
-static const vcUartIo sUartIo[UART_NUMOF] = {
-    { .mPort = PORTA, .mPin = 12 },
-    { .mPort = PORTA, .mPin = 13 },
-    { .mPort = PORTA, .mPin = 14 },
-    { .mPort = PORTA, .mPin = 15 },
-    { .mPort = PORTB, .mPin = 0  },
-    { .mPort = PORTB, .mPin = 1  },
-    { .mPort = PORTB, .mPin = 15 }
-};
+static const vcUartIo sUartIo[UART_NUMOF] = {{.mPort = PORTA, .mPin = 12}, {.mPort = PORTA, .mPin = 13},
+                                             {.mPort = PORTA, .mPin = 14}, {.mPort = PORTA, .mPin = 15},
+                                             {.mPort = PORTB, .mPin = 0},  {.mPort = PORTB, .mPin = 1},
+                                             {.mPort = PORTB, .mPin = 15}};
 
-static const IRQn_Type sUartIrqn[UART_NUMOF] = {
-    Uart0_IRQn,
-    Uart1_IRQn,
-    Uart2_IRQn,
-    Uart3_IRQn,
-    Uart4_IRQn,
-    Uart5_IRQn,
-    Uart6_IRQn
-};
+static const IRQn_Type sUartIrqn[UART_NUMOF] = {Uart0_IRQn, Uart1_IRQn, Uart2_IRQn, Uart3_IRQn,
+                                                Uart4_IRQn, Uart5_IRQn, Uart6_IRQn};
 
 static vcUartIsrContext sIsrUartContext[UART_NUMOF];
 
@@ -40,7 +29,8 @@ static void _uartSfioEnable(vcUart aUart)
 {
     uint32_t temp;
 
-    if (aUart == UART_DEV(0)) {
+    if (aUart == UART_DEV(0))
+    {
         /* rx */
         temp = VC_GPIOA->SEL1;
         temp &= ~GPIO_IOA_SEL1_IOAx_SEL_Msk(12);
@@ -51,7 +41,9 @@ static void _uartSfioEnable(vcUart aUart)
         temp &= ~GPIO_IOB_SEL0_IOBx_SEL_Msk(2);
         temp |= GPIO_SEL0_IOB2_UART0_TX;
         VC_GPIOB->SEL0 = temp;
-    } else if (aUart == UART_DEV(1)) {
+    }
+    else if (aUart == UART_DEV(1))
+    {
         /* rx */
         temp = VC_GPIOA->SEL1;
         temp &= ~GPIO_IOA_SEL1_IOAx_SEL_Msk(13);
@@ -62,7 +54,9 @@ static void _uartSfioEnable(vcUart aUart)
         temp &= ~GPIO_IOB_SEL0_IOBx_SEL_Msk(3);
         temp |= GPIO_SEL0_IOB3_UART1_TX;
         VC_GPIOB->SEL0 = temp;
-    } else if (aUart == UART_DEV(2)) {
+    }
+    else if (aUart == UART_DEV(2))
+    {
         /* rx */
         temp = VC_GPIOA->SEL1;
         temp &= ~GPIO_IOA_SEL1_IOAx_SEL_Msk(14);
@@ -73,7 +67,9 @@ static void _uartSfioEnable(vcUart aUart)
         temp &= ~GPIO_IOB_SEL0_IOBx_SEL_Msk(4);
         temp |= GPIO_SEL0_IOB4_UART2_TX;
         VC_GPIOB->SEL0 = temp;
-    } else if (aUart == UART_DEV(3)) {
+    }
+    else if (aUart == UART_DEV(3))
+    {
         /* rx */
         temp = VC_GPIOA->SEL1;
         temp &= ~GPIO_IOA_SEL1_IOAx_SEL_Msk(15);
@@ -84,7 +80,9 @@ static void _uartSfioEnable(vcUart aUart)
         temp |= GPIO_IOB_SEL0_IOBx_SEL_Msk(5);
         temp &= GPIO_SEL0_IOB5_UART3_TX;
         VC_GPIOB->SEL0 = temp;
-    } else if (aUart == UART_DEV(4)) {
+    }
+    else if (aUart == UART_DEV(4))
+    {
         /* rx */
         temp = VC_GPIOB->SEL0;
         temp &= ~GPIO_IOB_SEL0_IOBx_SEL_Msk(0);
@@ -95,7 +93,9 @@ static void _uartSfioEnable(vcUart aUart)
         temp &= ~GPIO_IOB_SEL0_IOBx_SEL_Msk(6);
         temp |= GPIO_SEL0_IOB6_UART4_TX;
         VC_GPIOB->SEL0 = temp;
-    } else if (aUart == UART_DEV(5)) {
+    }
+    else if (aUart == UART_DEV(5))
+    {
         /* rx */
         temp = VC_GPIOB->SEL0;
         temp &= ~GPIO_IOB_SEL0_IOBx_SEL_Msk(1);
@@ -106,7 +106,9 @@ static void _uartSfioEnable(vcUart aUart)
         temp &= ~GPIO_IOB_SEL0_IOBx_SEL_Msk(7);
         temp |= GPIO_SEL0_IOB7_UART5_TX;
         VC_GPIOB->SEL0 = temp;
-    } else if (aUart == UART_DEV(6)) {
+    }
+    else if (aUart == UART_DEV(6))
+    {
         /* rx */
         temp = VC_GPIOB->SEL1;
         temp &= ~GPIO_IOB_SEL1_IOBx_SEL_Msk(15);
@@ -117,7 +119,9 @@ static void _uartSfioEnable(vcUart aUart)
         temp &= ~GPIO_IOB_SEL1_IOBx_SEL_Msk(8);
         temp |= GPIO_SEL1_IOB8_UART6_TX;
         VC_GPIOB->SEL1 = temp;
-    } else {
+    }
+    else
+    {
         assert(0);
     }
 }
@@ -147,13 +151,14 @@ int vcUartInit(vcUart aUart, uint32_t aBaudrate, vcUartRxCallback aCallback, voi
     VC_UART(aUart)->CTRL2 = temp;
 
     /* set uart baudrate */
-    uint32_t ahb_div = ((VC_MISC2->CLKDIVH & MISC2_CLKDIVH_CLKDIVH_Msk) >> MISC2_CLKDIVH_CLKDIVH_Pos) + 1;
-    uint32_t apb_div = ((VC_MISC2->CLKDIVP & MISC2_CLKDIVP_CLKDIVP_Msk) >> MISC2_CLKDIVP_CLKDIVP_Pos) + 1;
-    uint32_t apb_clk = (SystemCoreClock / ahb_div) / apb_div;
+    uint32_t ahb_div  = ((VC_MISC2->CLKDIVH & MISC2_CLKDIVH_CLKDIVH_Msk) >> MISC2_CLKDIVH_CLKDIVH_Pos) + 1;
+    uint32_t apb_div  = ((VC_MISC2->CLKDIVP & MISC2_CLKDIVP_CLKDIVP_Msk) >> MISC2_CLKDIVP_CLKDIVP_Pos) + 1;
+    uint32_t apb_clk  = (SystemCoreClock / ahb_div) / apb_div;
     uint32_t baud_div = apb_clk / aBaudrate;
 
     /* round-up baud div */
-    if ((apb_clk % aBaudrate) > (aBaudrate / 2)) baud_div++;
+    if ((apb_clk % aBaudrate) > (aBaudrate / 2))
+        baud_div++;
 
     VC_UART(aUart)->BAUDDIV = baud_div;
 
@@ -177,10 +182,11 @@ int vcUartInit(vcUart aUart, uint32_t aBaudrate, vcUartRxCallback aCallback, voi
 
     /* save isr context */
     sIsrUartContext[aUart].mCallback = aCallback;
-    sIsrUartContext[aUart].mArg = aArg;
+    sIsrUartContext[aUart].mArg      = aArg;
 
     /* enable uart rx interrupt if applicable */
-    if (sIsrUartContext[aUart].mCallback) {
+    if (sIsrUartContext[aUart].mCallback)
+    {
         /* set uart rx gpio input pull high */
         vcGpioInit(GPIO_PIN(sUartIo[aUart].mPort, sUartIo[aUart].mPin), GPIO_IN_PU);
         /* enable uart rx interrupt */
@@ -213,13 +219,19 @@ int vcUartMode(vcUart aUart, vcUartDataBits aDataBits, vcUartParity aParity, vcU
     temp |= (aDataBits == UART_DATA_BITS_7) ? UART_CTRL2_LENGTH_7BITS : UART_CTRL2_LENGTH_8BITS;
     temp |= (aStopBits == UART_STOP_BITS_1) ? UART_CTRL2_STOPLEN_1BITS : UART_CTRL2_STOPLEN_2BITS;
 
-    if (aParity == UART_PARITY_NONE) {
+    if (aParity == UART_PARITY_NONE)
+    {
         temp |= UART_CTRL2_PEN_Disabled;
-    } else {
+    }
+    else
+    {
         temp |= UART_CTRL2_PEN_Enabled;
-        if (aParity == UART_PARITY_ODD) {
+        if (aParity == UART_PARITY_ODD)
+        {
             temp |= UART_CTRL2_PMODE_1; /* odd parity */
-        } else {
+        }
+        else
+        {
             temp |= UART_CTRL2_PMODE_0; /* even parity */
         }
     }
@@ -233,7 +245,8 @@ static void _sendByte(vcUart aUart, uint8_t aByte)
 {
     VC_UART(aUart)->DATA = ((aByte & UART_DATA_DATA_Msk) << UART_DATA_DATA_Pos);
 
-    while ((VC_UART(aUart)->STATE & UART_STATE_TXDONE_Msk) == 0);
+    while ((VC_UART(aUart)->STATE & UART_STATE_TXDONE_Msk) == 0)
+        ;
 
     /* clear TXDONE state */
     uint32_t temp = VC_UART(aUart)->STATE;
@@ -245,7 +258,8 @@ size_t vcUartWrite(vcUart aUart, const uint8_t *aData, size_t aLen)
 {
     assert(aUart < UART_NUMOF);
 
-    for (size_t i = 0; i < aLen; i++) {
+    for (size_t i = 0; i < aLen; i++)
+    {
         _sendByte(aUart, aData[i]);
     }
 
@@ -259,7 +273,7 @@ void vcUartPowerOn(vcUart aUart)
     uint32_t temp = VC_MISC2->PCLKEN;
     temp |= MISC2_PCLKEN_UART_Enabled(aUart);
     VC_MISC2->CLKEN_UNLOCK = MISC2_CLKEN_UNLOCK_UNLOCK_KEY;
-    VC_MISC2->PCLKEN = temp;
+    VC_MISC2->PCLKEN       = temp;
 }
 
 void vcUartPowerOff(vcUart aUart)
@@ -270,20 +284,24 @@ void vcUartPowerOff(vcUart aUart)
     temp &= ~MISC2_PCLKEN_UART_Msk(aUart);
     temp |= MISC2_PCLKEN_UART_Disabled(aUart);
     VC_MISC2->CLKEN_UNLOCK = MISC2_CLKEN_UNLOCK_UNLOCK_KEY;
-    VC_MISC2->PCLKEN = temp;
+    VC_MISC2->PCLKEN       = temp;
 }
 
 static void _irqUartHandler(vcUart aUart)
 {
-    if ((VC_UART(aUart)->INTSTS & UART_INTSTS_RXIF_Msk) != 0) {
-        /* clear RXIF interrupt status */ 
+    if ((VC_UART(aUart)->INTSTS & UART_INTSTS_RXIF_Msk) != 0)
+    {
+        /* clear RXIF interrupt status */
         uint32_t temp = VC_UART(aUart)->INTSTS;
         temp |= UART_INTSTS_RXIF_Msk;
         VC_UART(aUart)->INTSTS = temp;
+
         /* call uart rx callback if any */
-        if (sIsrUartContext[aUart].mCallback != NULL) {
+        if (sIsrUartContext[aUart].mCallback != NULL)
+        {
             sIsrUartContext[aUart].mCallback(sIsrUartContext[aUart].mArg, VC_UART(aUart)->DATA);
         }
+
         /* check if context switch was requested */
         vcCpuIsrEnd();
     }

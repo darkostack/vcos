@@ -1,8 +1,8 @@
 #ifndef VCOS_INSTANCE_H
 #define VCOS_INSTANCE_H
 
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include <vcos/types.h>
 

@@ -36,7 +36,7 @@ set(PLATFORM_INCLUDE_DIRECTORIES
 if (${PLATFORM_NAME} STREQUAL sirius)
     set(PLATFORM_INCLUDE_DIRECTORIES
         ${PLATFORM_INCLUDE_DIRECTORIES}
-        ${PLATFORM_DIR}/cmsis
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ARM/cmsis
     )
 endif()
 
@@ -198,3 +198,16 @@ if (${PLATFORM_NAME} STREQUAL sirius)
     )
 
 endif()
+
+set(PRETTY_DIRS
+    ./src
+    ./include
+    ./platform
+    ./apps
+)
+
+add_custom_target(pretty
+    find ${PRETTY_DIRS} \( -name "*.c" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" \) -exec bash -c "echo Beautify '{}' && tools/script/clang-format.sh -i '{}'" \;
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    VERBATIM
+)

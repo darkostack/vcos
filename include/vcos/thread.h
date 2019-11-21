@@ -7,14 +7,14 @@
 extern "C" {
 #endif
 
-vcKernelPid vcThreadCreate(vcThread *aThread,
-                           char *aStack,
-                           int aStackSize,
-                           char aPriority,
-                           int aFlags,
+vcKernelPid vcThreadCreate(vcThread *          aThread,
+                           char *              aStack,
+                           int                 aStackSize,
+                           char                aPriority,
+                           int                 aFlags,
                            vcThreadHandlerFunc aFunction,
-                           void *aArg,
-                           const char *aName);
+                           void *              aArg,
+                           const char *        aName);
 
 static inline int vcThreadPidIsValid(vcKernelPid aPid)
 {

@@ -17,7 +17,7 @@ static void cortexmInit(void)
     /* initialize all vendor specific interrupts with the same value */
     for (unsigned i = 0; i < CPU_IRQ_NUMOF; i++)
     {
-        NVIC_SetPriority((IRQn_Type) i, CPU_DEFAULT_IRQ_PRIO);
+        NVIC_SetPriority((IRQn_Type)i, CPU_DEFAULT_IRQ_PRIO);
     }
 
     /* enable wake up on events for __WFE CPU sleep */
@@ -59,8 +59,10 @@ void vcCpuInit(void)
     VC_ANA->CLKCTRL2 = temp;
 
     /* wait until clock is stable */
-    while ((VC_PMU->STS & PMU_STS_EXIST_32K_Msk) == 0);
-    while ((VC_ANA->CLKCTRL4 & ANA_CLKCTRL4_AC_LOCK_Msk) == 0);
+    while ((VC_PMU->STS & PMU_STS_EXIST_32K_Msk) == 0)
+        ;
+    while ((VC_ANA->CLKCTRL4 & ANA_CLKCTRL4_AC_LOCK_Msk) == 0)
+        ;
 
     /* set AHB clock divider */
     temp = VC_MISC2->CLKDIVH;
@@ -99,8 +101,8 @@ void vcCpuInit(void)
 
     /* disable watchdog timer */
     VC_PMU->WDTPASS = PMU_WDTPASS_UNLOCK_KEY;
-    VC_PMU->WDTEN = PMU_WDTEN_WDTEN_Disabled;
-    
+    VC_PMU->WDTEN   = PMU_WDTEN_WDTEN_Disabled;
+
     /* enable default ahb periph clock */
     temp = VC_MISC2->HCLKEN;
 
@@ -110,7 +112,7 @@ void vcCpuInit(void)
     temp |= MISC2_HCLKEN_MEM_Enabled;
 
     VC_MISC2->CLKEN_UNLOCK = MISC2_CLKEN_UNLOCK_UNLOCK_KEY;
-    VC_MISC2->HCLKEN = temp;
+    VC_MISC2->HCLKEN       = temp;
 
     /* enable default apb periph clock */
     temp = VC_MISC2->PCLKEN;
@@ -123,9 +125,11 @@ void vcCpuInit(void)
     temp |= MISC2_PCLKEN_ANA_Enabled;
 
     VC_MISC2->CLKEN_UNLOCK = MISC2_CLKEN_UNLOCK_UNLOCK_KEY;
-    VC_MISC2->PCLKEN = temp;
+    VC_MISC2->PCLKEN       = temp;
 
     /* wait until clock is stable */
-    while ((VC_PMU->STS & PMU_STS_EXIST_32K_Msk) == 0);
-    while ((VC_ANA->CLKCTRL4 & ANA_CLKCTRL4_AC_LOCK_Msk) == 0);
+    while ((VC_PMU->STS & PMU_STS_EXIST_32K_Msk) == 0)
+        ;
+    while ((VC_ANA->CLKCTRL4 & ANA_CLKCTRL4_AC_LOCK_Msk) == 0)
+        ;
 }

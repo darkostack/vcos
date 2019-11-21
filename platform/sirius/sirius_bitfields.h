@@ -23,7 +23,7 @@ extern "C" {
 /* PMU_DSLEEPPASS register */
 #define PMU_DSLEEPPASS_UNLOCK_Pos (0UL)
 #define PMU_DSLEEPPASS_UNLOCK_Msk (0x1UL << PMU_DSLEEPPASS_UNLOCK_Pos)
-#define PMU_DSLEEPPASS_UNLOCK_KEY (0xAA5555AA << PMU_DSLEEPPASS_UNLOCK_Pos) /* Key to unlock deep sleep mode */
+#define PMU_DSLEEPPASS_UNLOCK_KEY (0xAA5555AA << PMU_DSLEEPPASS_UNLOCK_Pos)
 
 /* PMU_CONTROL register */
 #define PMU_CONTROL_INTEN_Pos (0UL)
@@ -53,30 +53,30 @@ extern "C" {
 #define PMU_CONTROL_PD_WKUEN_Pos (6UL)
 #define PMU_CONTROL_PD_WKUEN_Msk (0x1UL << PMU_CONTROL_PD_WKUEN_Pos)
 #define PMU_CONTROL_PD_WKUEN_Disabled (0UL << PMU_CONTROL_PD_WKUEN_Pos)
-#define PMU_CONTROL_PD_WKUEN_Enabled (1UL << PMU_CONTROL_PD_WKUEN_Pos) /* Enable all wake-up sources when main power is off */
+#define PMU_CONTROL_PD_WKUEN_Enabled (1UL << PMU_CONTROL_PD_WKUEN_Pos)
 
 #define PMU_CONTROL_PWUPCYC_Pos (8UL)
 #define PMU_CONTROL_PWUPCYC_Msk (0xFFUL << PMU_CONTROL_PWUPCYC_Pos)
 
 #define PMU_CONTROL_NOWAITLOCK_Pos (17UL)
 #define PMU_CONTROL_NOWAITLOCK_Msk (0x1UL << PMU_CONTROL_NOWAITLOCK_Pos)
-#define PMU_CONTROL_NOWAITLOCK_Disabled (0UL << PMU_CONTROL_NOWAITLOCK_Pos) /* Wait until lock signal become 1 before switch the clock source */
-#define PMU_CONTROL_NOWAITLOCK_Enabled (1UL << PMU_CONTROL_NOWAITLOCK_Pos) /* Will not wait PLL's lock signal and switch to PLL's clock immediately as long as CLKSEL is set. So the initial clock may be unstable */
+#define PMU_CONTROL_NOWAITLOCK_Disabled (0UL << PMU_CONTROL_NOWAITLOCK_Pos)
+#define PMU_CONTROL_NOWAITLOCK_Enabled (1UL << PMU_CONTROL_NOWAITLOCK_Pos)
 
 #define PMU_CONTROL_INTWKUEN_Pos (18UL)
 #define PMU_CONTROL_INTWKUEN_Msk (0x1UL << PMU_CONTROL_INTWKUEN_Pos)
 #define PMU_CONTROL_INTWKUEN_Disabled (0UL << PMU_CONTROL_INTWKUEN_Pos)
-#define PMU_CONTROL_INTWKUEN_Enabled (1UL << PMU_CONTROL_INTWKUEN_Pos) /* Force wake-up for sleep mode when the wake-up glitch is too small */
+#define PMU_CONTROL_INTWKUEN_Enabled (1UL << PMU_CONTROL_INTWKUEN_Pos)
 
 #define PMU_CONTROL_FSEL32KXTAL_Pos (19UL)
 #define PMU_CONTROL_FSEL32KXTAL_Msk (0x1UL << PMU_CONTROL_FSEL32KXTAL_Pos)
-#define PMU_CONTROL_FSEL32KXTAL_Disabled (0UL << PMU_CONTROL_FSEL32KXTAL_Pos) /* Disabled (Originial setting. using hardware auto detect clock source select XTAL or internal RC) */
-#define PMU_CONTROL_FSEL32KXTAL_Enabled (1UL << PMU_CONTROL_FSEL32KXTAL_Pos) /* Force clock source select XTAL */
+#define PMU_CONTROL_FSEL32KXTAL_Disabled (0UL << PMU_CONTROL_FSEL32KXTAL_Pos)
+#define PMU_CONTROL_FSEL32KXTAL_Enabled (1UL << PMU_CONTROL_FSEL32KXTAL_Pos)
 
 #define PMU_CONTROL_FCLKSELRCH_Pos (20UL)
 #define PMU_CONTROL_FCLKSELRCH_Msk (0x1UL << PMU_CONTROL_FCLKSELRCH_Pos)
-#define PMU_CONTROL_FCLKSELRCH_Disabled (0UL << PMU_CONTROL_FCLKSELRCH_Pos) /* Disabled (Original setting. using original MISC2_CLKSEL setting when CPU from sleep to idle) */
-#define PMU_CONTROL_FCLKSELRCH_Enabled (1UL << PMU_CONTROL_FCLKSELRCH_Pos) /* Force MISC2_CLKSEL select clock source to RCH when cpu from sleep to idle */
+#define PMU_CONTROL_FCLKSELRCH_Disabled (0UL << PMU_CONTROL_FCLKSELRCH_Pos)
+#define PMU_CONTROL_FCLKSELRCH_Enabled (1UL << PMU_CONTROL_FCLKSELRCH_Pos)
 
 /* PMU_STS register */
 #define PMU_STS_INT_32K_Pos (0UL)
@@ -87,79 +87,79 @@ extern "C" {
 
 #define PMU_STS_EXIST_32K_Pos (2UL)
 #define PMU_STS_EXIST_32K_Msk (0x1UL << PMU_STS_EXIST_32K_Pos)
-#define PMU_STS_EXIST_32K_Absent (0UL << PMU_STS_EXIST_32K_Pos) /* 32K crystal is absent */
+#define PMU_STS_EXIST_32K_Absent (0UL << PMU_STS_EXIST_32K_Pos)  /* 32K crystal is absent */
 #define PMU_STS_EXIST_32K_Existed (1UL << PMU_STS_EXIST_32K_Pos) /* 32K crystal is existed */
 
 #define PMU_STS_EXTRST_Pos (4UL)
 #define PMU_STS_EXTRST_Msk (0x1UL << PMU_STS_EXTRST_Pos)
 #define PMU_STS_EXTRST_Disabled (0UL << PMU_STS_EXTRST_Pos)
-#define PMU_STS_EXTRST_Enabled (1UL << PMU_STS_EXTRST_Pos) /* This bit indicated if the last interrupt is cause by external reset signal */
+#define PMU_STS_EXTRST_Enabled (1UL << PMU_STS_EXTRST_Pos)
 #define PMU_STS_EXTRST_Clear (1UL << PMU_STS_EXTRST_Pos)
 
 #define PMU_STS_PORST_Pos (5UL)
 #define PMU_STS_PORST_Msk (0x1UL << PMU_STS_PORST_Pos)
 #define PMU_STS_PORST_Disabled (0UL << PMU_STS_PORST_Pos)
-#define PMU_STS_PORST_Enable (1UL << PMU_STS_PORST_Pos) /* This bit indicated if the last reset is cause by internal power-on reset signal */
+#define PMU_STS_PORST_Enable (1UL << PMU_STS_PORST_Pos)
 #define PMU_STS_PORST_Clear (1UL << PMU_STS_PORST_Pos)
 
 #define PMU_STS_DPORST_Pos (6UL)
 #define PMU_STS_DPORST_Msk (0x1UL << PMU_STS_DPORST_Pos)
 #define PMU_STS_DPORST_Disabled (0UL << PMU_STS_DPORST_Pos)
-#define PMU_STS_DPORST_Enabled (1UL << PMU_STS_DPORST_Pos) /* This bit indicated if the last reset is cause by internal digital power-on reset signal */
+#define PMU_STS_DPORST_Enabled (1UL << PMU_STS_DPORST_Pos)
 #define PMU_STS_DPORST_Clear (1UL << PMU_STS_DPORST_Pos)
 
 #define PMU_STS_WDTSTS_Pos (7UL)
 #define PMU_STS_WDTSTS_Msk (0x1UL << PMU_STS_WDTSTS_Pos)
 #define PMU_STS_WDTSTS_Disabled (0UL << PMU_STS_WDTSTS_Pos)
-#define PMU_STS_WDTSTS_Enabled (1UL << PMU_STS_WDTSTS_Pos) /* This bit indicated that a WDT reset has happened */
+#define PMU_STS_WDTSTS_Enabled (1UL << PMU_STS_WDTSTS_Pos)
 #define PMU_STS_WDTSTS_Clear (1UL << PMU_STS_WDTSTS_Pos)
 
 #define PMU_STS_SFTRST_Pos (8UL)
 #define PMU_STS_SFTRST_Msk (0x1UL << PMU_STS_SFTRST_Pos)
 #define PMU_STS_SFTRST_Disabled (0UL << PMU_STS_SFTRST_Pos)
-#define PMU_STS_SFTRST_Enabled (1UL << PMU_STS_SFTRST_Pos) /* This register indicates that a soft reset has happened */
+#define PMU_STS_SFTRST_Enabled (1UL << PMU_STS_SFTRST_Pos)
 #define PMU_STS_SFRST_Clear (1UL << PMU_STS_SFTRST_Pos)
 
 #define PMU_STS_MODERST_Pos (10UL)
 #define PMU_STS_MODERST_Msk (0x1UL << PMU_STS_MODERST_Pos)
 #define PMU_STS_MODERST_Disabled (0UL << PMU_STS_MODERST_Pos)
-#define PMU_STS_MODERST_Enabled (1UL << PMU_STS_MODERST_Pos) /* This register indicates that a MODE wakeup reset from sleep or deep sleep mode has happened */
+#define PMU_STS_MODERST_Enabled (1UL << PMU_STS_MODERST_Pos)
 #define PMU_STS_MODERST_Clear (1UL << PMU_STS_MODERST_Pos)
 
 #define PMU_STS_WKUIOA_Pos (16UL)
 #define PMU_STS_WKUIOA_Msk (0x1UL << PMU_STS_WKUIOA_Pos)
 #define PMU_STS_WKUIOA_Disabled (0UL << PMU_STS_WKUIOA_Pos)
-#define PMU_STS_WKUIOA_Enabled (1UL << PMU_STS_WKUIOA_Pos) /* This register used to indicate if the previous wake-up source from deep-sleep mode is from IOA wake-up */
+#define PMU_STS_WKUIOA_Enabled (1UL << PMU_STS_WKUIOA_Pos)
 
 #define PMU_STS_WKURTC_Pos (17UL)
 #define PMU_STS_WKURTC_Msk (0x1UL << PMU_STS_WKURTC_Pos)
 #define PMU_STS_WKURTC_Disabled (0UL << PMU_STS_WKURTC_Pos)
-#define PMU_STS_WKURTC_Enabled (1UL << PMU_STS_WKURTC_Pos) /* This register used to inidcate if the previous wake-up source from deep-slepp mode is from RTC module */
+#define PMU_STS_WKURTC_Enabled (1UL << PMU_STS_WKURTC_Pos)
 
 #define PMU_STS_WKUANA_Pos (18UL)
 #define PMU_STS_WKUANA_Msk (0x1UL << PMU_STS_WKUANA_Pos)
 #define PMU_STS_WKUANA_Disabled (0UL << PMU_STS_WKUANA_Pos)
-#define PMU_STS_WKUANA_Enabled (1UL << PMU_STS_WKUANA_Pos) /* This register used to inidcate if the previous wake-up source from deep-sleep mode is from Analog module */
+#define PMU_STS_WKUANA_Enabled (1UL << PMU_STS_WKUANA_Pos)
 
 #define PMU_STS_WKUU32K_Pos (19UL)
 #define PMU_STS_WKUU32K_Mak (0x1UL << PMU_STS_WKUU32K_Pos)
 #define PMU_STS_WKUU32K_Disable (0UL << PMU_STS_WKUU32K_Pos)
-#define PMU_STS_WKUU32K_Enabled (1UL << PMU_STS_WKUU32K_Pos) /* This register used to indicate if the previous wake-up source from deep-sleep mode is from UART 32K module */
+#define PMU_STS_WKUU32K_Enabled (1UL << PMU_STS_WKUU32K_Pos)
 
 #define PMU_STS_WKUXTAL_Pos (20UL)
 #define PMU_STS_WKUXTAL_Msk (0x1UL << PMU_STS_WKUXTAL_Pos)
 #define PMU_STS_WKUXTAL_Disabled (0UL << PMU_STS_WKUXTAL_Pos)
-#define PMU_STS_WKUXTAL_Enabled (1UL << PMU_STS_WKUXTAL_Pos) /* This register used to indicate if the previous wake-up source from deep-sleep mdoe is from crystal absent detection module */
+#define PMU_STS_WKUXTAL_Enabled (1UL << PMU_STS_WKUXTAL_Pos)
 
 #define PMU_STS_WKUPU_Pos (21UL)
 #define PMU_STS_WKUPU_Msk (0x1UL << PMU_STS_WKUPU_Pos)
 #define PMU_STS_WKUPU_Disabled (0UL << PMU_STS_WKUPU_Pos)
-#define PMU_STS_WKUPU_Enabled (1UL << PMU_STS_WKUPU_Pos) /* This register used to indicate if the previous wake-up source from deep-sleep mode is from main power up */
+#define PMU_STS_WKUPU_Enabled (1UL << PMU_STS_WKUPU_Pos)
 
 #define PMU_STS_WKUMODE_Pos (22UL)
 #define PMU_STS_WKUMODE_Msk (0x1UL << PMU_STS_WKUMODE_Pos)
 #define PMU_STS_WKUMODE_Disabled (0UL << PMU_STS_WKUMODE_Pos)
-#define PMU_STS_WKUMODE_Enabled (1UL << PMU_STS_WKUMODE_Pos) /* This register used to indicate if the previous wake-up source from deep-sleep mode is from MODE pin change from 1 to 0 */
+#define PMU_STS_WKUMODE_Enabled (1UL << PMU_STS_WKUMODE_Pos)
 
 #define PMU_STS_MODE_Pos (24UL)
 #define PMU_STS_MODE_Msk (0x1UL << PMU_STS_MODE_Pos)
@@ -192,7 +192,7 @@ extern "C" {
 #define PMU_WDTSTS_WDTSTS_Pos (0UL)
 #define PMU_WDTSTS_WDTSTS_Msk (0x1UL << PMU_WDTSTS_WDTSTS_Pos)
 #define PMU_WDTSTS_WDTSTS_Disabled (0UL << PMU_WDTSTS_WDTSTS_Pos)
-#define PMU_WDTSTS_WDTSTS_Enabled (1UL << PMU_WDTSTS_WDTSTS_Pos) /* This register indicate that a WDT reset has happened */
+#define PMU_WDTSTS_WDTSTS_Enabled (1UL << PMU_WDTSTS_WDTSTS_Pos)
 #define PMU_WDTSTS_WDTSTS_Clear (1UL << PMU_WDTSTS_WDTSTS_Pos)
 
 /* PMU_REMAP register */
@@ -212,7 +212,7 @@ extern "C" {
 #define PMU_STRAP_STRAP_Pos (0UL)
 #define PMU_STRAP_STRAP_Msk (0xFFUL << PMU_STRAP_STRAP_Pos)
 #define PMU_STRAP_STRAP_BIT0_Disabled (0UL << PMU_STRAP_STRAP_Pos) /* Boot from FLASH */
-#define PMU_STRAP_STRAP_BIT0_Enabled  (1UL << PMU_STRAP_STRAP_Pos) /* Boot from IROM */
+#define PMU_STRAP_STRAP_BIT0_Enabled (1UL << PMU_STRAP_STRAP_Pos)  /* Boot from IROM */
 
 /* PMU_PDOWNEN register */
 #define PMU_PDOWNEN_PDOWN_Pos (0UL)
@@ -222,13 +222,13 @@ extern "C" {
 #define PMU_PDOWNEN_WKU_Pos (31UL)
 #define PMU_PDOWNEN_WKU_Msk (0x1UL << PMU_PDOWNEN_WKU_Pos)
 #define PMU_PDOWNEN_WKU_Disabled (0UL << PMU_PDOWNEN_WKU_Pos)
-#define PMU_PDOWNEN_WKU_Enabled (1UL << PMU_PDOWNEN_WKU_Pos) /* Current wake-up signal status, this bit reflect the wake-up status receive by PMU controller */
+#define PMU_PDOWNEN_WKU_Enabled (1UL << PMU_PDOWNEN_WKU_Pos)
 
 /* PMU_SPIPEN register */
 #define PMU_SPIPEN_SPIPEN_Pos (0UL)
 #define PMU_SPIPEN_SPIPEN_Msk (0x1UL << PMU_SPIPEN_SPIPEN_Pos)
 #define PMU_SPIPEN_SPIPEN_Disabled (0UL << PMU_SPIPEN_SPIPEN_Pos) /* Disable SPI probe interface */
-#define PMU_SPIPEN_SPIPEN_Enabled (1UL << PMU_SPIPEN_SPIPEN_Pos) /* Enable SPI probe interface */
+#define PMU_SPIPEN_SPIPEN_Enabled (1UL << PMU_SPIPEN_SPIPEN_Pos)  /* Enable SPI probe interface */
 
 /* -------------------------------------------------------------------------- */
 /* Analog controller */
@@ -237,23 +237,23 @@ extern "C" {
 /* ANA_BGPCTRL register */
 #define ANA_BGPCTRL_BGREF_V2I_F_Pos (0UL) /* BGREF V2I force enable control register */
 #define ANA_BGPCTRL_BGREF_V2I_F_Msk (0x1UL << ANA_BGPCTRL_BGREF_V2I_F_Pos)
-#define ANA_BGPCTRL_BGREF_V2I_F_Disabled (0UL << ANA_BGPCTRL_BGREF_V2I_F_Pos) /* BGREF V2I is controlled by hardware and will be enable only when necessary */
-#define ANA_BGPCTRL_BGREF_V2I_F_Enabled (1UL << ANA_BGPCTRL_BGREF_V2I_F_Pos) /* BGREF V2I is enabled for all the time */
+#define ANA_BGPCTRL_BGREF_V2I_F_Disabled (0UL << ANA_BGPCTRL_BGREF_V2I_F_Pos)
+#define ANA_BGPCTRL_BGREF_V2I_F_Enabled (1UL << ANA_BGPCTRL_BGREF_V2I_F_Pos)
 
 #define ANA_BGPCTRL_BGREF_NMBG_F_Pos (1UL) /* BGREF NMBG force enable control register */
 #define ANA_BGPCTRL_BGREF_NMBG_F_Msk (0x1UL << ANA_BGPCTRL_BGREF_NMBG_F_Pos)
-#define ANA_BGPCTRL_BGREF_NMBG_F_Disabled (0UL << ANA_BGPCTRL_BGREF_NMBG_F_Pos) /* BGREF NMBG is controlled by hardware and will be enabled only when necessary */
-#define ANA_BGPCTRL_BGREF_NMBG_F_Enabled (1UL << ANA_BGPCTRL_BGREF_NMBG_F_Pos) /* BGREF NMBG is enabled for all the time */
+#define ANA_BGPCTRL_BGREF_NMBG_F_Disabled (0UL << ANA_BGPCTRL_BGREF_NMBG_F_Pos)
+#define ANA_BGPCTRL_BGREF_NMBG_F_Enabled (1UL << ANA_BGPCTRL_BGREF_NMBG_F_Pos)
 
 #define ANA_BGPCTRL_BGREF_VSEL_Pos (2UL) /* V2I module voltage input selection */
 #define ANA_BGPCTRL_BGREF_VSEL_Msk (0x1UL << ANA_BGPCTRL_BGREF_VSEL_Pos)
 #define ANA_BGPCTRL_BGREF_VSEL_Disabled (0UL << ANA_BGPCTRL_BGREF_VSEL_Pos) /* From low power bandgap */
-#define ANA_BGPCTRL_BGREF_VSEL_Enabled (1UL << ANA_BGPCTRL_BGREF_VSEL_Pos) /* From normal bandgap */
+#define ANA_BGPCTRL_BGREF_VSEL_Enabled (1UL << ANA_BGPCTRL_BGREF_VSEL_Pos)  /* From normal bandgap */
 
 #define ANA_BGPCTRL_BGREF_ISEL_Pos (3UL) /* V2I module current input selection */
 #define ANA_BGPCTRL_BGREF_ISEL_Msk (0x1UL << ANA_BGPCTRL_BGREF_ISEL_Pos)
 #define ANA_BGPCTRL_BGREF_ISEL_Disabled (0UL << ANA_BGPCTRL_BGREF_ISEL_Pos) /* From low power bandgap */
-#define ANA_BGPCTRL_BGREF_ISEL_Enabled (1UL<< ANA_BGPCTRL_BGREF_ISEL_Pos) /* From normal bandgap */
+#define ANA_BGPCTRL_BGREF_ISEL_Enabled (1UL << ANA_BGPCTRL_BGREF_ISEL_Pos)  /* From normal bandgap */
 
 #define ANA_BGPCTRL_BGREF_VREFDRV_EN_Pos (4UL) /* VREF drive pin enable control register */
 #define ANA_BGPCTRL_BGREF_VREFDRV_EN_Msk (0x1UL << ANA_BGPCTRL_BGREF_VREFDRV_EN_Pos)
@@ -262,13 +262,13 @@ extern "C" {
 
 #define ANA_BGCTRL_TSENSE_F_Pos (5UL) /* Temperature sensor force enable control register */
 #define ANA_BGCTRL_TSENSE_F_Msk (0x1UL << ANA_BGCTRL_TSENSE_F_Pos)
-#define ANA_BGCTRL_TSENSE_F_Disabled (0UL << ANA_BGCTRL_TSENSE_F_Pos) /* Temperature sensor will be enabled only when ADC is enabled and channel 10 is selected */
-#define ANA_BGCTRL_TSENSE_F_Enabled (1UL << ANA_BGCTRL_TSENSE_F_Pos) /* Temperature sensor will be enabled for all the time */
+#define ANA_BGCTRL_TSENSE_F_Disabled (0UL << ANA_BGCTRL_TSENSE_F_Pos)
+#define ANA_BGCTRL_TSENSE_F_Enabled (1UL << ANA_BGCTRL_TSENSE_F_Pos)
 
 #define ANA_BGCTRL_BGREF_NMBG_OFF_Pos (6UL) /* BGREF NMBG disabled control register */
 #define ANA_BGCTRL_BGREF_NMBG_OFF_Msk (0x1UL << ANA_BGCTRL_BGREF_NMBG_OFF_Pos)
 #define ANA_BGCTRL_BGREF_NMBG_OFF_Disabled (0UL << ANA_BGCTRL_BGREF_NMBG_OFF_Pos) /* Use BGREF NMBG when necessary */
-#define ANA_BGCTRL_BGREF_NMBG_OFF_Enabled (1UL << ANA_BGCTRL_BGREF_NMBG_OFF_Pos) /* Use BGREF LPBG for all the time */
+#define ANA_BGCTRL_BGREF_NMBG_OFF_Enabled (1UL << ANA_BGCTRL_BGREF_NMBG_OFF_Pos)  /* Use BGREF LPBG for all the time */
 
 #define ANA_BGCTRL_BGREF_VCAL_NM_Pos (8UL) /* Normal mode bandgap calibration control register */
 #define ANA_BGCTRL_BGREF_VCAL_NM_Msk (0x1FUL << ANA_BGCTRL_BGREF_VCAL_NM_Pos)
@@ -293,8 +293,8 @@ extern "C" {
 /* ANA_LDOCTRL register */
 #define ANA_LDOCTRL_NMLDO_EN_F_Pos (0UL) /* Normal LDO force enable control register */
 #define ANA_LDOCTRL_NMLDO_EN_F_Msk (0x1UL << ANA_LDOCTRL_NMLDO_EN_F_Pos)
-#define ANA_LDOCTRL_NMLDO_EN_F_Disabled (0UL << ANA_LDOCTRL_NMLDO_EN_F_Pos) /* Normal LDO15 will be turned off at sleep or deep sleep mode */
-#define ANA_LDOCTRL_NMLDO_EN_F_Enabled (1UL << ANA_LDOCTRL_NMLDO_EN_F_Pos) /* Normal LDO15 will be forced enable at all modes */
+#define ANA_LDOCTRL_NMLDO_EN_F_Disabled (0UL << ANA_LDOCTRL_NMLDO_EN_F_Pos)
+#define ANA_LDOCTRL_NMLDO_EN_F_Enabled (1UL << ANA_LDOCTRL_NMLDO_EN_F_Pos)
 
 #define ANA_LDOCTRL_NMLDO15_VSEL_Pos (2UL) /* Normal LDO15 voltage selection */
 #define ANA_LDOCTRL_NMLDO15_VSEL_Msk (0x3UL << ANA_LDOCTRL_NMLDO15_VSEL_Pos)
@@ -320,28 +320,28 @@ extern "C" {
 #define ANA_LDOCTRL_PORL_OFF_Pos (12UL) /* PORL disable control register */
 #define ANA_LDOCTRL_PORL_OFF_Msk (0x1UL << ANA_LDOCTRL_PORL_OFF_Pos)
 #define ANA_LDOCTRL_PORL_OFF_Disabled (1UL << ANA_LDOCTRL_PORL_OFF_Pos) /* Enable PORL reset */
-#define ANA_LDOCTRL_PORL_OFF_Enabled (0UL << ANA_LDOCTRL_PORL_OFF_Pos) /* Disable PORL reset */
+#define ANA_LDOCTRL_PORL_OFF_Enabled (0UL << ANA_LDOCTRL_PORL_OFF_Pos)  /* Disable PORL reset */
 
 #define ANA_LDOCTRL_PORH_OFF_Pos (13UL) /* PORH disable control register */
 #define ANA_LDOCTRL_PORH_OFF_Msk (0x1UL << ANA_LDOCTRL_PORH_OFF_Pos)
 #define ANA_LDOCTRL_PORH_OFF_Disabled (1UL << ANA_LDOCTRL_PORH_OFF_Pos) /* Disable PORH reset */
-#define ANA_LDOCTRL_PORH_OFF_Enabled (0UL << ANA_LDOCTRL_PORH_OFF_Pos) /* Enable PORH reset */
+#define ANA_LDOCTRL_PORH_OFF_Enabled (0UL << ANA_LDOCTRL_PORH_OFF_Pos)  /* Enable PORH reset */
 
 #define ANA_LDOCTRL_VDD2_FON_Pos (14UL) /* VDD2 domain force enabled control register */
 #define ANA_LDOCTRL_VDD2_FON_Msk (0x1UL << ANA_LDOCTRL_VDD2_FON_Pos)
-#define ANA_LDOCTRL_VDD2_FON_Disabled (0UL << ANA_LDOCTRL_VDD2_FON_Pos) /* VCDD2 will be disabled under deep-sleep/power-down mode */
-#define ANA_LDOCTRL_VDD2_FON_Enabled (1UL << ANA_LDOCTRL_VDD2_FON_Pos) /* VDD2 will be always enabled */
+#define ANA_LDOCTRL_VDD2_FON_Disabled (0UL << ANA_LDOCTRL_VDD2_FON_Pos)
+#define ANA_LDOCTRL_VDD2_FON_Enabled (1UL << ANA_LDOCTRL_VDD2_FON_Pos)
 
 #define ANA_LDOCTRL_VDD3_FON_Pos (15UL) /* VDD3 domain force enabled control register */
 #define ANA_LDOCTRL_VDD3_FON_Msk (0x1UL << ANA_LDOCTRL_VDD3_FON_Pos)
-#define ANA_LDOCTRL_VDD3_FON_Disabled (0UL << ANA_LDOCTRL_VDD3_FON_Pos) /* VDD3 will be disabled under sleep/deep-sleep/power-down mode */
-#define ANA_LDOCTRL_VDD3_FON_Enabled (1UL << ANA_LDOCTRL_VDD3_FON_Pos) /* VDD3 will be always enabled */
+#define ANA_LDOCTRL_VDD3_FON_Disabled (0UL << ANA_LDOCTRL_VDD3_FON_Pos)
+#define ANA_LDOCTRL_VDD3_FON_Enabled (1UL << ANA_LDOCTRL_VDD3_FON_Pos)
 
 /* ANA_LVDCTRL register */
 #define ANA_LVDCTRL_PWD_Pos (0UL) /* LVD power down control register */
 #define ANA_LVDCTRL_PWD_Msk (0x1UL << ANA_LVDCTRL_PWD_Pos)
 #define ANA_LVDCTRL_PWD_Disabled (1UL << ANA_LVDCTRL_PWD_Pos) /* disable LVD */
-#define ANA_LVDCTRL_PWD_Enabled (0UL << ANA_LVDCTRL_PWD_Pos) /* enable LVD */
+#define ANA_LVDCTRL_PWD_Enabled (0UL << ANA_LVDCTRL_PWD_Pos)  /* enable LVD */
 
 #define ANA_LVDCTRL_VTHSEL_Pos (2UL) /* LVD trigger voltage selection */
 #define ANA_LVDCTRL_VTHSEL_Msk (0x3UL << ANA_LVDCTRL_VTHSEL_Pos)
@@ -352,8 +352,8 @@ extern "C" {
 
 #define ANA_LVDCTRL_PDNS_Pos (4UL) /* This register is used to set the deep sleep behavior when LVD is 0 */
 #define ANA_LVDCTRL_PDNS_Msk (0x1UL << ANA_LVDCTRL_PDNS_Pos)
-#define ANA_LVDCTRL_PDNS_Disabled (0UL << ANA_LVDCTRL_PDNS_Pos) /* Can't enter deep-sleep mode when LVD is 0 */
-#define ANA_LVDCTRL_PDNS_Enabled (1UL << ANA_LVDCTRL_PDNS_Pos) /* Can enter deep-sleep mode no-matter which state LVD is */
+#define ANA_LVDCTRL_PDNS_Disabled (0UL << ANA_LVDCTRL_PDNS_Pos)
+#define ANA_LVDCTRL_PDNS_Enabled (1UL << ANA_LVDCTRL_PDNS_Pos)
 
 #define ANA_LVDCTRL_LVD_DEBSEL_Pos (6UL) /* LVD de-bounce control register */
 #define ANA_LVDCTRL_LVD_DEBSEL_Msk (0x3UL << ANA_LVDCTRL_LVD_DEBSEL_Pos)
@@ -373,7 +373,7 @@ extern "C" {
 #define ANA_CLKCTRL1_LFXO_PWD_Pos (0UL) /* LFXO power down control register */
 #define ANA_CLKCTRL1_LFXO_PWD_Msk (0x1UL << ANA_CLKCTRL1_LFXO_PWD_Pos)
 #define ANA_CLKCTRL1_LFXO_PWD_Disabled (1UL << ANA_CLKCTRL1_LFXO_PWD_Pos) /* disable LFXO */
-#define ANA_CLKCTRL1_LFXO_PWD_Enabled (0UL << ANA_CLKCTRL1_LFXO_PWD_Pos) /* enable LFXO */
+#define ANA_CLKCTRL1_LFXO_PWD_Enabled (0UL << ANA_CLKCTRL1_LFXO_PWD_Pos)  /* enable LFXO */
 
 #define ANA_CLKCTRL1_LFXO_CURSEL_Pos (1UL) /* LFXO current selection control register */
 #define ANA_CLKCTRL1_LFXO_CURSEL_Msk (0x1UL << ANA_CLKCTRL1_LFXO_CURSEL_Pos)
@@ -394,7 +394,7 @@ extern "C" {
 #define ANA_CLKCTRL1_LFRCO_PWD_Pos (5UL) /* LFRCO power down control register */
 #define ANA_CLKCTRL1_LFRCO_PWD_Msk (0x1UL << ANA_CLKCTRL1_LFRCO_PWD_Pos)
 #define ANA_CLKCTRL1_LFRCO_PWD_Disabled (1UL << ANA_CLKCTRL1_LFRCO_PWD_Pos) /* disable LFRCO */
-#define ANA_CLKCTRL1_LFRCO_PWD_Enabled (0UL << ANA_CLKCTRL1_LFRCO_PWD_Pos) /* enable LFRCO */
+#define ANA_CLKCTRL1_LFRCO_PWD_Enabled (0UL << ANA_CLKCTRL1_LFRCO_PWD_Pos)  /* enable LFRCO */
 
 #define ANA_CLKCTRL1_LFRCO_CSEL_Pos (8UL) /* LFRCO capacitor selection control register */
 #define ANA_CLKCTRL1_LFRCO_CSEL_Msk (0x1FUL << ANA_CLKCTRL1_LFRCO_CSEL_Pos)
@@ -454,7 +454,7 @@ extern "C" {
 #define ANA_CLKCTRL4_AC_LOCK_Pos (0UL) /* Auto calibration lock status register */
 #define ANA_CLKCTRL4_AC_LOCK_Msk (0x1UL << ANA_CLKCTRL4_AC_LOCK_Pos)
 #define ANA_CLKCTRL4_AC_LOCK_Disabled (0UL << ANA_CLKCTRL4_AC_LOCK_Pos) /* Auto calibration is not locked */
-#define ANA_CLKCTRL4_AC_LOCK_Enabled (1UL << ANA_CLKCTRL4_AC_LOCK_Pos) /* Auto calibration is locked */
+#define ANA_CLKCTRL4_AC_LOCK_Enabled (1UL << ANA_CLKCTRL4_AC_LOCK_Pos)  /* Auto calibration is locked */
 
 #define ANA_CLKCTRL4_AC_STATE_Pos (1UL) /* Auto calibration status register */
 #define ANA_CLKCTRL4_AC_STATE_Msk (0x7UL << ANA_CLKCTRL4_AC_STATE_Pos)
@@ -468,7 +468,7 @@ extern "C" {
 #define ANA_CLKCTRL4_AC_ERROR_Pos (4UL) /* Auto calibration error status register */
 #define ANA_CLKCTRL4_AC_ERROR_Msk (0x1UL << ANA_CLKCTRL4_AC_ERROR_Pos)
 #define ANA_CLKCTRL4_AC_ERROR_Disabled (0UL << ANA_CLKCTRL4_AC_ERROR_Pos) /* Auto calibration does not have error */
-#define ANA_CLKCTRL4_AC_ERROR_Enabled (1UL << ANA_CLKCTRL4_AC_ERROR_Pos) /* Auto calibration has error to achive the trim target */
+#define ANA_CLKCTRL4_AC_ERROR_Enabled (1UL << ANA_CLKCTRL4_AC_ERROR_Pos)
 
 #define ANA_CLKCTRL4_CCODE_Pos (5UL) /* Current C-Code output value */
 #define ANA_CLKCTRL4_CCODE_Msk (0x7FUL << ANA_CLKCTRL4_CCODE_Pos)
@@ -480,7 +480,7 @@ extern "C" {
 #define ANA_CMPxCTRL_CMPx_EN_Pos (0UL) /* CMPx enable control register */
 #define ANA_CMPxCTRL_CMPx_EN_Msk (0x1UL << ANA_CMPxCTRL_CMPx_EN_Pos)
 #define ANA_CMPxCTRL_CMPx_EN_Disabled (0UL << ANA_CMPxCTRL_CMPx_EN_Pos) /* disable CMPx */
-#define ANA_CMPxCTRL_CMPx_EN_Enabled (1UL << ANA_CMPxCTRL_CMPx_EN_Pos) /* enable CMPx */
+#define ANA_CMPxCTRL_CMPx_EN_Enabled (1UL << ANA_CMPxCTRL_CMPx_EN_Pos)  /* enable CMPx */
 
 #define ANA_CMPxCTRL_CMPx_REFSEL_Pos (1UL) /* CMPx REF selection control register */
 #define ANA_CMPxCTRL_CMPx_REFSEL_Msk (0x1UL << ANA_CMPxCTRL_CMPx_REFSEL_Pos)
@@ -495,7 +495,7 @@ extern "C" {
 #define ANA_CMPxCTRL_CMPx_HYSEN_Pos (4UL) /* CMPx hysteresis enable control register */
 #define ANA_CMPxCTRL_CMPx_HYSEN_Msk (0x1UL << ANA_CMPxCTRL_CMPx_HYSEN_Pos)
 #define ANA_CMPxCTRL_CMPx_HYSEN_Disabled (0UL << ANA_CMPxCTRL_CMPx_HYSEN_Pos) /* disable hysteresis function */
-#define ANA_CMPxCTRL_CMPx_HYSEN_Enabled (1UL << ANA_CMPxCTRL_CMPx_HYSEN_Pos) /* enable hysteresis function */
+#define ANA_CMPxCTRL_CMPx_HYSEN_Enabled (1UL << ANA_CMPxCTRL_CMPx_HYSEN_Pos)  /* enable hysteresis function */
 
 #define ANA_CMPxCTRL_CMPx_LPMODE_Pos (5UL) /* CMPx low power mode control register */
 #define ANA_CMPxCTRL_CMPx_LPMODE_Msk (0x1UL << ANA_CMPxCTRL_CMPx_LPMODE_Pos)
@@ -524,12 +524,12 @@ extern "C" {
 #define ANA_TRNGCTRL_TRNGEN_Pos (0UL) /* TRNG enable control register */
 #define ANA_TRNGCTRL_TRNGEN_Msk (0x1UL << ANA_TRNGCTRL_TRNGEN_Pos)
 #define ANA_TRNGCTRL_TRNGEN_Disabled (0UL << ANA_TRNGCTRL_TRNGEN_Pos) /* disable TRNG controller */
-#define ANA_TRNGCTRL_TRNGEN_Enabled (1UL << ANA_TRNGCTRL_TRNGEN_Pos) /* enable TRNG controller */
+#define ANA_TRNGCTRL_TRNGEN_Enabled (1UL << ANA_TRNGCTRL_TRNGEN_Pos)  /* enable TRNG controller */
 
 #define ANA_TRNGCTRL_PRNG_Pos (1UL) /* Pseudeo random number generator (PRNG) enable control register */
 #define ANA_TRNGCTRL_PRNG_Msk (0x1UL << ANA_TRNGCTRL_PRNG_Pos)
 #define ANA_TRNGCTRL_PRNG_Disabled (0UL << ANA_TRNGCTRL_PRNG_Pos) /* disable PRNG controller */
-#define ANA_TRNGCTRL_PRNG_Enabled (1UL << ANA_TRNGCTRL_PRNG_Pos) /* enable PRNG controller */
+#define ANA_TRNGCTRL_PRNG_Enabled (1UL << ANA_TRNGCTRL_PRNG_Pos)  /* enable PRNG controller */
 
 #define ANA_TRNGCTRL_BIAS_Pos (2UL) /* TRNG BIAS current control register */
 #define ANA_TRNGCTRL_BIAS_Msk (0x3UL << ANA_TRNGCTRL_BIAS_Pos)
@@ -540,10 +540,10 @@ extern "C" {
 
 #define ANA_TRNGCTRL_AON_Pos (4UL) /* TRNG always on control register */
 #define ANA_TRNGCTRL_AON_Msk (0x1UL << ANA_TRNGCTRL_AON_Pos)
-#define ANA_TRNGCTRL_AON_Disabled (0UL << ANA_TRNGCTRL_AON_Pos) /* TRNG will be enabled only when TRNG capture is triggered */
-#define ANA_TRNGCTRL_AON_Enabled (1UL << ANA_TRNGCTRL_AON_Pos) /* TRNG module will be enabled for all the time */
+#define ANA_TRNGCTRL_AON_Disabled (0UL << ANA_TRNGCTRL_AON_Pos)
+#define ANA_TRNGCTRL_AON_Enabled (1UL << ANA_TRNGCTRL_AON_Pos)
 
-#define ANA_TRNGCTRL_BITSEL_Pos (6UL) /* TRNG bit number, this register is used to control how many bits will be latched in one TRNG cycle */
+#define ANA_TRNGCTRL_BITSEL_Pos (6UL)
 #define ANA_TRNGCTRL_BITSEL_Msk (0x3UL << ANA_TRNGCTRL_BITSEL_Pos)
 #define ANA_TRNGCTRL_BITSEL_0 (0UL << ANA_TRNGCTRL_BITSEL_Pos) /* 32 bits */
 #define ANA_TRNGCTRL_BITSEL_1 (1UL << ANA_TRNGCTRL_BITSEL_Pos) /* 24 bits */
@@ -585,30 +585,30 @@ extern "C" {
 #define ANA_ADCCTRL1_ADC_EN_Pos (0UL) /* ADC enable control register */
 #define ANA_ADCCTRL1_ADC_EN_Msk (0x1UL << ANA_ADCCTRL1_ADC_EN_Pos)
 #define ANA_ADCCTRL1_ADC_EN_Disabled (0UL << ANA_ADCCTRL1_ADC_EN_Pos) /* disable ADC */
-#define ANA_ADCCTRL1_ADC_EN_Enabled (1UL << ANA_ADCCTRL1_ADC_EN_Pos) /* enable ADC */
+#define ANA_ADCCTRL1_ADC_EN_Enabled (1UL << ANA_ADCCTRL1_ADC_EN_Pos)  /* enable ADC */
 
 #define ANA_ADCCTRL1_ADC_MSTART_Pos (1UL) /* ADC manual conversion start control register */
 #define ANA_ADCCTRL1_ADC_MSTART_Msk (0x1UL << ANA_ADCCTRL1_ADC_MSTART_Pos)
-#define ANA_ADCCTRL1_ADC_MSTART_0 (0UL << ANA_ADCCTRL1_ADC_MSTART_Pos) /* write: no effect, read: previous manual convert is done */
-#define ANA_ADCCTRL1_ADC_MSTART_1 (1UL << ANA_ADCCTRL1_ADC_MSTART_Pos) /* write: start a manual ADC sample, read: previous manual convert is on-going */
+#define ANA_ADCCTRL1_ADC_MSTART_0 (0UL << ANA_ADCCTRL1_ADC_MSTART_Pos)
+#define ANA_ADCCTRL1_ADC_MSTART_1 (1UL << ANA_ADCCTRL1_ADC_MSTART_Pos)
 
 #define ANA_ADCCTRL1_ADC_STOP_Pos (2UL) /* ADC manual conversion stop control register */
 #define ANA_ADCCTRL1_ADC_STOP_Msk (0x1UL << ANA_ADCCTRL1_ADC_STOP_Pos)
-#define ANA_ADCCTRL1_ADC_STOP_0 (0UL << ANA_ADCCTRL1_ADC_STOP_Pos) /* write: no effect, read: previous stop action is done */
-#define ANA_ADCCTRL1_ADC_STOP_1 (1UL << ANA_ADCCTRL1_ADC_STOP_Pos) /* write: stop current manual ADC sample, read: previous stop action is on-going */
+#define ANA_ADCCTRL1_ADC_STOP_0 (0UL << ANA_ADCCTRL1_ADC_STOP_Pos)
+#define ANA_ADCCTRL1_ADC_STOP_1 (1UL << ANA_ADCCTRL1_ADC_STOP_Pos)
 
 #define ANA_ADCCTRL1_ADC_CONTI_Pos (3UL) /* ADC continous mode */
 #define ANA_ADCCTRL1_ADC_CONTI_Msk (0x1UL << ANA_ADCCTRL1_ADC_CONTI_Pos)
-#define ANA_ADCCTRL1_ADC_CONTI_0 (0UL << ANA_ADCCTRL1_ADC_CONTI_Pos) /* write 1 to ADC_START bit will trigger a single ADC conversion action */
-#define ANA_ADCCTRL1_ADC_CONTI_1 (1UL << ANA_ADCCTRL1_ADC_CONTI_Pos) /* write 1 to ADC_START bit will trigger a countinuous ADC conversion action until ADC_STOP bit is set to 1 */
+#define ANA_ADCCTRL1_ADC_CONTI_0 (0UL << ANA_ADCCTRL1_ADC_CONTI_Pos)
+#define ANA_ADCCTRL1_ADC_CONTI_1 (1UL << ANA_ADCCTRL1_ADC_CONTI_Pos)
 
 #define ANA_ADCCTRL1_ADC_TRGSEL_Pos (4UL) /* ADC auto conversion trigger source selection */
 #define ANA_ADCCTRL1_ADC_TRGSEL_Msk (0x3UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos)
-#define ANA_ADCCTRL1_ADC_TRGSEL_0 (0UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos) /* Auto ADC conversion is off */
-#define ANA_ADCCTRL1_ADC_TRGSEL_4 (4UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos) /* Auto ADC will be triggered by timer 0's overflow */
-#define ANA_ADCCTRL1_ADC_TRGSEL_5 (5UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos) /* Auto ADC will be triggered by timer 1's overflow */
-#define ANA_ADCCTRL1_ADC_TRGSEL_6 (6UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos) /* Auto ADC will be triggered by timer 2's overflow */
-#define ANA_ADCCTRL1_ADC_TRGSEL_7 (7UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos) /* Auto ADC will be triggered by timer 3's overflow */
+#define ANA_ADCCTRL1_ADC_TRGSEL_0 (0UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos)
+#define ANA_ADCCTRL1_ADC_TRGSEL_4 (4UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos)
+#define ANA_ADCCTRL1_ADC_TRGSEL_5 (5UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos)
+#define ANA_ADCCTRL1_ADC_TRGSEL_6 (6UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos)
+#define ANA_ADCCTRL1_ADC_TRGSEL_7 (7UL << ANA_ADCCTRL1_ADC_TRGSEL_Pos)
 
 #define ANA_ADCCTRL1_ADC_ALIEN_Pos (7UL) /* ADC data alien control register */
 #define ANA_ADCCTRL1_ADC_ALIEN_Msk (0x1UL << ANA_ADCCTRL1_ADC_ALIEN_Pos)
@@ -617,7 +617,7 @@ extern "C" {
 
 #define ANA_ADCCTRL1_ADC_DELAY_Pos (8UL) /* ADC enable delay control register */
 #define ANA_ADCCTRL1_ADC_DELAY_Msk (0xFFUL << ANA_ADCCTRL1_ADC_DELAY_Pos)
-#define ANA_ADCCTRL1_ADC_DELAY(x) ((x -1) << ANA_ADCCTRL1_ADC_DELAY_Pos) /* 0: 1 ADC clock - 255: 256 ADC clock */
+#define ANA_ADCCTRL1_ADC_DELAY(x) ((x - 1) << ANA_ADCCTRL1_ADC_DELAY_Pos)
 
 #define ANA_ADCCTRL1_ADC_CLKSEL_Pos (16UL) /* ADC control source selection */
 #define ANA_ADCCTRL1_ADC_CLKSEL_Msk (0x1UL << ANA_ADCCTRL1_ADC_CLKSEL_Pos)
@@ -626,10 +626,10 @@ extern "C" {
 
 #define ANA_ADCCTRL1_ADC_FEN_Pos (17UL)
 #define ANA_ADCCTRL1_ADC_FEN_Msk (0x1UL << ANA_ADCCTRL1_ADC_FEN_Pos)
-#define ANA_ADCCTRL1_ADC_FEN_Disabled (0UL << ANA_ADCCTRL1_ADC_FEN_Pos) /* ADC will be turned-on only when manual or auto-trigger is active */
+#define ANA_ADCCTRL1_ADC_FEN_Disabled (0UL << ANA_ADCCTRL1_ADC_FEN_Pos)
 #define ANA_ADCCTRL1_ADC_FEN_Enabled (1UL << ANA_ADCCTRL1_ADC_FEN_Pos) /* ADC will be turned-on all the time */
 
-#define ANA_ADCCTRL1_ADC_CLKDIV_Pos (20UL) /* ADC sample rate control register. ADC_CLK = ADC_CLK source / (ADC_CLKDIV + 1) */
+#define ANA_ADCCTRL1_ADC_CLKDIV_Pos (20UL)
 #define ANA_ADCCTRL1_ADC_CLKDIV_Msk (0xFFUL << ANA_ADCCTRL1_ADC_CLKDIV_Pos)
 
 /* ANA_ADCCTRL2 register */
@@ -687,11 +687,11 @@ extern "C" {
 #define ANA_STS_HFACLOCK_Pos (0UL) /* HFOSC auto-calibration lock status */
 #define ANA_STS_HFACLOCK_Msk (0x1UL << ANA_STS_HFACLOCK_Pos)
 #define ANA_STS_HFACLOCK_Disabled (0UL << ANA_STS_HFACLOCK_Pos) /* HFOSC auto-calibration is not lock */
-#define ANA_STS_HFACLOCK_Enabled (1UL << ANA_STS_HFACLOCK_Pos) /* HFOSC auto-calibration is lock */
+#define ANA_STS_HFACLOCK_Enabled (1UL << ANA_STS_HFACLOCK_Pos)  /* HFOSC auto-calibration is lock */
 
 #define ANA_STS_HFACERROR_Pos (1UL) /* HFOSC auto-calibration error status */
 #define ANA_STS_HFACERROR_Msk (0x1UL << ANA_STS_HFACERROR_Pos)
-#define ANA_STS_HFACERROR_OK (0UL << ANA_STS_HFACERROR_Pos) /* HFOSC auto-calibration is ok */
+#define ANA_STS_HFACERROR_OK (0UL << ANA_STS_HFACERROR_Pos)  /* HFOSC auto-calibration is ok */
 #define ANA_STS_HFACERROR_ERR (1UL << ANA_STS_HFACERROR_Pos) /* HFOSC auto-calibration is error */
 
 #define ANA_STS_COMP1_SLOW_Pos (2UL) /* This bit shows the output of comparator 1 */
@@ -703,7 +703,7 @@ extern "C" {
 #define ANA_STS_LVD_SLOW_Pos (4UL) /* LVD status, longer response time (60us) */
 #define ANA_STS_LVD_SLOW_Msk (0x1UL << ANA_STS_LVD_SLOW_Pos)
 #define ANA_STS_LVD_SLOW_Disabled (0UL << ANA_STS_LVD_SLOW_Pos) /* LVD is not asserted */
-#define ANA_STS_LVD_SLOW_Enabled (1UL << ANA_STS_LVD_SLOW_Pos) /* LVD is asserted */
+#define ANA_STS_LVD_SLOW_Enabled (1UL << ANA_STS_LVD_SLOW_Pos)  /* LVD is asserted */
 
 #define ANA_STS_COMP1_FAST_Pos (5UL) /* This bit shows the output of comparator 1 */
 #define ANA_STS_COMP1_FAST_Msk (0x1UL << ANA_STS_COMP1_FAST_Pos)
@@ -714,7 +714,7 @@ extern "C" {
 #define ANA_STS_LVD_FAST_Pos (7UL) /* LVD status, shorter response time (2 PCLKs) */
 #define ANA_STS_LVD_FAST_Msk (0x1UL << ANA_STS_LVD_FAST_Pos)
 #define ANA_STS_LVD_FAST_Disabled (0UL << ANA_STS_LVD_FAST_Pos) /* LVD is not asserted */
-#define ANA_STS_LVD_FAST_Enabled (1UL << ANA_STS_LVD_FAST_Pos) /* LVD is asserted */
+#define ANA_STS_LVD_FAST_Enabled (1UL << ANA_STS_LVD_FAST_Pos)  /* LVD is asserted */
 
 /* ANA_INTSTS register */
 #define ANA_INTSTS_INTSTS0_Pos (0UL) /* Interrupt flag of HFACLOCK */
@@ -843,7 +843,7 @@ extern "C" {
 #define RTC_DIV_RTCDIV_Msk (0x3FFFFFFUL << RTC_DIV_RTCDIV_Pos)
 
 /* RTC_CTL register */
-#define RTC_CTL_MODE_Pos (0UL) /* This register is used to control the capture/divider mode of high frequency divider */
+#define RTC_CTL_MODE_Pos (0UL)
 #define RTC_CTL_MODE_Msk (0x3UL << RTC_CTL_MODE_Pos)
 #define RTC_CTL_MODE_0 (0UL << RTC_CTL_MODE_Pos) /* high frequency divider mode */
 #define RTC_CTL_MODE_1 (1UL << RTC_CTL_MODE_Pos) /* wait mode */
@@ -861,7 +861,7 @@ extern "C" {
 #define RTC_SITV_SITVEN_Pos (6UL)
 #define RTC_SITV_SITVEN_Msk (0x1UL << RTC_SITV_SITVEN_Pos)
 #define RTC_SITV_SITVEN_Disabled (0UL << RTC_SITV_SITVEN_Pos) /* Disabled multi second wake-up feature */
-#define RTC_SITV_SITVEN_Enabled (1UL << RTC_SITV_SITVEN_Pos) /* Enabled multi second wake-up feature */
+#define RTC_SITV_SITVEN_Enabled (1UL << RTC_SITV_SITVEN_Pos)  /* Enabled multi second wake-up feature */
 
 /* RTC_PWD register */
 #define RTC_PWD_PWDEN_Pos (0UL)
@@ -956,7 +956,7 @@ extern "C" {
 #define RTC_ACCTRL_ACEN_Pos (0UL) /* Auto-calibration enable control register */
 #define RTC_ACCTRL_ACEN_Msk (0x1UL << RTC_ACCTRL_ACEN_Pos)
 #define RTC_ACCTRL_ACEN_Disabled (0UL << RTC_ACCTRL_ACEN_Pos) /* Disable auto-calibration function */
-#define RTC_ACCTRL_ACEN_Enabled (1UL << RTC_ACCTRL_ACEN_Pos) /* Enable auto-calibration function */
+#define RTC_ACCTRL_ACEN_Enabled (1UL << RTC_ACCTRL_ACEN_Pos)  /* Enable auto-calibration function */
 
 #define RTC_ACCTRL_MANU_Pos (1UL) /* Auto-calibration manual trigger function */
 #define RTC_ACCTRL_MANU_Msk (0x1UL << RTC_ACCTRL_MANU_Pos)
@@ -1179,10 +1179,10 @@ extern "C" {
 /* MEM_FLASH_CTRL register */
 #define MEM_FLASH_CTRL_CSMODE_Pos (0UL)
 #define MEM_FLASH_CTRL_CSMODE_Msk (0x3UL << MEM_FLASH_CTRL_CSMODE_Pos)
-#define MEM_FLASH_CTRL_CSMODE_0 (0UL << MEM_FLASH_CTRL_CSMODE_Pos) /* disable checksum function */
-#define MEM_FLASH_CTRL_CSMODE_1 (1UL << MEM_FLASH_CTRL_CSMODE_Pos) /* always-on checksum mode */
-#define MEM_FLASH_CTRL_CSMODE_2 (2UL << MEM_FLASH_CTRL_CSMODE_Pos) /* checksum start at overflow of timer 2 */
-#define MEM_FLASH_CTRL_CSMODE_3 (3UL << MEM_FLASH_CTRL_CSMODE_Pos) /* checksum start at rising edge of RTC second pulse */
+#define MEM_FLASH_CTRL_CSMODE_0 (0UL << MEM_FLASH_CTRL_CSMODE_Pos)
+#define MEM_FLASH_CTRL_CSMODE_1 (1UL << MEM_FLASH_CTRL_CSMODE_Pos)
+#define MEM_FLASH_CTRL_CSMODE_2 (2UL << MEM_FLASH_CTRL_CSMODE_Pos)
+#define MEM_FLASH_CTRL_CSMODE_3 (3UL << MEM_FLASH_CTRL_CSMODE_Pos)
 
 #define MEM_FLASH_CTRL_READM0_Pos (4UL)
 #define MEM_FLASH_CTRL_READM0_Msk (0x1UL << MEM_FLASH_CTRL_READM0_Pos)
@@ -1237,23 +1237,23 @@ extern "C" {
 /* MEM_FLASH_INTEN register */
 #define MEM_FLASH_INTEN_INTEN0_Pos (0UL) /* Checksum done interrupt enable control register */
 #define MEM_FLASH_INTEN_INTEN0_Msk (0x1UL << MEM_FLASH_INTEN_INTEN0_Pos)
-#define MEM_FLASH_INTEN_INTEN0_Disabled (0UL << MEM_FLASH_INTEN_INTEN0_Pos) /* Disable checksum done interrupt */
-#define MEM_FLASH_INTEN_INTEN0_Enabled (1UL << MEM_FLASH_INTEN_INTEN0_Pos) /* Enable checksum done interrupt */
+#define MEM_FLASH_INTEN_INTEN0_Disabled (0UL << MEM_FLASH_INTEN_INTEN0_Pos)
+#define MEM_FLASH_INTEN_INTEN0_Enabled (1UL << MEM_FLASH_INTEN_INTEN0_Pos)
 
 #define MEM_FLASH_INTEN_INTEN1_Pos (1UL) /* Checksum error interrupt enable control register */
 #define MEM_FLASH_INTEN_INTEN1_Msk (0x1UL << MEM_FLASH_INTEN_INTEN1_Pos)
-#define MEM_FLASH_INTEN_INTEN1_Disabled (0UL << MEM_FLASH_INTEN_INTEN1_Pos) /* Disable checksum error interrupt */
-#define MEM_FLASH_INTEN_INTEN1_Enabled (1UL << MEM_FLASH_INTEN_INTEN1_Pos) /* Enable checksum error interrupt */
+#define MEM_FLASH_INTEN_INTEN1_Disabled (0UL << MEM_FLASH_INTEN_INTEN1_Pos)
+#define MEM_FLASH_INTEN_INTEN1_Enabled (1UL << MEM_FLASH_INTEN_INTEN1_Pos)
 
 #define MEM_FLASH_INTEN_INTEN2_Pos (2UL) /* Hit rate done interrupt enable control register */
 #define MEM_FLASH_INTEN_INTEN2_Msk (0x1UL << MEM_FLASH_INTEN_INTEN2_Pos)
-#define MEM_FLASH_INTEN_INTEN2_Disabled (0UL << MEM_FLASH_INTEN_INTEN2_Pos) /* Disable hit rate done interrupt */
-#define MEM_FLASH_INTEN_INTEN2_Enabled (1UL << MEM_FLASH_INTEN_INTEN2_Pos) /* Enable hit rate done interrupt */
+#define MEM_FLASH_INTEN_INTEN2_Disabled (0UL << MEM_FLASH_INTEN_INTEN2_Pos)
+#define MEM_FLASH_INTEN_INTEN2_Enabled (1UL << MEM_FLASH_INTEN_INTEN2_Pos)
 
 #define MEM_FLASH_INTEN_INTEN3_Pos (3UL) /* Hit rate lowest value detected interrupt enable control register */
 #define MEM_FLASH_INTEN_INTEN3_Msk (0x1UL << MEM_FLASH_INTEN_INTEN3_Pos)
-#define MEM_FLASH_INTEN_INTEN3_Disabled (0UL << MEM_FLASH_INTEN_INTEN3_Pos) /* Disable hit rate lowest value detected interrupt */
-#define MEM_FLASH_INTEN_INTEN3_Enabled (1UL << MEM_FLASH_INTEN_INTEN3_Pos) /* Enable hit rate lowest value detected interrupt */
+#define MEM_FLASH_INTEN_INTEN3_Disabled (0UL << MEM_FLASH_INTEN_INTEN3_Pos)
+#define MEM_FLASH_INTEN_INTEN3_Enabled (1UL << MEM_FLASH_INTEN_INTEN3_Pos)
 
 /* MEM_FLASH_INT register */
 #define MEM_FLASH_INT_CSDONE_Pos (0UL) /* Checksum done status bit */
@@ -1313,12 +1313,12 @@ extern "C" {
 /* GPIO_IOX_OEN register */
 #define GPIO_IOX_OEN_IOXOEN_Msk(pin) (1UL << pin)
 #define GPIO_IOX_OEN_IOXOEN_Disabled(pin) (1UL << pin) /* Disable IO's output function */
-#define GPIO_IOX_OEN_IOXOEN_Enabled(pin) (0UL << pin) /* Enable IO's output function */
+#define GPIO_IOX_OEN_IOXOEN_Enabled(pin) (0UL << pin)  /* Enable IO's output function */
 
 /* GPIO_IOX_IE register */
 #define GPIO_IOX_IE_IOXIE_Msk(pin) (1UL << pin)
 #define GPIO_IOX_IE_IOXIE_Disabled(pin) (0UL << pin) /* Disable IO's input function */
-#define GPIO_IOX_IE_IOXIE_Enabled(pin) (1UL << pin) /* Enable IO's input function */
+#define GPIO_IOX_IE_IOXIE_Enabled(pin) (1UL << pin)  /* Enable IO's input function */
 
 /* GPIO_IOX_DAT register */
 #define GPIO_IOX_DAT_IOXDAT_Msk(pin) (1UL << pin)
@@ -1385,10 +1385,10 @@ extern "C" {
 
 #define GPIO_IO_MISC_SPIMUX_Pos (6UL)
 #define GPIO_IO_MISC_SPIMUX_Msk (0x3UL << GPIO_IO_MISC_SPIMUX_Pos)
-#define GPIO_IO_MISC_SPIMUX_0 (0UL << GPIO_IO_MISC_SPIMUX_Pos) /* both spi flash and sram using IOB interface */
-#define GPIO_IO_MISC_SPIMUX_1 (1UL << GPIO_IO_MISC_SPIMUX_Pos) /* spi flash use internal interface, sram use IOB interface */
-#define GPIO_IO_MISC_SPIMUX_2 (2UL << GPIO_IO_MISC_SPIMUX_Pos) /* spi flash use IOB interface, sram use internal interface */
-#define GPIO_IO_MISC_SPIMUX_3 (3UL << GPIO_IO_MISC_SPIMUX_Pos) /* both spi flash and sram using internal interface */
+#define GPIO_IO_MISC_SPIMUX_0 (0UL << GPIO_IO_MISC_SPIMUX_Pos)
+#define GPIO_IO_MISC_SPIMUX_1 (1UL << GPIO_IO_MISC_SPIMUX_Pos)
+#define GPIO_IO_MISC_SPIMUX_2 (2UL << GPIO_IO_MISC_SPIMUX_Pos)
+#define GPIO_IO_MISC_SPIMUX_3 (3UL << GPIO_IO_MISC_SPIMUX_Pos)
 
 #define GPIO_IO_MISC_ANATEST_Pos (14UL)
 #define GPIO_IO_MISC_ANATEST_Msk (0x3UL << GPIO_IO_MISC_ANATEST_Pos)
@@ -1643,31 +1643,31 @@ extern "C" {
 
 #define DMA_CxCTL_SIZE_Pos (1UL) /* Transfer size mode */
 #define DMA_CxCTL_SIZE_Msk (0x3UL << DMA_CxCTL_SIZE_Pos)
-#define DMA_CxCTL_SIZE_8bits (0UL << DMA_CxCTL_SIZE_Pos) /* Byte (8 bits) */
+#define DMA_CxCTL_SIZE_8bits (0UL << DMA_CxCTL_SIZE_Pos)  /* Byte (8 bits) */
 #define DMA_CxCTL_SIZE_16bits (1UL << DMA_CxCTL_SIZE_Pos) /* Half-word (16 bits) */
 #define DMA_CxCTL_SIZE_32bits (2UL << DMA_CxCTL_SIZE_Pos) /* Word (32 bits) */
 
 #define DMA_CxCTL_SMODE_Pos (3UL) /* Source address mode */
 #define DMA_CxCTL_SMODE_Msk (0x3UL << DMA_CxCTL_SMODE_Pos)
 #define DMA_CxCTL_SMODE_Fixed (0UL << DMA_CxCTL_SMODE_Pos) /* Fix */
-#define DMA_CxCTL_SMODE_Pend (1UL << DMA_CxCTL_SMODE_Pos) /* Incremental but rounded at packaged end */
-#define DMA_CxCTL_SMODE_Fend (2UL << DMA_CxCTL_SMODE_Pos) /* Incremental but rounded at frame end */
+#define DMA_CxCTL_SMODE_Pend (1UL << DMA_CxCTL_SMODE_Pos)  /* Incremental but rounded at packaged end */
+#define DMA_CxCTL_SMODE_Fend (2UL << DMA_CxCTL_SMODE_Pos)  /* Incremental but rounded at frame end */
 
 #define DMA_CxCTL_DMODE_Pos (5UL) /* Destination address mode */
 #define DMA_CxCTL_DMODE_Msk (0x3UL << DMA_CxCTL_DMODE_Pos)
 #define DMA_CxCTL_DMODE_Fixed (0UL << DMA_CxCTL_DMODE_Pos) /* Fix */
-#define DMA_CxCTL_DMODE_Pend (1UL << DMA_CxCTL_DMODE_Pos) /* Incremental but rounded at package end */
-#define DMA_CxCTL_DMODE_Fend (2UL << DMA_CxCTL_DMODE_Pos) /* Incremental but rounded at frame end */
+#define DMA_CxCTL_DMODE_Pend (1UL << DMA_CxCTL_DMODE_Pos)  /* Incremental but rounded at package end */
+#define DMA_CxCTL_DMODE_Fend (2UL << DMA_CxCTL_DMODE_Pos)  /* Incremental but rounded at frame end */
 
 #define DMA_CxCTL_SEQ_MODE_Pos (7UL)
 #define DMA_CxCTL_SEQ_MODE_Msk (0x1UL << DMA_CxCTL_SEQ_MODE_Pos)
-#define DMA_CxCTL_SEQ_MODE_0 (0UL << DMA_CxCTL_SEQ_MODE_Pos) /* Actual frame length is FLEN+1 and packet length is PLEN+1 */
-#define DMA_CxCTL_SEQ_MODE_1 (1UL << DMA_CxCTL_SEQ_MODE_Pos) /* Actual frame length and packet length will all be { FLEN, PLEN } + 1 */
+#define DMA_CxCTL_SEQ_MODE_0 (0UL << DMA_CxCTL_SEQ_MODE_Pos)
+#define DMA_CxCTL_SEQ_MODE_1 (1UL << DMA_CxCTL_SEQ_MODE_Pos)
 
 #define DMA_CxCTL_TMODE_Pos (12UL)
 #define DMA_CxCTL_TMODE_Msk (0x1UL << DMA_CxCTL_TMODE_Pos)
-#define DMA_CxCTL_TMODE_Single (0UL << DMA_CxCTL_TMODE_Pos) /* One DMA request only transfers one single data */
-#define DMA_CxCTL_TMODE_Package (1UL << DMA_CxCTL_TMODE_Pos) /* One DMA request transfers one package data */
+#define DMA_CxCTL_TMODE_Single (0UL << DMA_CxCTL_TMODE_Pos)
+#define DMA_CxCTL_TMODE_Package (1UL << DMA_CxCTL_TMODE_Pos)
 
 #define DMA_CxCTL_CONT_Pos (13UL) /* Continous mode */
 #define DMA_CxCTL_CONT_Msk (0x1UL << DMA_CxCTL_CONT_Pos)
@@ -1921,7 +1921,7 @@ extern "C" {
 
 #define UART_FIFOCTRL_OVMODE_Pos (14UL)
 #define UART_FIFOCTRL_OVMODE_Msk (0x1UL << UART_FIFOCTRL_OVMODE_Pos)
-#define UART_FIFOCTRL_OVMODE_Discard (0UL) /* discard FIFO write when FIFO is full */
+#define UART_FIFOCTRL_OVMODE_Discard (0UL)   /* discard FIFO write when FIFO is full */
 #define UART_FIFOCTRL_OVMODE_Overwrite (1UL) /* overwrite the last data when a FIFO write happens when FIFO is full */
 
 #define UART_FIFOCTRL_SFTRST_Pos (15UL)
@@ -2515,7 +2515,7 @@ extern "C" {
 #define MISC2_CLKSEL_CLKSEL_Pos (0UL)
 #define MISC2_CLKSEL_CLKSEL_Msk (0x1UL << MISC2_CLKSEL_CLKSEL_Pos)
 #define MISC2_CLKSEL_CLKSEL_INT_HFRCO (0UL << MISC2_CLKSEL_CLKSEL_Pos) /* Internal HFRCO */
-#define MISC2_CLKSEL_CLKSEL_RTCLK (1UL << MISC2_CLKSEL_CLKSEL_Pos) /* RTCLK */
+#define MISC2_CLKSEL_CLKSEL_RTCLK (1UL << MISC2_CLKSEL_CLKSEL_Pos)     /* RTCLK */
 
 /* MISC2_CLKDIVH register */
 #define MISC2_CLKDIVH_CLKDIVH_Pos (0UL)

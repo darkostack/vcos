@@ -1,9 +1,9 @@
-#include <vcos/timer.h>
 #include <vcos/periph/gpio.h>
+#include <vcos/timer.h>
 
 #include <arduino/base.hpp>
 
-#define ANALOG_PIN_NUMOF  (ARRAY_SIZE(arduinoAnalogMap))
+#define ANALOG_PIN_NUMOF (ARRAY_SIZE(arduinoAnalogMap))
 
 void pinMode(int aPin, int aMode)
 {
@@ -55,6 +55,6 @@ unsigned long micros()
 
 int analogRead(int aPin)
 {
-    (void) aPin;
+    (void)aPin;
     return 0;
 }

@@ -5,7 +5,8 @@
 
 #define SERIAL_RX_BUFSIZE (64)
 
-enum SerialFormat {
+enum SerialFormat
+{
     BIN,
     OCT,
     DEC,

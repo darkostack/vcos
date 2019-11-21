@@ -58,6 +58,5 @@ void vcTimerSleepUsec(uint32_t aUsec)
 
 void vcTimerSleepUsec64(uint64_t aUsec)
 {
-    Instance::Get().Get<TimerScheduler>().Sleep64(static_cast<uint32_t>(aUsec),
-                                                  static_cast<uint32_t>(aUsec >> 32));
+    Instance::Get().Get<TimerScheduler>().Sleep64(static_cast<uint32_t>(aUsec), static_cast<uint32_t>(aUsec >> 32));
 }

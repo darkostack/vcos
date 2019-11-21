@@ -1,8 +1,8 @@
-#include <stdio.h>
 #include <assert.h>
+#include <stdio.h>
 
-#include <vcos/instance.h>
 #include <vcos/cli.h>
+#include <vcos/instance.h>
 
 int main(void)
 {

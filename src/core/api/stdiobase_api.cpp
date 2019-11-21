@@ -1,5 +1,5 @@
-#include <vcos/stdiobase.h>
 #include <vcos/periph/uart.h>
+#include <vcos/stdiobase.h>
 
 #include "common/instance.hpp"
 
@@ -7,10 +7,7 @@ using namespace vc;
 
 void vcStdioInit(vcInstance *aInstance)
 {
-    vcUartInit(STDIOBASE_UART_DEV,
-               115200,
-               (vcUartRxCallback)vcStdioWriteOne,
-               (void *)aInstance);
+    vcUartInit(STDIOBASE_UART_DEV, 115200, (vcUartRxCallback)vcStdioWriteOne, (void *)aInstance);
 }
 
 int vcStdioWriteOne(vcInstance *aInstance, char aChar)

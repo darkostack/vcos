@@ -1,8 +1,8 @@
 #ifndef CIB_HPP
 #define CIB_HPP
 
-#include <stdint.h>
 #include <assert.h>
+#include <stdint.h>
 
 #include <vcos/types.h>
 
@@ -14,17 +14,14 @@ namespace vc {
 class Cib : public vcCib
 {
 public:
-    Cib(unsigned int aSize)
-    {
-        Init(aSize);
-    }
+    Cib(unsigned int aSize) { Init(aSize); }
 
     void Init(unsigned int aSize)
     {
         assert(!(aSize & (aSize - 1)));
-        mReadCount = 0;
+        mReadCount  = 0;
         mWriteCount = 0;
-        mMask = aSize - 1;
+        mMask       = aSize - 1;
     }
 
     int Full(void) { return (static_cast<int>(Avail()) > static_cast<int>(mMask)); }

@@ -1,10 +1,10 @@
 #ifndef VCOS_TYPES_H
 #define VCOS_TYPES_H
 
-#include <stdint.h>
-#include <stddef.h>
 #include <inttypes.h>
 #include <limits.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <sys/types.h>
 
 #include <vcos/defines.h>
@@ -17,7 +17,8 @@ typedef struct vcInstance vcInstance;
 
 typedef void *(*vcThreadHandlerFunc)(void *aArg);
 
-typedef enum {
+typedef enum
+{
     THREAD_STATUS_STOPPED,
     THREAD_STATUS_SLEEPING,
     THREAD_STATUS_MUTEX_BLOCKED,
@@ -35,26 +36,31 @@ typedef enum {
 
 typedef int16_t vcKernelPid;
 
-typedef struct vcListNode {
+typedef struct vcListNode
+{
     struct vcListNode *mNext;
 } vcListNode;
 
-typedef struct vcMutex {
+typedef struct vcMutex
+{
     vcListNode mQueue;
 } vcMutex;
 
 typedef vcListNode vcClistNode;
 
-typedef struct vcCib {
+typedef struct vcCib
+{
     unsigned int mReadCount;
     unsigned int mWriteCount;
     unsigned int mMask;
 } vcCib;
 
-typedef struct vcMsg {
+typedef struct vcMsg
+{
     vcKernelPid mSenderPid;
     uint16_t    mType;
-    union {
+    union
+    {
         void *   mPtr;
         uint32_t mValue;
     } mContent;
@@ -76,17 +82,20 @@ typedef struct vcThread
     int            mStackSize;
 } vcThread;
 
-typedef struct {
+typedef struct
+{
     uint64_t mTicks64;
 } vcTimerTicsk64;
 
-typedef struct {
+typedef struct
+{
     uint32_t mTicks32;
 } vcTimerTicks32;
 
-typedef void (*vcTimerCallback)(void*);
+typedef void (*vcTimerCallback)(void *);
 
-typedef struct vcTimer {
+typedef struct vcTimer
+{
     struct vcTimer *mNext;
     uint32_t        mTarget;
     uint32_t        mLongTarget;
@@ -94,8 +103,9 @@ typedef struct vcTimer {
     void *          mArg;
 } vcTimer;
 
-typedef struct vcRingBuffer {
-    char *mBuf;
+typedef struct vcRingBuffer
+{
+    char *       mBuf;
     unsigned int mSize;
     unsigned int mStart;
     unsigned int mAvail;

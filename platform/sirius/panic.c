@@ -2,16 +2,18 @@
 #include <string.h>
 
 #include <vcos/cpu.h>
-#include <vcos/panic.h>
-#include <vcos/log.h>
 #include <vcos/irq.h>
+#include <vcos/log.h>
+#include <vcos/panic.h>
 
 const char assertCrashMessage[] = "FAILED ASSERTION.";
 
 /* flag preventing "recursive crash printing loop" */
 static int crashed = 0;
 
-void __attribute__((weak)) vcPanicArch(void) {}
+void __attribute__((weak)) vcPanicArch(void)
+{
+}
 
 /* WARNING: this function NEVER returns! */
 __attribute__((noreturn)) void vcCorePanic(vcPanicType aType, const char *aMessage)
@@ -33,5 +35,6 @@ __attribute__((noreturn)) void vcCorePanic(vcPanicType aType, const char *aMessa
 
     vcPanicArch();
 
-    while (1);
+    while (1)
+        ;
 }

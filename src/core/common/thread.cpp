@@ -1,8 +1,8 @@
 #include <vcos/irq.h>
 #include <vcos/thread.h>
 
-#include "common/thread.hpp"
 #include "common/locator-getters.hpp"
+#include "common/thread.hpp"
 
 #define ENABLE_DEBUG (0)
 #include "common/debug.h"
@@ -15,13 +15,13 @@ volatile void *gSchedActiveThread;
 
 namespace vc {
 
-vcKernelPid Thread::Create(char *aStack,
-                           int aStackSize,
-                           char aPriority,
-                           int aFlags,
+vcKernelPid Thread::Create(char *              aStack,
+                           int                 aStackSize,
+                           char                aPriority,
+                           int                 aFlags,
                            vcThreadHandlerFunc aFunction,
-                           void *aArg,
-                           const char *aName)
+                           void *              aArg,
+                           const char *        aName)
 {
     if (aPriority >= VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS)
     {
@@ -64,11 +64,11 @@ vcKernelPid Thread::Create(char *aStack,
     {
         /* assign each int of the stack the value of it's address */
         uintptr_t *stackmax = (uintptr_t *)(aStack + aStackSize);
-        uintptr_t *stackp = (uintptr_t *)aStack;
+        uintptr_t *stackp   = (uintptr_t *)aStack;
 
         while (stackp < stackmax)
         {
-            *stackp = (uintptr_t) stackp;
+            *stackp = (uintptr_t)stackp;
             stackp++;
         }
     }
@@ -98,25 +98,24 @@ vcKernelPid Thread::Create(char *aStack,
         return KERNEL_PID_UNDEF;
     }
 
-    Get<ThreadScheduler>().SetSchedThreads(cb, pid); 
+    Get<ThreadScheduler>().SetSchedThreads(cb, pid);
 
     cb->mPid = pid;
-    cb->mSp = StackInit(aFunction, aArg, aStack, aStackSize);
+    cb->mSp  = StackInit(aFunction, aArg, aStack, aStackSize);
 
     cb->mStackStart = aStack;
-    cb->mStackSize = totalStacksize;
-    cb->mName = aName;
+    cb->mStackSize  = totalStacksize;
+    cb->mName       = aName;
 
     cb->mPriority = aPriority;
-    cb->mStatus = THREAD_STATUS_STOPPED;
+    cb->mStatus   = THREAD_STATUS_STOPPED;
 
-    cb->mRqEntry.mNext = NULL;
+    cb->mRqEntry.mNext    = NULL;
     cb->mMsgWaiters.mNext = NULL;
 
     Get<ThreadScheduler>().SchedNumThreadsAddOne();
 
-    DEBUG("Thread::Create() created thread %s. PID %" PRIkernel_pid ". Priority: %u\r\n",
-          aName, cb->mPid, aPriority);
+    DEBUG("Thread::Create() created thread %s. PID %" PRIkernel_pid ". Priority: %u\r\n", aName, cb->mPid, aPriority);
 
     if (aFlags & THREAD_FLAGS_CREATE_SLEEPING)
     {
@@ -143,8 +142,8 @@ void Thread::AddToList(List *aList)
 {
     assert(mStatus < THREAD_STATUS_ON_RUNQUEUE);
 
-    uint16_t myPrio = mPriority;
-    List *newNode = static_cast<List *>(&mRqEntry);
+    uint16_t myPrio  = mPriority;
+    List *   newNode = static_cast<List *>(&mRqEntry);
 
     while (aList->mNext)
     {
@@ -158,7 +157,7 @@ void Thread::AddToList(List *aList)
     }
 
     newNode->mNext = aList->mNext;
-    aList->mNext = newNode;
+    aList->mNext   = newNode;
 }
 
 uintptr_t Thread::MeasureStackFree(char *aStack)
@@ -168,7 +167,7 @@ uintptr_t Thread::MeasureStackFree(char *aStack)
     /* assume that the comparison fails before or after end of stack */
     /* assume that the stack grows "downwards" */
 
-    while (*stackp == (uintptr_t) stackp)
+    while (*stackp == (uintptr_t)stackp)
     {
         stackp++;
     }
@@ -200,7 +199,8 @@ char *Thread::StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackS
     /* This is required in order to conform with Procedure Call Standard for the
      * ARM® Architecture (AAPCS) */
     /* http://infocenter.arm.com/help/topic/com.arm.doc.ihi0042e/IHI0042E_aapcs.pdf */
-    if (((uint32_t) stk & 0x7) != 0) {
+    if (((uint32_t)stk & 0x7) != 0)
+    {
         /* add a single word padding */
         --stk;
         *stk = ~((uint32_t)STACK_MARKER);
@@ -226,7 +226,8 @@ char *Thread::StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackS
     stk--;
     *stk = 0;
     /* r3 - r1 */
-    for (int i = 3; i >= 1; i--) {
+    for (int i = 3; i >= 1; i--)
+    {
         stk--;
         *stk = i;
     }
@@ -244,7 +245,8 @@ char *Thread::StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackS
      * as they can be read/written continuously by stack instructions. */
 
     /* r11 - r4 */
-    for (int i = 11; i >= 4; i--) {
+    for (int i = 11; i >= 4; i--)
+    {
         stk--;
         *stk = i;
     }
@@ -259,7 +261,7 @@ char *Thread::StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackS
      * _will_ be 64 bit aligned (because of the cleared bit 9 in the stacked
      * xPSR and aligned stacking of the hardware-handled registers). */
 
-    return (char *) stk;
+    return (char *)stk;
 }
 
 int ThreadScheduler::Run(void)
@@ -273,8 +275,7 @@ int ThreadScheduler::Run(void)
     Thread *nextThread = GetThreadPointerFromList(static_cast<List *>((mSchedRunqueues[nextrq].mNext)->mNext));
 
     DEBUG("ThreadScheduler::Run() active thread: %" PRIkernel_pid ", next thread: %" PRIkernel_pid ".\r\n",
-          (vcKernelPid)((activeThread == NULL) ? KERNEL_PID_UNDEF : activeThread->mPid),
-          nextThread->mPid);
+          (vcKernelPid)((activeThread == NULL) ? KERNEL_PID_UNDEF : activeThread->mPid), nextThread->mPid);
 
     if (activeThread == nextThread)
     {
@@ -307,8 +308,8 @@ void ThreadScheduler::SetStatus(Thread *aThread, vcThreadStatus aStatus)
     {
         if (!(aThread->mStatus >= THREAD_STATUS_ON_RUNQUEUE))
         {
-            DEBUG("ThreadScheduler::SetStatus() adding thread %" PRIkernel_pid " to runqueue %u.\r\n",
-                  aThread->mPid, aThread->mPriority);
+            DEBUG("ThreadScheduler::SetStatus() adding thread %" PRIkernel_pid " to runqueue %u.\r\n", aThread->mPid,
+                  aThread->mPriority);
 
             mSchedRunqueues[aThread->mPriority].RightPush(static_cast<Clist *>(&(aThread->mRqEntry)));
 
@@ -342,8 +343,9 @@ void ThreadScheduler::Switch(uint16_t aOtherPrio)
 
     int onRunqueue = (activeThread->mStatus >= THREAD_STATUS_ON_RUNQUEUE);
 
-    DEBUG("ThreadScheduler::Switch() active pid=%" PRIkernel_pid" prio=%" PRIu16 " on_runqueue=%i "
-          ", other_prio=%" PRIu16 ".\r\n", activeThread->mPid, currentPrio, onRunqueue, aOtherPrio);
+    DEBUG("ThreadScheduler::Switch() active pid=%" PRIkernel_pid " prio=%" PRIu16 " on_runqueue=%i "
+          ", other_prio=%" PRIu16 ".\r\n",
+          activeThread->mPid, currentPrio, onRunqueue, aOtherPrio);
 
     if (!onRunqueue || (currentPrio > aOtherPrio))
     {
@@ -366,10 +368,9 @@ void ThreadScheduler::Switch(uint16_t aOtherPrio)
 
 void ThreadScheduler::TaskExit(void)
 {
-    DEBUG("ThreadScheduler::TaskExit() ending thread %" PRIkernel_pid "...\r\n",
-          GetSchedActiveThread()->mPid);
+    DEBUG("ThreadScheduler::TaskExit() ending thread %" PRIkernel_pid "...\r\n", GetSchedActiveThread()->mPid);
 
-    (void) vcIrqDisable();
+    (void)vcIrqDisable();
 
     SetSchedThreads(NULL, GetSchedActivePid());
 
@@ -484,7 +485,8 @@ int ThreadScheduler::IsrStackUsage(void)
 {
     uint32_t *ptr = &_sstack;
 
-    while(((*ptr) == STACK_CANARY_WORD) && (ptr < &_estack)) {
+    while (((*ptr) == STACK_CANARY_WORD) && (ptr < &_estack))
+    {
         ++ptr;
     }
 
@@ -500,13 +502,13 @@ void *ThreadScheduler::IsrStackPointer(void)
 
 __attribute__((naked)) void ThreadScheduler::SwitchContextExit(void)
 {
-     __asm__ volatile (
-    "bl     vcIrqEnable                   \n" /* enable IRQs to make the SVC
-                                               * interrupt is reachable */
-    "svc    #1                            \n" /* trigger the SVC interrupt */
-    "unreachable%=:                       \n" /* this loop is unreachable */
-    "b      unreachable%=                 \n" /* loop indefinitely */
-    :::);
+    __asm__ volatile("bl     vcIrqEnable                   \n" /* enable IRQs to make the SVC
+                                                                * interrupt is reachable */
+                     "svc    #1                            \n" /* trigger the SVC interrupt */
+                     "unreachable%=:                       \n" /* this loop is unreachable */
+                     "b      unreachable%=                 \n" /* loop indefinitely */
+                     ::
+                         :);
 }
 
 extern "C" void vcCpuIsrEnd(void)
@@ -532,41 +534,43 @@ extern "C" void vcThreadSchedulerRun(void)
     instance.Get<ThreadScheduler>().Run();
 }
 
-extern "C" void __attribute__((naked)) __attribute__((used)) isrPendsv(void) {
-    __asm__ volatile (
-    /* PendSV handler entry point */
-    /* save context by pushing unsaved registers to the stack */
-    /* {r0-r3,r12,LR,PC,xPSR,s0-s15,FPSCR} are saved automatically on exception entry */
-    ".thumb_func                            \n"
-    "mrs    r0, psp                         \n" /* get stack pointer from user mode */
-    "stmdb  r0!,{r4-r11}                    \n" /* save regs */
-    "stmdb  r0!,{lr}                        \n" /* exception return value */
-    "ldr    r1, =gSchedActiveThread         \n" /* load address of current tcb */
-    "ldr    r1, [r1]                        \n" /* dereference pdc */
-    "str    r0, [r1]                        \n" /* write r0 to pdc->sp */
-    "bl     isrSvc                           \n" /* continue with svc */
+extern "C" void __attribute__((naked)) __attribute__((used)) isrPendsv(void)
+{
+    __asm__ volatile(
+        /* PendSV handler entry point */
+        /* save context by pushing unsaved registers to the stack */
+        /* {r0-r3,r12,LR,PC,xPSR,s0-s15,FPSCR} are saved automatically on exception entry */
+        ".thumb_func                            \n"
+        "mrs    r0, psp                         \n"  /* get stack pointer from user mode */
+        "stmdb  r0!,{r4-r11}                    \n"  /* save regs */
+        "stmdb  r0!,{lr}                        \n"  /* exception return value */
+        "ldr    r1, =gSchedActiveThread         \n"  /* load address of current tcb */
+        "ldr    r1, [r1]                        \n"  /* dereference pdc */
+        "str    r0, [r1]                        \n"  /* write r0 to pdc->sp */
+        "bl     isrSvc                           \n" /* continue with svc */
     );
 }
 
-extern "C" void __attribute__((naked)) __attribute__((used)) isrSvc(void) {
-    __asm__ volatile (
-    /* SVC handler entry point */
-    /* PendSV will continue here as well (via jump) */
-    ".thumb_func                        \n"
-    /* perform scheduling */
-    "bl vcThreadSchedulerRun            \n"
-    /* restore context and return from exception */
-    ".thumb_func                        \n"
-    "context_restore:                   \n"
-    "ldr    r0, =gSchedActiveThread     \n" /* load address of current TCB */
-    "ldr    r0, [r0]                    \n" /* dereference TCB */
-    "ldr    r1, [r0]                    \n" /* load tcb->sp to register 1 */
-    "ldmia  r1!, {r0}                   \n" /* restore exception return value */
-    "ldmia  r1!, {r4-r11}               \n" /* restore other registers */
-    "msr    psp, r1                     \n" /* restore user mode SP to PSP reg */
-    "bx     r0                          \n" /* load exception return value to PC,
-                                           * causes end of exception*/
-    /* {r0-r3,r12,LR,PC,xPSR,s0-s15,FPSCR} are restored automatically on exception return */
+extern "C" void __attribute__((naked)) __attribute__((used)) isrSvc(void)
+{
+    __asm__ volatile(
+        /* SVC handler entry point */
+        /* PendSV will continue here as well (via jump) */
+        ".thumb_func                        \n"
+        /* perform scheduling */
+        "bl vcThreadSchedulerRun            \n"
+        /* restore context and return from exception */
+        ".thumb_func                        \n"
+        "context_restore:                   \n"
+        "ldr    r0, =gSchedActiveThread     \n" /* load address of current TCB */
+        "ldr    r0, [r0]                    \n" /* dereference TCB */
+        "ldr    r1, [r0]                    \n" /* load tcb->sp to register 1 */
+        "ldmia  r1!, {r0}                   \n" /* restore exception return value */
+        "ldmia  r1!, {r4-r11}               \n" /* restore other registers */
+        "msr    psp, r1                     \n" /* restore user mode SP to PSP reg */
+        "bx     r0                          \n" /* load exception return value to PC,
+                                                 * causes end of exception*/
+        /* {r0-r3,r12,LR,PC,xPSR,s0-s15,FPSCR} are restored automatically on exception return */
     );
 }
 

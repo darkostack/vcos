@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <vcos/irq.h>
 #include <vcos/stdiobase.h>
@@ -19,7 +19,7 @@ int SerialPort::available(void)
 
 void SerialPort::begin(long aBaudrate)
 {
-    (void) aBaudrate; /* Uart serial already initialized in vcStdioInit */
+    (void)aBaudrate; /* Uart serial already initialized in vcStdioInit */
 }
 
 void SerialPort::end(void)
@@ -34,7 +34,7 @@ size_t SerialPort::print(int aVal)
 
 size_t SerialPort::print(int aVal, SerialFormat aFormat)
 {
-    char buf[64];
+    char   buf[64];
     size_t len;
 
     switch (aFormat)
@@ -71,7 +71,7 @@ size_t SerialPort::print(float aVal)
 
 size_t SerialPort::print(float aVal, int aFormat)
 {
-    char buf[64];
+    char   buf[64];
     size_t len = sprintf(buf, "%.*f", aFormat, (double)aVal);
     write(buf, len);
     return len;

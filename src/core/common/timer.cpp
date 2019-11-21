@@ -8,12 +8,12 @@ namespace vc {
 
 void Timer::Init(vcTimerCallback aCallback, void *aArg)
 {
-    this->mNext = NULL;
-    this->mTarget = 0;
+    this->mNext       = NULL;
+    this->mTarget     = 0;
     this->mLongTarget = 0;
 
     this->mCallback = aCallback;
-    this->mArg = aArg;
+    this->mArg      = aArg;
 }
 
 void Timer::Set(uint32_t aOffset)
@@ -49,7 +49,8 @@ void Timer::Remove(void)
 {
     unsigned state = vcIrqDisable();
 
-    if (this->IsSet()) {
+    if (this->IsSet())
+    {
         Get<TimerScheduler>().Remove(this);
     }
 
@@ -58,26 +59,23 @@ void Timer::Remove(void)
 
 extern "C" void vcPeriphTimerCallback(void *aArg, int aChannel)
 {
-    (void) aChannel;
+    (void)aChannel;
     Instance *instance = static_cast<Instance *>(aArg);
     instance->Get<TimerScheduler>().Callback();
 }
 
 TimerScheduler::TimerScheduler(Instance &aInstance)
-        : mInHandler(0)
-        , mLongCnt(0)
+    : mInHandler(0)
+    , mLongCnt(0)
 #if VCOS_CONFIG_TIMER_MASK
-        , mHighCnt(0)
+    , mHighCnt(0)
 #endif
-        , mTimerListHead(NULL)
-        , mOverflowListHead(NULL)
-        , mLongListHead(NULL)
+    , mTimerListHead(NULL)
+    , mOverflowListHead(NULL)
+    , mLongListHead(NULL)
 {
     /* Initialize low-level timer */
-    vcTimInit(VCOS_CONFIG_TIMER_DEV,
-                kTimerHz,
-                vcPeriphTimerCallback,
-                static_cast<void *>(&aInstance));
+    vcTimInit(VCOS_CONFIG_TIMER_DEV, kTimerHz, vcPeriphTimerCallback, static_cast<void *>(&aInstance));
 
     /* register initial overflow tick */
     LowLevelTimerSet(0xffffffff);
@@ -102,8 +100,7 @@ void TimerScheduler::SetAbsolute(Timer *aTimer, uint32_t aTarget)
      * backing off for small values. */
     uint32_t offset = (aTarget - now);
 
-    DEBUG("TimerScheduler::Set() now=%lu, target=%lu, offset=%lu\r\n",
-          now, aTarget, offset);
+    DEBUG("TimerScheduler::Set() now=%lu, target=%lu, offset=%lu\r\n", now, aTarget, offset);
 
     if (offset <= kTimerBackoff)
     {
@@ -120,7 +117,7 @@ void TimerScheduler::SetAbsolute(Timer *aTimer, uint32_t aTarget)
         Remove(aTimer);
     }
 
-    aTimer->mTarget = aTarget;
+    aTimer->mTarget     = aTarget;
     aTimer->mLongTarget = mLongCnt;
 
     /* Ensure timer is fired in right timer period.
@@ -145,7 +142,8 @@ void TimerScheduler::SetAbsolute(Timer *aTimer, uint32_t aTarget)
     }
     else
     {
-        if (LowLevelTimerMask(now) >= aTarget) {
+        if (LowLevelTimerMask(now) >= aTarget)
+        {
             DEBUG("TimerScheduler::Set() the timer will expire in the next timer period.\r\n");
             AddTimerToList(&mOverflowListHead, aTimer);
         }
@@ -178,7 +176,8 @@ void TimerScheduler::Set64(Timer *aTimer, uint32_t aOffset, uint32_t aLongOffset
     {
         unsigned state = vcIrqDisable();
 
-        if (aTimer->IsSet()) {
+        if (aTimer->IsSet())
+        {
             Remove(aTimer);
         }
 
@@ -196,8 +195,8 @@ void TimerScheduler::Set64(Timer *aTimer, uint32_t aOffset, uint32_t aLongOffset
 
         vcIrqRestore(state);
 
-        DEBUG("TimerScheduler::Set64() added long term timer (longTarget=%lu, target=%lu)\r\n",
-              aTimer->mLongTarget, aTimer->mTarget);
+        DEBUG("TimerScheduler::Set64() added long term timer (longTarget=%lu, target=%lu)\r\n", aTimer->mLongTarget,
+              aTimer->mTarget);
     }
 }
 
@@ -240,8 +239,8 @@ void TimerScheduler::Callback(void)
 
     mInHandler = 1;
 
-    DEBUG("TimerScheduler::Callback() now=%lu (%lu)pleft=%lu\r\n",
-          Now(), LowLevelTimerMask(Now()), LowLevelTimerMask(0xffffffff - Now()));
+    DEBUG("TimerScheduler::Callback() now=%lu (%lu)pleft=%lu\r\n", Now(), LowLevelTimerMask(Now()),
+          LowLevelTimerMask(0xffffffff - Now()));
 
     if (!mTimerListHead)
     {
@@ -259,7 +258,9 @@ void TimerScheduler::Callback(void)
 
         /* make sure the timer counter also arrived
          * in the next timer period */
-        while (LowLevelTimerNow() == LowLevelTimerMask(0xffffffff)) {}
+        while (LowLevelTimerNow() == LowLevelTimerMask(0xffffffff))
+        {
+        }
     }
     else
     {
@@ -277,7 +278,9 @@ overflow:
     while (mTimerListHead && (TimeLeft(LowLevelTimerMask(mTimerListHead->mTarget), reference) < kTimerIsrBackoff))
     {
         /* make sure we don't fire too early */
-        while (TimeLeft(LowLevelTimerMask(mTimerListHead->mTarget), reference)) {}
+        while (TimeLeft(LowLevelTimerMask(mTimerListHead->mTarget), reference))
+        {
+        }
 
         /* pick first timer in list */
         Timer *timer = mTimerListHead;
@@ -286,7 +289,7 @@ overflow:
         mTimerListHead = static_cast<Timer *>(timer->mNext);
 
         /* make sure timer is recognized as being already fired */
-        timer->mTarget = 0;
+        timer->mTarget     = 0;
         timer->mLongTarget = 0;
 
         /* fire timer */
@@ -303,13 +306,14 @@ overflow:
 
     if (now < reference)
     {
-        DEBUG("TimerScheduler::Callback() overflowed while executing callbacks.%i\r\n",
-              mTimerListHead != NULL);
+        DEBUG("TimerScheduler::Callback() overflowed while executing callbacks.%i\r\n", mTimerListHead != NULL);
 
         NextPeriod();
 
         /* wait till overflow */
-        while (reference < LowLevelTimerNow()) {}
+        while (reference < LowLevelTimerNow())
+        {
+        }
         reference = 0;
         goto overflow;
     }
@@ -347,7 +351,9 @@ overflow:
             if (LowLevelTimerMask(now + kTimerIsrBackoff) < now)
             {
                 /* spin until next period, then advance */
-                while (LowLevelTimerNow() >= now) {}
+                while (LowLevelTimerNow() >= now)
+                {
+                }
                 NextPeriod();
                 reference = 0;
                 goto overflow;
@@ -370,7 +376,7 @@ uint32_t TimerScheduler::Now(void)
     do
     {
         latchedHighCnt = mHighCnt;
-        now = LowLevelTimerNow();
+        now            = LowLevelTimerNow();
     } while (mHighCnt != latchedHighCnt);
 
     return latchedHighCnt | now;
@@ -393,9 +399,11 @@ void TimerScheduler::Spin(uint32_t aOffset)
     uint32_t start = LowLevelTimerNow();
 #if VCOS_CONFIG_TIMER_MASK
     aOffset = LowLevelTimerMask(aOffset);
-    while (LowLevelTimerMask(LowLevelTimerNow() - start) < aOffset);
+    while (LowLevelTimerMask(LowLevelTimerNow() - start) < aOffset)
+        ;
 #else
-    while ((LowLevelTimerNow() - start) < aOffset);
+    while ((LowLevelTimerNow() - start) < aOffset)
+        ;
 #endif
 }
 
@@ -406,13 +414,13 @@ void TimerScheduler::NowInternal(uint32_t *aShortTerm, uint32_t *aLongTerm)
     /* loop to cope with possible overflow of Now() */
     do
     {
-        before = Now();
+        before    = Now();
         longValue = mLongCnt;
-        after = Now();
+        after     = Now();
     } while (before > after);
 
     *aShortTerm = after;
-    *aLongTerm = longValue;
+    *aLongTerm  = longValue;
 }
 
 extern "C" void sleep64UnlockMutexCallback(void *aArg)
@@ -434,9 +442,9 @@ void TimerScheduler::Sleep64(uint32_t aOffset, uint32_t aLongOffset)
     Mutex mutex;
 
     timer.mCallback = sleep64UnlockMutexCallback;
-    timer.mArg = static_cast<void *>(&mutex);
+    timer.mArg      = static_cast<void *>(&mutex);
 
-    timer.mTarget = 0;
+    timer.mTarget     = 0;
     timer.mLongTarget = 0;
 
     mutex.Lock();
@@ -452,20 +460,20 @@ void TimerScheduler::AddTimerToList(Timer **aListHead, Timer *aTimer)
     }
 
     aTimer->mNext = *aListHead;
-    *aListHead = aTimer;
+    *aListHead    = aTimer;
 }
 
 void TimerScheduler::AddTimerToLongList(Timer **aListHead, Timer *aTimer)
 {
-    while (*aListHead && (((*aListHead)->mLongTarget < aTimer->mLongTarget) ||
-                          (((*aListHead)->mLongTarget == aTimer->mLongTarget) &&
-                           ((*aListHead)->mTarget <= aTimer->mTarget))))
+    while (*aListHead &&
+           (((*aListHead)->mLongTarget < aTimer->mLongTarget) ||
+            (((*aListHead)->mLongTarget == aTimer->mLongTarget) && ((*aListHead)->mTarget <= aTimer->mTarget))))
     {
         aListHead = reinterpret_cast<Timer **>(&((*aListHead)->mNext));
     }
 
     aTimer->mNext = *aListHead;
-    *aListHead = aTimer;
+    *aListHead    = aTimer;
 }
 
 int TimerScheduler::RemoveTimerFromList(Timer **aListHead, Timer *aTimer)
@@ -517,14 +525,18 @@ void TimerScheduler::SpinUntil(uint32_t aTarget)
 #if VCOS_CONFIG_TIMER_MASK
     aTarget = LowLevelTimerMask(aTarget);
 #endif
-    while (LowLevelTimerNow() > aTarget) {}
-    while (LowLevelTimerNow() < aTarget) {}
+    while (LowLevelTimerNow() > aTarget)
+    {
+    }
+    while (LowLevelTimerNow() < aTarget)
+    {
+    }
 }
 
 void TimerScheduler::SelectLongTimers(void)
 {
     Timer *selectListStart = mLongListHead;
-    Timer *selectListLast = NULL;
+    Timer *selectListLast  = NULL;
 
     /* advance long list head so it points to the first timer of the next (not
      * just started) "long timer period" */
@@ -533,7 +545,7 @@ void TimerScheduler::SelectLongTimers(void)
         if ((mLongListHead->mLongTarget <= mLongCnt) && ThisHighPeriod(mLongListHead->mTarget))
         {
             selectListLast = mLongListHead;
-            mLongListHead = static_cast<Timer *>(mLongListHead->mNext);
+            mLongListHead  = static_cast<Timer *>(mLongListHead->mNext);
         }
         else
         {
@@ -543,7 +555,8 @@ void TimerScheduler::SelectLongTimers(void)
     }
 
     /* cut the "selected long timer list" at the end */
-    if (selectListLast) {
+    if (selectListLast)
+    {
         selectListLast->mNext = NULL;
     }
 
@@ -589,7 +602,7 @@ void TimerScheduler::NextPeriod(void)
 #endif
 
     /* swap overflow list to current timer list */
-    mTimerListHead = mOverflowListHead;
+    mTimerListHead    = mOverflowListHead;
     mOverflowListHead = NULL;
 
     SelectLongTimers();
@@ -629,7 +642,7 @@ Timer *TimerScheduler::Compare(Timer *aTimerA, Timer *aTimerB)
 Timer *TimerScheduler::MergeLists(Timer *aHeadA, Timer *aHeadB)
 {
     Timer *resultHead = Compare(aHeadA, aHeadB);
-    Timer *pos = resultHead;
+    Timer *pos        = resultHead;
 
     while (1)
     {
@@ -649,7 +662,7 @@ Timer *TimerScheduler::MergeLists(Timer *aHeadA, Timer *aHeadB)
         }
 
         pos->mNext = Compare(aHeadA, aHeadB);
-        pos = static_cast<Timer *>(pos->mNext);
+        pos        = static_cast<Timer *>(pos->mNext);
     }
 
     return resultHead;

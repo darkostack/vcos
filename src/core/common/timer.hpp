@@ -1,10 +1,10 @@
 #ifndef TIMER_HPP
 #define TIMER_HPP
 
-#include <vcos/types.h>
-#include <vcos/timer.h>
 #include <vcos/irq.h>
 #include <vcos/periph/tim.h>
+#include <vcos/timer.h>
+#include <vcos/types.h>
 
 #include "common/locator.hpp"
 #include "common/mutex.hpp"
@@ -15,7 +15,7 @@ namespace vc {
 
 class TimerScheduler;
 
-class Timer: public vcTimer, public InstanceLocator
+class Timer : public vcTimer, public InstanceLocator
 {
     friend class TimerScheduler;
 
@@ -85,25 +85,26 @@ private:
 
     Timer *MergeLists(Timer *aHeadA, Timer *aHeadB);
 
-    enum {
-        kTimerBackoff = VCOS_CONFIG_TIMER_BACKOFF,
-        kTimerOverhead = VCOS_CONFIG_TIMER_OVERHEAD,
-        kTimerIsrBackoff = VCOS_CONFIG_TIMER_ISR_BACKOFF,
-        kTimerPeriodicSpin = (kTimerBackoff * 2),
+    enum
+    {
+        kTimerBackoff          = VCOS_CONFIG_TIMER_BACKOFF,
+        kTimerOverhead         = VCOS_CONFIG_TIMER_OVERHEAD,
+        kTimerIsrBackoff       = VCOS_CONFIG_TIMER_ISR_BACKOFF,
+        kTimerPeriodicSpin     = (kTimerBackoff * 2),
         kTimerPeriodicRelative = VCOS_CONFIG_TIMER_PERIODIC_RELATIVE,
-        kTimerMask = VCOS_CONFIG_TIMER_MASK,
-        kTimerHz = VCOS_CONFIG_TIMER_HZ,
-        kTimerShift = VCOS_CONFIG_TIMER_SHIFT,
+        kTimerMask             = VCOS_CONFIG_TIMER_MASK,
+        kTimerHz               = VCOS_CONFIG_TIMER_HZ,
+        kTimerShift            = VCOS_CONFIG_TIMER_SHIFT,
     };
 
     int      mInHandler;
     uint32_t mLongCnt;
-    #if VCOS_CONFIG_TIMER_MASK
+#if VCOS_CONFIG_TIMER_MASK
     uint32_t mHighCnt;
-    #endif
-    Timer *  mTimerListHead;
-    Timer *  mOverflowListHead;
-    Timer *  mLongListHead;
+#endif
+    Timer *mTimerListHead;
+    Timer *mOverflowListHead;
+    Timer *mLongListHead;
 };
 
 } // namespace vc

@@ -15,7 +15,7 @@ extern "C" {
  * Interrupt stack canary value 0xe7fe is the ARM Thumb machine code equivalent
  * of asm("bl #-2\n") or 'while (1);', i.e. an infinite loop
  */
-#define STACK_CANARY_WORD   (0xE7FEE7FEu)
+#define STACK_CANARY_WORD (0xE7FEE7FEu)
 
 /**
  * Stack start and end address defined in linker script.
@@ -43,7 +43,7 @@ static inline void vcCpuPrintLastInstruction(void)
 {
     uint32_t *lr_ptr;
     __asm__ __volatile__("mov %0, lr" : "=r"(lr_ptr));
-    printf("%p\n", (void*) lr_ptr);
+    printf("%p\n", (void *)lr_ptr);
 }
 
 static inline void vcCpuSleepUntilEvent(void)
@@ -53,9 +53,12 @@ static inline void vcCpuSleepUntilEvent(void)
 
 static inline void vcCpuSleep(int aDeep)
 {
-    if (aDeep) {
-        SCB->SCR |=  (SCB_SCR_SLEEPDEEP_Msk);
-    } else {
+    if (aDeep)
+    {
+        SCB->SCR |= (SCB_SCR_SLEEPDEEP_Msk);
+    }
+    else
+    {
         SCB->SCR &= ~(SCB_SCR_SLEEPDEEP_Msk);
     }
 
@@ -72,19 +75,19 @@ static inline void vcCpuJumpToImage(uint32_t aImageAddress)
     __disable_irq();
 
     /* set MSP */
-    __set_MSP(*(uint32_t*)aImageAddress);
+    __set_MSP(*(uint32_t *)aImageAddress);
 
     /* skip stack pointer */
     aImageAddress += 4;
 
     /* load the images reset_vector address */
-    uint32_t destination_address = *(uint32_t*)aImageAddress;
+    uint32_t destination_address = *(uint32_t *)aImageAddress;
 
     /* Make sure the Thumb State bit is set. */
     destination_address |= 0x1;
 
     /* Branch execution */
-    __asm("BX %0" :: "r" (destination_address));
+    __asm("BX %0" ::"r"(destination_address));
 }
 
 static inline uint32_t vcCpuGetImageBaseAddr(void)

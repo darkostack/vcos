@@ -5,7 +5,8 @@
 extern "C" {
 #endif
 
-typedef enum {
+typedef enum
+{
     PANIC_GENERAL_ERROR,
     PANIC_SOFT_REBOOT,
     PANIC_HARD_REBOOT,
@@ -17,7 +18,7 @@ typedef enum {
     PANIC_USAGE_FAULT,
     PANIC_DEBUG_MON,
     PANIC_DUMMY_HANDLER,
-    PANIC_SSP,              /* stack smashing protector failure */
+    PANIC_SSP, /* stack smashing protector failure */
     PANIC_UNDEFINED
 } vcPanicType;
 

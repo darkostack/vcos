@@ -1,10 +1,10 @@
-#include <stdio.h>
 #include <assert.h>
+#include <stdio.h>
 
 #include <vcos/cpu.h>
 #include <vcos/instance.h>
-#include <vcos/stdiobase.h>
 #include <vcos/kernel.h>
+#include <vcos/stdiobase.h>
 
 #include "common/instance.hpp"
 #include "common/thread.hpp"
@@ -28,12 +28,14 @@ extern "C" __attribute__((weak)) void setup(void)
 
 extern "C" __attribute__((weak)) int main(void)
 {
-    while (1) {}
+    while (1)
+    {
+    }
 }
 
 void *mainThreadFunc(void *aArg)
 {
-    (void) aArg;
+    (void)aArg;
 
     setup();
 
@@ -54,9 +56,10 @@ void *mainThreadFunc(void *aArg)
 
 void *idleThreadFunc(void *aArg)
 {
-    (void) aArg;
+    (void)aArg;
 
-    while (1) {
+    while (1)
+    {
         vcCpuSleep(0);
     }
 
@@ -68,7 +71,7 @@ static char sIdleStack[VCOS_CONFIG_THREAD_STACKSIZE_IDLE];
 
 extern "C" void vcKernelInit(void)
 {
-    (void) vcIrqDisable();
+    (void)vcIrqDisable();
 
     Instance &instance = Instance::Init();
 
@@ -78,15 +81,11 @@ extern "C" void vcKernelInit(void)
 
     printf("\r\n\r\nkernel started (version: 0.0.1)\r\n\r\n");
 
-    Thread mainThread(sMainStack, sizeof(sMainStack),
-                      VCOS_CONFIG_THREAD_PRIORITY_MAIN,
-                      THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST,
-                      mainThreadFunc, NULL, "main");
+    Thread mainThread(sMainStack, sizeof(sMainStack), VCOS_CONFIG_THREAD_PRIORITY_MAIN,
+                      THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, mainThreadFunc, NULL, "main");
 
-    Thread idleThread(sIdleStack, sizeof(sIdleStack),
-                      VCOS_CONFIG_THREAD_PRIORITY_IDLE,
-                      THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST,
-                      idleThreadFunc, NULL, "idle");
+    Thread idleThread(sIdleStack, sizeof(sIdleStack), VCOS_CONFIG_THREAD_PRIORITY_IDLE,
+                      THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, idleThreadFunc, NULL, "idle");
 
     ThreadScheduler::SwitchContextExit();
 }

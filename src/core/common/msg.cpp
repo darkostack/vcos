@@ -2,8 +2,8 @@
 
 #include <vcos/irq.h>
 
-#include "common/msg.hpp"
 #include "common/locator-getters.hpp"
+#include "common/msg.hpp"
 
 #define ENABLE_DEBUG (0)
 #include "common/debug.h"
@@ -32,8 +32,7 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
 
     DEBUG("Msg::Send() Sending from %" PRIkernel_pid " to %" PRIkernel_pid
           ". block=%i src->state=%i target->state=%i\r\n",
-          Get<ThreadScheduler>().GetSchedActivePid(), aTargetPid, aBlock,
-          me->mStatus, target->mStatus);
+          Get<ThreadScheduler>().GetSchedActivePid(), aTargetPid, aBlock, me->mStatus, target->mStatus);
 
     if (target->mStatus != THREAD_STATUS_RECEIVE_BLOCKED)
     {
@@ -82,13 +81,11 @@ int Msg::Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState)
 
         ThreadScheduler::YieldHigher();
 
-        DEBUG("Msg::Send() %" PRIkernel_pid ": Back from send block.\r\n",
-              me->mPid);
+        DEBUG("Msg::Send() %" PRIkernel_pid ": Back from send block.\r\n", me->mPid);
     }
     else
     {
-        DEBUG("Msg::Send() %" PRIkernel_pid ": Directy msg copy from %"
-              PRIkernel_pid " to %" PRIkernel_pid ".\r\n",
+        DEBUG("Msg::Send() %" PRIkernel_pid ": Directy msg copy from %" PRIkernel_pid " to %" PRIkernel_pid ".\r\n",
               me->mPid, Get<ThreadScheduler>().GetSchedActivePid(), aTargetPid);
 
         /* copy msg to target */
@@ -187,7 +184,7 @@ int Msg::Receive(int aBlock)
 
         if (tmp != NULL)
         {
-            *tmp = *senderMsg;
+            *tmp  = *senderMsg;
             *this = *tmp;
         }
         else
@@ -301,8 +298,8 @@ int Msg::SendInt(vcKernelPid aTargetPid)
 
     if (target->mStatus == THREAD_STATUS_RECEIVE_BLOCKED)
     {
-        DEBUG("Msg::SendInt() direct msg copy from %" PRIkernel_pid " to %"
-              PRIkernel_pid ".\r\n", Get<ThreadScheduler>().GetSchedActivePid(), aTargetPid);
+        DEBUG("Msg::SendInt() direct msg copy from %" PRIkernel_pid " to %" PRIkernel_pid ".\r\n",
+              Get<ThreadScheduler>().GetSchedActivePid(), aTargetPid);
 
         /* copy msg to target */
         Msg *targetMessage = static_cast<Msg *>(target->mWaitData);
@@ -352,8 +349,7 @@ int Msg::Reply(Msg *aReply)
 
     if (target->mStatus != THREAD_STATUS_REPLY_BLOCKED)
     {
-        DEBUG("Msg::Reply() %" PRIkernel_pid ": Target %" PRIkernel_pid
-              " not waiting for reply.\r\n",
+        DEBUG("Msg::Reply() %" PRIkernel_pid ": Target %" PRIkernel_pid " not waiting for reply.\r\n",
               Get<ThreadScheduler>().GetSchedActivePid(), target->mPid);
 
         vcIrqRestore(state);
@@ -361,8 +357,7 @@ int Msg::Reply(Msg *aReply)
         return -1;
     }
 
-    DEBUG("Msg::Reply() %" PRIkernel_pid ": Direct msg copy.\r\n",
-          Get<ThreadScheduler>().GetSchedActivePid());
+    DEBUG("Msg::Reply() %" PRIkernel_pid ": Direct msg copy.\r\n", Get<ThreadScheduler>().GetSchedActivePid());
 
     /* copy msg to target */
     Msg *targetMessage = static_cast<Msg *>(target->mWaitData);
@@ -386,8 +381,7 @@ int Msg::ReplyInt(Msg *aReply)
 
     if (target->mStatus != THREAD_STATUS_REPLY_BLOCKED)
     {
-        DEBUG("Msg::ReplyInt() %" PRIkernel_pid ": target %" PRIkernel_pid
-              " not waiting for reply.\r\n",
+        DEBUG("Msg::ReplyInt() %" PRIkernel_pid ": target %" PRIkernel_pid " not waiting for reply.\r\n",
               Get<ThreadScheduler>().GetSchedActivePid(), target->mPid);
 
         return -1;

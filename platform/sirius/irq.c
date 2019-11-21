@@ -1,7 +1,7 @@
 #include <stdint.h>
 
-#include <vcos/irq.h>
 #include <vcos/cpu.h>
+#include <vcos/irq.h>
 
 unsigned int vcIrqDisable(void)
 {

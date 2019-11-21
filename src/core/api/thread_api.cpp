@@ -5,20 +5,14 @@
 
 using namespace vc;
 
-vcKernelPid vcThreadCreate(vcThread *aThread,
-                           char *aStack,
-                           int aStackSize,
-                           char aPriority,
-                           int aFlags,
+vcKernelPid vcThreadCreate(vcThread *          aThread,
+                           char *              aStack,
+                           int                 aStackSize,
+                           char                aPriority,
+                           int                 aFlags,
                            vcThreadHandlerFunc aFunction,
-                           void *aArg,
-                           const char *aName)
+                           void *              aArg,
+                           const char *        aName)
 {
-    return (static_cast<Thread *>(aThread))->Create(aStack,
-                                                    aStackSize,
-                                                    aPriority,
-                                                    aFlags,
-                                                    aFunction,
-                                                    aArg,
-                                                    aName);
+    return (static_cast<Thread *>(aThread))->Create(aStack, aStackSize, aPriority, aFlags, aFunction, aArg, aName);
 }

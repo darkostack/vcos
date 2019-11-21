@@ -1,15 +1,15 @@
 #ifndef MSG_HPP
 #define MSG_HPP
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include <vcos/types.h>
 
 #include "vcos-core-config.h"
 
-#include "common/locator.hpp"
 #include "common/list.hpp"
+#include "common/locator.hpp"
 
 #define KERNEL_PID_ISR (KERNEL_PID_LAST + 1)
 
@@ -51,6 +51,6 @@ public:
     void InitQueue(int aNum);
 };
 
-} //namespace vc
+} // namespace vc
 
 #endif /* MSG_HPP */

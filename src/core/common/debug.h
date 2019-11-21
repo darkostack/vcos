@@ -11,7 +11,9 @@ extern "C" {
 #define ENABLE_DEBUG (0)
 #endif
 
-#define DEBUG(...) if (ENABLE_DEBUG) printf(__VA_ARGS__)
+#define DEBUG(...)    \
+    if (ENABLE_DEBUG) \
+    printf(__VA_ARGS__)
 
 #ifdef __cplusplus
 }

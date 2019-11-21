@@ -19,17 +19,17 @@ Interpreter::Interpreter(Instance *aInstance)
     : mServer(NULL)
     , mInstance(aInstance)
 {
-    (void) aInstance;
+    (void)aInstance;
 }
 
 int Interpreter::Hex2Bin(const char *aHex, uint8_t *aBin, uint16_t aBinLength)
 {
-    size_t hexLength = strlen(aHex);
-    const char *hexEnd = aHex + hexLength;
-    uint8_t *cur = aBin;
-    uint8_t numChars = hexLength & 1;
-    uint8_t byte = 0;
-    int rval;
+    size_t      hexLength = strlen(aHex);
+    const char *hexEnd    = aHex + hexLength;
+    uint8_t *   cur       = aBin;
+    uint8_t     numChars  = hexLength & 1;
+    uint8_t     byte      = 0;
+    int         rval;
 
     VerifyOrExit((hexLength + 1) / 2 <= aBinLength, rval = -1);
 
@@ -97,8 +97,8 @@ int Interpreter::ParseUnsignedLong(char *aString, unsigned long &aUnsignedLong)
 
 void Interpreter::ProcessLine(char *aBuf, uint16_t aBufLength, Server &aServer)
 {
-    char *argv[kMaxArgs];
-    char *cmd;
+    char *  argv[kMaxArgs];
+    char *  cmd;
     uint8_t argc = 0, i = 0;
 
     mServer = &aServer;
@@ -155,8 +155,8 @@ Interpreter &Interpreter::GetOwner(void)
 
 void Interpreter::ProcessHelp(int aArgc, char *aArgv[])
 {
-    (void) aArgc;
-    (void) aArgv;
+    (void)aArgc;
+    (void)aArgv;
 
     for (unsigned int i = 0; i < VC_ARRAY_LENGTH(sCommands); i++)
     {
@@ -166,12 +166,12 @@ void Interpreter::ProcessHelp(int aArgc, char *aArgv[])
 
 void Interpreter::ProcessVersion(int aArgc, char *aArgv[])
 {
-    (void) aArgc;
-    (void) aArgv;
+    (void)aArgc;
+    (void)aArgv;
 
     const char *version = vcInstanceGetVersionString();
     mServer->OutputFormat("%s\r\n", static_cast<const char *>(version));
 }
 
-} // namespace vc
+} // namespace Cli
 } // namespace vc

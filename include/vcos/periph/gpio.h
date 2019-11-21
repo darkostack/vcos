@@ -17,7 +17,8 @@ typedef unsigned int vcGpio;
 /**
  * GPIO port definition.
  */
-enum {
+enum
+{
     PORTA,
     PORTB,
     PORTC,
@@ -26,22 +27,24 @@ enum {
     PORTF
 };
 
-typedef enum {
-    GPIO_IN,            /* configure as input without pull resistor */
-    GPIO_IN_PD,         /* configure as input with pull-down resistor */
-    GPIO_IN_PU,         /* configure as input with pull-up resistor */
-    GPIO_OUT,           /* configure as output in push-pull mode */
-    GPIO_OD,            /* configure as output in open-drain mode without pull resistor */
-    GPIO_OD_PU          /* configure as output in open-drain mode with pull resistor enabled */
+typedef enum
+{
+    GPIO_IN,    /* configure as input without pull resistor */
+    GPIO_IN_PD, /* configure as input with pull-down resistor */
+    GPIO_IN_PU, /* configure as input with pull-up resistor */
+    GPIO_OUT,   /* configure as output in push-pull mode */
+    GPIO_OD,    /* configure as output in open-drain mode without pull resistor */
+    GPIO_OD_PU  /* configure as output in open-drain mode with pull resistor enabled */
 } vcGpioMode;
 
 /**
  * Definition of possible active flanks for external interrupt mode.
  */
-typedef enum {
-    GPIO_FALLING = 0,   /* emit interrupt on falling flank */
-    GPIO_RISING = 1,    /* emit interrupt on rising flank */
-    GPIO_BOTH = 2       /* emit interrupt on both flank */
+typedef enum
+{
+    GPIO_FALLING = 0, /* emit interrupt on falling flank */
+    GPIO_RISING  = 1, /* emit interrupt on rising flank */
+    GPIO_BOTH    = 2  /* emit interrupt on both flank */
 } vcGpioFlank;
 
 /**
@@ -49,18 +52,15 @@ typedef enum {
  */
 typedef void (*vcGpioCallback)(void *aArg);
 
-typedef struct {
+typedef struct
+{
     vcGpioCallback mCallback;
-    void *mArg;
+    void *         mArg;
 } vcGpioIsrContext;
 
 int vcGpioInit(vcGpio aPin, vcGpioMode aMode);
 
-int vcGpioInitInt(vcGpio aPin,
-                  vcGpioMode aMode,
-                  vcGpioFlank aFlank,
-                  vcGpioCallback aCallback,
-                  void *aArg);
+int vcGpioInitInt(vcGpio aPin, vcGpioMode aMode, vcGpioFlank aFlank, vcGpioCallback aCallback, void *aArg);
 
 void vcGpioIrqEnable(vcGpio aPin);
 

@@ -8,8 +8,8 @@
 
 #include "vcos-core-config.h"
 
-#include "common/clist.hpp"
 #include "common/cib.hpp"
+#include "common/clist.hpp"
 #include "common/locator.hpp"
 #include "common/msg.hpp"
 
@@ -24,24 +24,24 @@ class Thread : public vcThread, public InstanceLocator
     friend class ThreadScheduler;
 
 public:
-    Thread(char *aStack,
-           int aStackSize,
-           char aPriority,
-           int aFlags,
+    Thread(char *              aStack,
+           int                 aStackSize,
+           char                aPriority,
+           int                 aFlags,
            vcThreadHandlerFunc aFunction,
-           void *aArg,
-           const char *aName)
+           void *              aArg,
+           const char *        aName)
     {
-        (void) Create(aStack, aStackSize, aPriority, aFlags, aFunction, aArg, aName);
+        (void)Create(aStack, aStackSize, aPriority, aFlags, aFunction, aArg, aName);
     }
 
-    vcKernelPid Create(char *aStack,
-                       int aStackSize,
-                       char aPriority,
-                       int aFlags,
+    vcKernelPid Create(char *              aStack,
+                       int                 aStackSize,
+                       char                aPriority,
+                       int                 aFlags,
                        vcThreadHandlerFunc aFunction,
-                       void *aArg,
-                       const char *aName);
+                       void *              aArg,
+                       const char *        aName);
 
     void AddToList(List *aList);
 
@@ -128,13 +128,13 @@ public:
     static void YieldHigher(void);
 
 private:
-    int mSchedNumThreads;
+    int          mSchedNumThreads;
     unsigned int mSchedContextSwitchRequest;
-    Thread *mSchedThreads[KERNEL_PID_LAST + 1];
-    Thread *mSchedActiveThread;
-    vcKernelPid mSchedActivePid;
-    Clist mSchedRunqueues[VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS];
-    uint32_t mRunqueueBitCache;
+    Thread *     mSchedThreads[KERNEL_PID_LAST + 1];
+    Thread *     mSchedActiveThread;
+    vcKernelPid  mSchedActivePid;
+    Clist        mSchedRunqueues[VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS];
+    uint32_t     mRunqueueBitCache;
 };
 
 } // namespace vc

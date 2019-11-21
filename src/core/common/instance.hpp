@@ -19,7 +19,7 @@ class Instance : public vcInstance
 {
 public:
     static Instance &Init(void);
-    
+
     static Instance &Get(void);
 
     bool IsInitialized(void) const { return mIsInitialized; }

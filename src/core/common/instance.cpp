@@ -34,7 +34,6 @@ Instance &Instance::Get(void)
 
 void Instance::Reset(void)
 {
-
 }
 
 void Instance::AfterInit(void)

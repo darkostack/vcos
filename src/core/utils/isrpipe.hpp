@@ -3,13 +3,13 @@
 
 #include "vcos-core-config.h"
 
+#include <assert.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <assert.h>
 
-#include "common/mutex.hpp"
 #include "common/code_utils.hpp"
+#include "common/mutex.hpp"
 
 namespace vc {
 namespace Utils {
@@ -44,13 +44,13 @@ public:
 
     int Free(void) { return (mSize - mWrites + mReads); }
 
-    void Push(char aChar) { mBuf[mWrites++ & (mSize -1)] = aChar; }
+    void Push(char aChar) { mBuf[mWrites++ & (mSize - 1)] = aChar; }
 
     char Pop(void) { return mBuf[mReads++ & (mSize - 1)]; }
 
 private:
-    char *mBuf;
-    unsigned int mSize;
+    char *            mBuf;
+    unsigned int      mSize;
     volatile unsigned mReads;
     volatile unsigned mWrites;
 };
@@ -74,7 +74,7 @@ public:
 
 private:
     Mutex mMutex;
-    Tsrb mTsrb;
+    Tsrb  mTsrb;
 };
 
 class UartIsrpipe : public Isrpipe

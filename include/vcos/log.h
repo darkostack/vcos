@@ -7,7 +7,8 @@
 extern "C" {
 #endif
 
-enum {
+enum
+{
     LOG_NONE,
     LOG_ERROR,
     LOG_WARNING,
@@ -20,8 +21,12 @@ enum {
 #define LOG_LEVEL LOG_INFO
 #endif
 
-#define LOG(level, ...) do { \
-    if ((level) <= LOG_LEVEL) log_write((level), __VA_ARGS__); } while (0U)
+#define LOG(level, ...)                      \
+    do                                       \
+    {                                        \
+        if ((level) <= LOG_LEVEL)            \
+            log_write((level), __VA_ARGS__); \
+    } while (0U)
 
 #define LOG_ERROR(...) LOG(LOG_ERROR, __VA_ARGS__)
 #define LOG_WARNING(...) LOG(LOG_WARNING, __VA_ARGS__)

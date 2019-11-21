@@ -1,8 +1,8 @@
+#include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #include "cli/cli_uart.hpp"
 
@@ -10,8 +10,8 @@ namespace vc {
 namespace Cli {
 
 static const char sCommandPrompt[] = {'>', ' '};
-static const char sEraseString[] = {'\b', ' ', '\b'};
-static const char CRNL[] = {'\r', '\n'};
+static const char sEraseString[]   = {'\b', ' ', '\b'};
+static const char CRNL[]           = {'\r', '\n'};
 
 Uart *Uart::sUartServer;
 
@@ -20,7 +20,7 @@ static vcDEFINE_ALIGNED_VAR(sCliUartRaw, sizeof(Uart), uint64_t);
 extern "C" void vcCliUartInit(vcInstance *aInstance)
 {
     Instance *instance = static_cast<Instance *>(aInstance);
-    Uart::sUartServer = new (&sCliUartRaw) Uart(instance);
+    Uart::sUartServer  = new (&sCliUartRaw) Uart(instance);
 }
 
 extern "C" void vcCliUartOutputBytes(const uint8_t *aBytes, uint8_t aLength)
@@ -131,7 +131,7 @@ int Uart::Output(const char *aBuf, uint16_t aBufLength)
 
     for (int i = 0; i < aBufLength; i++)
     {
-        tail = (mTxHead + mTxLength) % kTxBufferSize;
+        tail            = (mTxHead + mTxLength) % kTxBufferSize;
         mTxBuffer[tail] = *aBuf++;
         mTxLength++;
     }
@@ -143,7 +143,7 @@ int Uart::Output(const char *aBuf, uint16_t aBufLength)
 
 int Uart::OutputFormat(const char *aFmt, ...)
 {
-    char buf[kMaxLineLength];
+    char    buf[kMaxLineLength];
     va_list ap;
     va_start(ap, aFmt);
     vsnprintf(buf, sizeof(buf), aFmt, ap);

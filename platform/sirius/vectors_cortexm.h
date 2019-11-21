@@ -11,12 +11,12 @@ extern "C" {
  * Use this macro to make interrupt functions overridable with the dummy_handler
  * as fallback in case they are not implemented
  */
-#define WEAK_DEFAULT    __attribute__((weak,alias("dummyHandler")))
+#define WEAK_DEFAULT __attribute__((weak, alias("dummyHandler")))
 
 /**
  * Use this macro to define the parts of the vector table
  */
-#define ISR_VECTOR(x)   __attribute__((used,section(".vectors." # x )))
+#define ISR_VECTOR(x) __attribute__((used, section(".vectors." #x)))
 
 /**
  * Number of Cortex-M non-ISR exceptions
@@ -25,16 +25,17 @@ extern "C" {
  * negative interrupt number.
  */
 
-#define CPU_NONISR_EXCEPTIONS   (15)
+#define CPU_NONISR_EXCEPTIONS (15)
 
 typedef void (*isrCallback)(void);
 
 /**
  * Structure of Cortex-M basic vector table
  */
-typedef struct {
-    void *mEstack;                          /* exception stack pointer */
-    isrCallback mVectors[CPU_NONISR_EXCEPTIONS];   /* shared Cortex-M vectors */
+typedef struct
+{
+    void *      mEstack;                         /* exception stack pointer */
+    isrCallback mVectors[CPU_NONISR_EXCEPTIONS]; /* shared Cortex-M vectors */
 } cortexmBase;
 
 /**

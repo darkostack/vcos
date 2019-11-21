@@ -2,27 +2,27 @@
 #define BITARITHM_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /**
  * helper functions for 32 bit arithmetic
  */
 
-#define SETBIT(val, bit)    val |= (bit)
+#define SETBIT(val, bit) val |= (bit)
 
-#define CLRBIT(val, bit)    val &= (~(bit))
+#define CLRBIT(val, bit) val &= (~(bit))
 
-#define BIT0  0x00000001
-#define BIT1  0x00000002
-#define BIT2  0x00000004
-#define BIT3  0x00000008
-#define BIT4  0x00000010
-#define BIT5  0x00000020
-#define BIT6  0x00000040
-#define BIT7  0x00000080
-#define BIT8  0x00000100
-#define BIT9  0x00000200
+#define BIT0 0x00000001
+#define BIT1 0x00000002
+#define BIT2 0x00000004
+#define BIT3 0x00000008
+#define BIT4 0x00000010
+#define BIT5 0x00000020
+#define BIT6 0x00000040
+#define BIT7 0x00000080
+#define BIT8 0x00000100
+#define BIT9 0x00000200
 #define BIT10 0x00000400
 #define BIT11 0x00000800
 #define BIT12 0x00001000
@@ -77,7 +77,7 @@ static inline unsigned bitarithmLsb(unsigned v)
 }
 
 #ifdef __cplusplus
- }
+}
 #endif
 
 #endif /* BITARITHM_H */

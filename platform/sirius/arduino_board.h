@@ -10,18 +10,12 @@ extern "C" {
 /**
  * Look-up table for the Arduino's digital pins.
  */
-static const vcGpio arduinoPinMap[] = {
-    GPIO_PIN(PORTC, 1),
-    GPIO_PIN(PORTC, 2)
-};
+static const vcGpio arduinoPinMap[] = {GPIO_PIN(PORTC, 1), GPIO_PIN(PORTC, 2)};
 
 /**
  * Look-up table for the Arduino's analog pins.
  */
-static const vcGpio arduinoAnalogMap[] = {
-    GPIO_PIN(PORTA, 0),
-    GPIO_PIN(PORTA, 1)
-};
+static const vcGpio arduinoAnalogMap[] = {GPIO_PIN(PORTA, 0), GPIO_PIN(PORTA, 1)};
 
 #ifdef __cplusplus
 }

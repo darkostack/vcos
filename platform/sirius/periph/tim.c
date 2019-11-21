@@ -3,15 +3,10 @@
 #include <vcos/cpu.h>
 #include <vcos/periph/tim.h>
 
-#define TIM_NUMOF      (4U)
+#define TIM_NUMOF (4U)
 #define TIM_CHAN_NUMOF (3U)
 
-static int sTimIrqn[TIM_NUMOF] = {
-    Pwm0_IRQn,
-    Pwm1_IRQn,
-    Pwm2_IRQn,
-    Pwm3_IRQn
-};
+static int sTimIrqn[TIM_NUMOF] = {Pwm0_IRQn, Pwm1_IRQn, Pwm2_IRQn, Pwm3_IRQn};
 
 static vcTimIsrContext sIsrTimCtx[TIM_NUMOF];
 
@@ -21,13 +16,13 @@ int vcTimInit(vcTim aDev, unsigned long aFreq, vcTimCallback aCallback, void *aA
 
     /* remember the interrupt context */
     sIsrTimCtx[aDev].mCallback = aCallback;
-    sIsrTimCtx[aDev].mArg = aArg;
+    sIsrTimCtx[aDev].mArg      = aArg;
 
     /* enable the peripheral clock */
     uint32_t temp = VC_MISC2->PCLKEN;
     temp |= MISC2_PCLKEN_TIMER_Enabled;
     VC_MISC2->CLKEN_UNLOCK = MISC2_CLKEN_UNLOCK_UNLOCK_KEY;
-    VC_MISC2->PCLKEN = temp;
+    VC_MISC2->PCLKEN       = temp;
 
     /* only support 1 MHz frequency base */
     assert(aFreq == 1000000ul);
@@ -68,7 +63,6 @@ int vcTimSetAbsolute(vcTim aDev, unsigned aChannel, unsigned int aValue)
     NVIC_EnableIRQ(sTimIrqn[aDev]);
 
     return 0;
-
 }
 
 int vcTimClear(vcTim aDev, unsigned aChannel)
@@ -87,7 +81,6 @@ int vcTimClear(vcTim aDev, unsigned aChannel)
     VC_PWM(aDev)->CTL = temp;
 
     return 0;
-
 }
 
 uint32_t vcTimRead(vcTim aDev)
@@ -121,17 +114,22 @@ void vcTimStop(vcTim aDev)
 
 static void _irqTimHandler(vcTim aDev)
 {
-    for (uint8_t ch = 0; ch < TIM_CHAN_NUMOF; ch++) {
-        if ((VC_PWM(aDev)->CCTL[ch] & PWM_CCTL_CCIFG_Msk) != 0) {
+    for (uint8_t ch = 0; ch < TIM_CHAN_NUMOF; ch++)
+    {
+        if ((VC_PWM(aDev)->CCTL[ch] & PWM_CCTL_CCIFG_Msk) != 0)
+        {
             /* clear CCIFG interrupt status & disable CC interupt*/
             uint32_t temp = VC_PWM(aDev)->CCTL[ch];
             temp &= ~PWM_CCTL_CCIE_Msk;
             temp |= PWM_CCTL_CCIFG_Msk;
             temp |= PWM_CCTL_CCIE_Disabled;
             VC_PWM(aDev)->CCTL[ch] = temp;
+
             /* disable timer global interrupt */
             NVIC_DisableIRQ(sTimIrqn[aDev]);
-            if (sIsrTimCtx[aDev].mCallback != NULL && VC_PWM(aDev)->CCR[ch] != 0) {
+
+            if (sIsrTimCtx[aDev].mCallback != NULL && VC_PWM(aDev)->CCR[ch] != 0)
+            {
                 sIsrTimCtx[aDev].mCallback(sIsrTimCtx[aDev].mArg, ch);
                 /* check if context switch was requested */
                 vcCpuIsrEnd();

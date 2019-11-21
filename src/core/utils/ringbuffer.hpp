@@ -15,8 +15,8 @@ class RingBuffer : public vcRingBuffer
 public:
     void Init(char *aBuffer, unsigned aSize)
     {
-        mBuf = aBuffer;
-        mSize = aSize;
+        mBuf   = aBuffer;
+        mSize  = aSize;
         mStart = 0;
         mAvail = 0;
     }
