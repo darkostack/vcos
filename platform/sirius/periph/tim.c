@@ -49,7 +49,7 @@ int vcTimInit(vcTim aDev, unsigned long aFreq, vcTimCallback aCallback, void *aA
     return 0;
 }
 
-int vcTimSetAbsolute(vcTim aDev, int aChannel, unsigned int aValue)
+int vcTimSetAbsolute(vcTim aDev, unsigned aChannel, unsigned int aValue)
 {
     assert(aDev < TIM_NUMOF && aChannel < TIM_CHAN_NUMOF);
 
@@ -71,7 +71,7 @@ int vcTimSetAbsolute(vcTim aDev, int aChannel, unsigned int aValue)
 
 }
 
-int vcTimClear(vcTim aDev, int aChannel)
+int vcTimClear(vcTim aDev, unsigned aChannel)
 {
     assert(aDev < TIM_NUMOF && aChannel < TIM_CHAN_NUMOF);
 

@@ -22,9 +22,11 @@ vcInstance *vcInstanceGet(void)
 
 const char *vcInstanceGetVersionString(void)
 {
-    static const char sVersion[] = PACKAGE_NAME "/" PACKAGE_VERSION "; " VCOS_CONFIG_PLATFORM_INFO
+    static const char sVersion[] = VCOS_CONFIG_PACKAGE_NAME "/"
+                                   VCOS_CONFIG_PACKAGE_VERSION "; "
+                                   VCOS_CONFIG_PLATFORM_INFO
 #if defined(__DATE__)
-                                                "; " __DATE__ " " __TIME__
+                                   "; " __DATE__ " " __TIME__
 #endif
     ; // Trailing semicolon to end statement.
     return sVersion;

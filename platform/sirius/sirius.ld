@@ -120,6 +120,8 @@ SECTIONS
     /* heap section */
     . = ALIGN(4);
     _sheap = . ;
+    /* provide `end` need it by libnosys.a(sbrk.o): in function `_sbrk` */
+    end = _sheap;
     _eheap = ORIGIN(ram) + LENGTH(ram);
 
     /* Populate information about ram size */

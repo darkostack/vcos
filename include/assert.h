@@ -7,7 +7,7 @@ extern "C" {
 
 extern void vcAssertFailure(const char *aFile, unsigned aLine);
 
-#define assert(aCond) ((aCond) ? (void)0 : vcAssertFailure(FILE_RELATIVE, __LINE__))
+#define assert(aCond) ((aCond) ? (void)0 : vcAssertFailure(__FILE__, __LINE__))
 
 #ifdef __cplusplus
 }

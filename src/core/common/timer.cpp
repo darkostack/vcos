@@ -332,7 +332,7 @@ overflow:
 
         nextTarget = LowLevelTimerMask(0xffffffff);
 
-        uint32_t now = LowLevelTimerNow();
+        now = LowLevelTimerNow();
 
         /* check for overflow again */
         if (now < reference)

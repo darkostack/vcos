@@ -24,9 +24,9 @@ typedef struct {
 
 int vcTimInit(vcTim aDev, unsigned long aFreq, vcTimCallback aCallback, void *aArg);
 
-int vcTimSetAbsolute(vcTim aDev, int aChannel, unsigned int aValue);
+int vcTimSetAbsolute(vcTim aDev, unsigned aChannel, unsigned int aValue);
 
-int vcTimClear(vcTim aDev, int aChannel);
+int vcTimClear(vcTim aDev, unsigned aChannel);
 
 uint32_t vcTimRead(vcTim aDev);
 

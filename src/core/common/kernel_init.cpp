@@ -4,8 +4,7 @@
 #include <vcos/cpu.h>
 #include <vcos/instance.h>
 #include <vcos/stdiobase.h>
-
-#include <arduino/base.hpp>
+#include <vcos/kernel.h>
 
 #include "common/instance.hpp"
 #include "common/thread.hpp"
@@ -34,6 +33,8 @@ extern "C" __attribute__((weak)) int main(void)
 
 void *mainThreadFunc(void *aArg)
 {
+    (void) aArg;
+
     setup();
 
     loop();

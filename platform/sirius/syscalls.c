@@ -19,6 +19,7 @@ char *heap_top = &_sheap + 4;
 
 void _exit(int n)
 {
+    (void) n;
     while(1);
 }
 

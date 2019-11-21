@@ -5,6 +5,7 @@
 
 #include <vcos/cpu.h>
 #include <vcos/panic.h>
+#include <vcos/kernel.h>
 
 #include "vectors_cortexm.h"
 
@@ -76,7 +77,6 @@ void resetHandlerDefault(void)
     __libc_init_array();
 
     /* startup the kernel */
-    extern void vcKernelInit(void);
     vcKernelInit();
 }
 

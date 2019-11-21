@@ -55,5 +55,6 @@ unsigned long micros()
 
 int analogRead(int aPin)
 {
+    (void) aPin;
     return 0;
 }
