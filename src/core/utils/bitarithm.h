@@ -1,6 +1,8 @@
 #ifndef BITARITHM_H
 #define BITARITHM_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -60,14 +62,6 @@ static inline unsigned bitarithmLsb(unsigned v);
  * Returns the number of bits set in value
  */
 unsigned bitarithmBitsSet(unsigned v);
-
-/**
- * Returns the (uint32_t version) number of bits set in a value
- */
-static inline uint8_t bitarithmBitsSetU32(uint32_t v)
-{
-    return bitarithmBitsSet(v);
-}
 
 static inline unsigned bitarithmLsb(unsigned v)
 {

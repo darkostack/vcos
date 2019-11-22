@@ -39,61 +39,15 @@ void vcCpuIsrEnd(void);
 
 void vcThreadSchedulerRun(void);
 
-static inline void vcCpuPrintLastInstruction(void)
-{
-    uint32_t *lr_ptr;
-    __asm__ __volatile__("mov %0, lr" : "=r"(lr_ptr));
-    printf("%p\n", (void *)lr_ptr);
-}
+void vcCpuPrintLastInstruction(void);
 
-static inline void vcCpuSleepUntilEvent(void)
-{
-    __WFE();
-}
+void vcCpuSleepUntilEvent(void);
 
-static inline void vcCpuSleep(int aDeep)
-{
-    if (aDeep)
-    {
-        SCB->SCR |= (SCB_SCR_SLEEPDEEP_Msk);
-    }
-    else
-    {
-        SCB->SCR &= ~(SCB_SCR_SLEEPDEEP_Msk);
-    }
+void vcCpuSleep(int aDeep);
 
-    /* ensure that all memory accesses have completed and trigger sleeping */
-    unsigned state = vcIrqDisable();
-    __DSB();
-    __WFI();
-    vcIrqRestore(state);
-}
+void vcCpuJumpToImage(uint32_t aImageAddress);
 
-static inline void vcCpuJumpToImage(uint32_t aImageAddress)
-{
-    /* Disable IRQ */
-    __disable_irq();
-
-    /* set MSP */
-    __set_MSP(*(uint32_t *)aImageAddress);
-
-    /* skip stack pointer */
-    aImageAddress += 4;
-
-    /* load the images reset_vector address */
-    uint32_t destination_address = *(uint32_t *)aImageAddress;
-
-    /* Make sure the Thumb State bit is set. */
-    destination_address |= 0x1;
-
-    /* Branch execution */
-    __asm("BX %0" ::"r"(destination_address));
-}
-
-static inline uint32_t vcCpuGetImageBaseAddr(void)
-{
-    return SCB->VTOR;
-}
+uint32_t vcCpuGetImageBaseAddr(void);
 
 #ifdef __cplusplus
 }

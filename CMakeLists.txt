@@ -150,7 +150,7 @@ if (${PLATFORM_NAME} STREQUAL sirius)
         ${PLATFORM_DIR}/periph/gpio.c
         ${PLATFORM_DIR}/periph/tim.c
         ${PLATFORM_DIR}/periph/uart.c
-        ${PLATFORM_DIR}/cpu_init.c
+        ${PLATFORM_DIR}/cpu.c
         ${PLATFORM_DIR}/irq.c
         ${PLATFORM_DIR}/panic.c
         ${PLATFORM_DIR}/syscalls.c
