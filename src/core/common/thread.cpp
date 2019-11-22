@@ -602,20 +602,20 @@ void ThreadScheduler::ProcessStatus(void)
     int overallStackUsed = 0;
 
     printf("\tpid | "
-            "%-21s| "
-            "%-9sQ | pri "
+           "%-21s| "
+           "%-9sQ | pri "
            "| stack  ( used) | base addr  | current     "
            "| runtime  | switches"
            "\r\n",
-           "name",
-           "state");
+           "name", "state");
 
-    int isrUsage = IsrStackUsage();
-    void *isrStart = IsrStackStart();
+    int   isrUsage    = IsrStackUsage();
+    void *isrStart    = IsrStackStart();
     void *isrStackPtr = IsrStackPointer();
 
     printf("\t  - | isr_stack            | -        - |"
-           "   - | %6i (%5i) | %10p | %10p\r\n", CPU_ISR_STACKSIZE, isrUsage, isrStart, isrStackPtr);
+           "   - | %6i (%5i) | %10p | %10p\r\n",
+           CPU_ISR_STACKSIZE, isrUsage, isrStart, isrStackPtr);
 
     overallStackSize += CPU_ISR_STACKSIZE;
 
@@ -663,24 +663,17 @@ void ThreadScheduler::ProcessStatus(void)
 
             unsigned switches = mSchedPidList[i].mSchedules;
 
-            printf("\t%3" PRIkernel_pid
-                   " | %-20s"
+            printf("\t%3" PRIkernel_pid " | %-20s"
                    " | %-8s %.1s | %3i"
                    " | %6i (%5i) | %10p | %10p "
                    " | %2d.%03d%% |  %8u"
                    "\r\n",
-                   p->mPid,
-                   p->mName,
-                   sname, queued, p->mPriority,
-                   p->mStackSize, stackSize, (void *)p->mStackStart, (void *)p->mSp,
-                   runtimeMajor, runtimeMinor, switches
-                   );
-
+                   p->mPid, p->mName, sname, queued, p->mPriority, p->mStackSize, stackSize, (void *)p->mStackStart,
+                   (void *)p->mSp, runtimeMajor, runtimeMinor, switches);
         }
     }
 
-    printf("\t%5s %-21s|%13s%6s %6i (%5i)\r\n", "|", "SUM", "|", "|",
-           overallStackSize, overallStackUsed);
+    printf("\t%5s %-21s|%13s%6s %6i (%5i)\r\n", "|", "SUM", "|", "|", overallStackSize, overallStackUsed);
 }
 
 extern "C" void vcThreadSchedulerRun(void)

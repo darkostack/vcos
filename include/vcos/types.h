@@ -84,9 +84,9 @@ typedef struct vcThread
 
 typedef struct vcSchedStat
 {
-    uint32_t mLastStart;
+    uint32_t     mLastStart;
     unsigned int mSchedules;
-    uint64_t mRuntimeTicks;
+    uint64_t     mRuntimeTicks;
 } vcSchedStat;
 
 typedef struct

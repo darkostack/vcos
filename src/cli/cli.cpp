@@ -167,8 +167,8 @@ void Interpreter::ProcessHelp(int aArgc, char *aArgv[])
 
 void Interpreter::ProcessPs(int aArgc, char *aArgv[])
 {
-    (void) aArgc;
-    (void) aArgv;
+    (void)aArgc;
+    (void)aArgv;
 
     mInstance->Get<ThreadScheduler>().ProcessStatus();
 }
