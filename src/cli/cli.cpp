@@ -12,6 +12,7 @@ namespace Cli {
 
 const struct Command Interpreter::sCommands[] = {
     {"help", &Interpreter::ProcessHelp},
+    {"ps", &Interpreter::ProcessPs},
     {"version", &Interpreter::ProcessVersion},
 };
 
@@ -162,6 +163,14 @@ void Interpreter::ProcessHelp(int aArgc, char *aArgv[])
     {
         mServer->OutputFormat("%s\r\n", sCommands[i].mName);
     }
+}
+
+void Interpreter::ProcessPs(int aArgc, char *aArgv[])
+{
+    (void) aArgc;
+    (void) aArgv;
+
+    mInstance->Get<ThreadScheduler>().ProcessStatus();
 }
 
 void Interpreter::ProcessVersion(int aArgc, char *aArgv[])

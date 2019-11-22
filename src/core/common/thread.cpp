@@ -1,5 +1,6 @@
 #include <vcos/irq.h>
 #include <vcos/thread.h>
+#include <vcos/timer.h>
 
 #include "common/locator-getters.hpp"
 #include "common/thread.hpp"
@@ -160,9 +161,9 @@ void Thread::AddToList(List *aList)
     aList->mNext   = newNode;
 }
 
-uintptr_t Thread::MeasureStackFree(char *aStack)
+uintptr_t Thread::MeasureStackFree(void)
 {
-    uintptr_t *stackp = (uintptr_t *)aStack;
+    uintptr_t *stackp = (uintptr_t *)mStackStart;
 
     /* assume that the comparison fails before or after end of stack */
     /* assume that the stack grows "downwards" */
@@ -172,7 +173,7 @@ uintptr_t Thread::MeasureStackFree(char *aStack)
         stackp++;
     }
 
-    uintptr_t spacefree = (uintptr_t)stackp - (uintptr_t)aStack;
+    uintptr_t spacefree = (uintptr_t)stackp - (uintptr_t)mStackStart;
 
     return spacefree;
 }
@@ -283,13 +284,27 @@ int ThreadScheduler::Run(void)
         return 0;
     }
 
+    uint32_t now = vcTimerNow().mTicks32;
+
     if (activeThread)
     {
         if (activeThread->mStatus == THREAD_STATUS_RUNNING)
         {
             activeThread->mStatus = THREAD_STATUS_PENDING;
         }
+
+        vcSchedStat *activeStat = &mSchedPidList[activeThread->mPid];
+
+        if (activeStat->mLastStart)
+        {
+            activeStat->mRuntimeTicks += now - activeStat->mLastStart;
+        }
     }
+
+    vcSchedStat *nextStat = &mSchedPidList[nextThread->mPid];
+
+    nextStat->mLastStart = now;
+    nextStat->mSchedules++;
 
     nextThread->mStatus = THREAD_STATUS_RUNNING;
 
@@ -500,6 +515,11 @@ void *ThreadScheduler::IsrStackPointer(void)
     return msp;
 }
 
+void *ThreadScheduler::IsrStackStart(void)
+{
+    return (void *)&_sstack;
+}
+
 __attribute__((naked)) void ThreadScheduler::SwitchContextExit(void)
 {
     __asm__ volatile("bl     vcIrqEnable                   \n" /* enable IRQs to make the SVC
@@ -526,6 +546,141 @@ void ThreadScheduler::YieldHigher(void)
     /* trigger the PENDSV interrupt to run scheduler and schedule new thread if
      * applicable */
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+}
+
+const char *ThreadScheduler::ThreadStatusToString(vcThreadStatus aStatus)
+{
+    const char *retval;
+
+    switch (aStatus)
+    {
+    case THREAD_STATUS_RUNNING:
+        retval = "running";
+        break;
+
+    case THREAD_STATUS_PENDING:
+        retval = "pending";
+        break;
+
+    case THREAD_STATUS_STOPPED:
+        retval = "stopped";
+        break;
+
+    case THREAD_STATUS_SLEEPING:
+        retval = "sleeping";
+        break;
+
+    case THREAD_STATUS_MUTEX_BLOCKED:
+        retval = "bl mutex";
+        break;
+
+    case THREAD_STATUS_RECEIVE_BLOCKED:
+        retval = "bl rx";
+        break;
+
+    case THREAD_STATUS_SEND_BLOCKED:
+        retval = "bl send";
+        break;
+
+    case THREAD_STATUS_REPLY_BLOCKED:
+        retval = "bl reply";
+        break;
+
+    default:
+        retval = "unknown";
+        break;
+    }
+
+    return retval;
+}
+
+void ThreadScheduler::ProcessStatus(void)
+{
+    const char queuedName[] = {'_', 'Q'};
+
+    int overallStackSize = 0;
+    int overallStackUsed = 0;
+
+    printf("\tpid | "
+            "%-21s| "
+            "%-9sQ | pri "
+           "| stack  ( used) | base addr  | current     "
+           "| runtime  | switches"
+           "\r\n",
+           "name",
+           "state");
+
+    int isrUsage = IsrStackUsage();
+    void *isrStart = IsrStackStart();
+    void *isrStackPtr = IsrStackPointer();
+
+    printf("\t  - | isr_stack            | -        - |"
+           "   - | %6i (%5i) | %10p | %10p\r\n", CPU_ISR_STACKSIZE, isrUsage, isrStart, isrStackPtr);
+
+    overallStackSize += CPU_ISR_STACKSIZE;
+
+    if (isrUsage > 0)
+    {
+        overallStackUsed += isrUsage;
+    }
+
+    uint64_t rtSum = 0;
+
+    for (vcKernelPid i = KERNEL_PID_FIRST; i <= KERNEL_PID_LAST; i++)
+    {
+        Thread *p = (Thread *)mSchedThreads[i];
+
+        if (p != NULL)
+        {
+            rtSum += mSchedPidList[i].mRuntimeTicks;
+        }
+    }
+
+    for (vcKernelPid i = KERNEL_PID_FIRST; i <= KERNEL_PID_LAST; i++)
+    {
+        Thread *p = (Thread *)mSchedThreads[i];
+
+        if (p != NULL)
+        {
+            vcThreadStatus state = p->mStatus;
+
+            const char *sname = ThreadStatusToString(state);
+
+            const char *queued = &queuedName[(int)(state >= THREAD_STATUS_ON_RUNQUEUE)];
+
+            int stackSize = p->mStackSize;
+
+            overallStackSize += stackSize;
+
+            stackSize -= p->MeasureStackFree();
+
+            overallStackUsed += stackSize;
+
+            /* multiply with 100 for percentage and to avoid floats/doubles */
+            uint64_t runtimeTicks = mSchedPidList[i].mRuntimeTicks * 100;
+            unsigned runtimeMajor = (runtimeTicks / rtSum);
+            unsigned runtimeMinor = ((runtimeTicks % rtSum) * 1000) / rtSum;
+
+            unsigned switches = mSchedPidList[i].mSchedules;
+
+            printf("\t%3" PRIkernel_pid
+                   " | %-20s"
+                   " | %-8s %.1s | %3i"
+                   " | %6i (%5i) | %10p | %10p "
+                   " | %2d.%03d%% |  %8u"
+                   "\r\n",
+                   p->mPid,
+                   p->mName,
+                   sname, queued, p->mPriority,
+                   p->mStackSize, stackSize, (void *)p->mStackStart, (void *)p->mSp,
+                   runtimeMajor, runtimeMinor, switches
+                   );
+
+        }
+    }
+
+    printf("\t%5s %-21s|%13s%6s %6i (%5i)\r\n", "|", "SUM", "|", "|",
+           overallStackSize, overallStackUsed);
 }
 
 extern "C" void vcThreadSchedulerRun(void)

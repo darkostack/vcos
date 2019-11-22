@@ -42,8 +42,8 @@ private:
     };
 
     void ProcessHelp(int aArgc, char *aArgv[]);
+    void ProcessPs(int aArgc, char *aArgv[]);
     void ProcessVersion(int aArgc, char *aArgv[]);
-    void ProcessTest(int aArgc, char *aArgv[]);
 
     static Interpreter &GetOwner(void);
 

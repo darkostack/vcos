@@ -82,6 +82,13 @@ typedef struct vcThread
     int            mStackSize;
 } vcThread;
 
+typedef struct vcSchedStat
+{
+    uint32_t mLastStart;
+    unsigned int mSchedules;
+    uint64_t mRuntimeTicks;
+} vcSchedStat;
+
 typedef struct
 {
     uint64_t mTicks64;

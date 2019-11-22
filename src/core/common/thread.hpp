@@ -45,7 +45,7 @@ public:
 
     void AddToList(List *aList);
 
-    uintptr_t MeasureStackFree(char *aStack);
+    uintptr_t MeasureStackFree(void);
 
     Clist &GetRqEntry(void) { return *static_cast<Clist *>(&mRqEntry); }
 
@@ -123,9 +123,15 @@ public:
 
     static void *IsrStackPointer(void);
 
+    static void *IsrStackStart(void);
+
     static void SwitchContextExit(void);
 
     static void YieldHigher(void);
+
+    const char *ThreadStatusToString(vcThreadStatus aStatus);
+
+    void ProcessStatus(void);
 
 private:
     int          mSchedNumThreads;
@@ -135,6 +141,7 @@ private:
     vcKernelPid  mSchedActivePid;
     Clist        mSchedRunqueues[VCOS_CONFIG_THREAD_SCHED_PRIO_LEVELS];
     uint32_t     mRunqueueBitCache;
+    vcSchedStat  mSchedPidList[KERNEL_PID_LAST + 1];
 };
 
 } // namespace vc
