@@ -31,7 +31,7 @@ public:
     template <typename Type> inline Type &Get(void);
 
 private:
-    Instance(void);
+    explicit Instance(void);
 
     void AfterInit(void);
 

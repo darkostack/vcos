@@ -20,6 +20,14 @@ class Thread;
 class Msg : public vcMsg, public InstanceLocator, public List
 {
 public:
+    explicit Msg(void)
+    {
+        mSenderPid      = KERNEL_PID_UNDEF;
+        mType           = 0;
+        mContent.mPtr   = NULL;
+        mContent.mValue = 0;
+    }
+
     int Send(vcKernelPid aTargetPid, bool aBlock, unsigned aState);
 
     int Receive(int aBlock);

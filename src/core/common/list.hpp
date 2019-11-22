@@ -5,13 +5,11 @@
 
 namespace vc {
 
-class ClistNode;
-
 class List : public vcListNode
 {
-    friend class ClistNode;
-
 public:
+    explicit List(void) { mNext = NULL; }
+
     void Add(List *aNode)
     {
         aNode->mNext = this->mNext;

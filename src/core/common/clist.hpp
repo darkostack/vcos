@@ -10,6 +10,8 @@ namespace vc {
 class Clist : public List
 {
 public:
+    explicit Clist(void) { mNext = NULL; }
+
     void RightPush(Clist *aNode)
     {
         if (this->mNext)

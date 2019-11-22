@@ -24,34 +24,39 @@ TEST_F(TestList, constructor)
     EXPECT_TRUE(obj);
 }
 
-TEST_F(TestList, add_remove_head)
+TEST_F(TestList, functions)
 {
-    List newList1;
-    List newList2;
+    List node1;
+    List node2;
 
-    newList1.mNext = NULL;
-    newList2.mNext = NULL;
+    obj->Add(&node1);
+    obj->Add(&node2);
 
-    obj->Add(&newList1);
-    obj->Add(&newList2);
+    /* obj->2->1->null */
 
-    EXPECT_EQ(obj->mNext, &newList2);
-    EXPECT_EQ((obj->mNext)->mNext, &newList1);
-    EXPECT_EQ(((obj->mNext)->mNext)->mNext, newList1.mNext);
+    EXPECT_EQ(obj->mNext, &node2);
+    EXPECT_EQ(obj->mNext->mNext, &node1);
+    EXPECT_EQ(obj->mNext->mNext->mNext, nullptr);
 
-    EXPECT_EQ(obj->RemoveHead(), &newList2);
+    EXPECT_EQ(obj->RemoveHead(), &node2);
 
-    EXPECT_EQ(obj->mNext, &newList1);
-    EXPECT_EQ((obj->mNext)->mNext, newList1.mNext);
+    /* obj->1->null */
 
-    obj->Add(&newList2);
+    EXPECT_EQ(obj->mNext, &node1);
+    EXPECT_EQ(obj->mNext->mNext, nullptr);
 
-    EXPECT_EQ(obj->mNext, &newList2);
-    EXPECT_EQ((obj->mNext)->mNext, &newList1);
-    EXPECT_EQ(((obj->mNext)->mNext)->mNext, newList1.mNext);
+    obj->Add(&node2);
 
-    EXPECT_EQ(List::Remove(obj, &newList1), &newList1);
+    /* obj->2->1->null */
 
-    EXPECT_EQ(obj->mNext, &newList2);
-    EXPECT_EQ((obj->mNext)->mNext, newList1.mNext);
+    EXPECT_EQ(obj->mNext, &node2);
+    EXPECT_EQ(obj->mNext->mNext, &node1);
+    EXPECT_EQ(obj->mNext->mNext->mNext, nullptr);
+
+    EXPECT_EQ(List::Remove(obj, &node1), &node1);
+
+    /* obj->2->null */
+
+    EXPECT_EQ(obj->mNext, &node2);
+    EXPECT_EQ(obj->mNext->mNext, nullptr);
 }

@@ -14,7 +14,7 @@ namespace vc {
 class Cib : public vcCib
 {
 public:
-    Cib(unsigned int aSize) { Init(aSize); }
+    explicit Cib(unsigned int aSize) { Init(aSize); }
 
     void Init(unsigned int aSize)
     {

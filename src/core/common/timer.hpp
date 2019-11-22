@@ -20,6 +20,15 @@ class Timer : public vcTimer, public InstanceLocator
     friend class TimerScheduler;
 
 public:
+    explicit Timer(void)
+    {
+        mNext       = NULL;
+        mTarget     = 0;
+        mLongTarget = 0;
+        mCallback   = NULL;
+        mArg        = NULL;
+    }
+
     void Init(vcTimerCallback aCallback, void *aArg);
 
     void Set(uint32_t aOffset);

@@ -478,7 +478,7 @@ void ThreadScheduler::Yield(void)
 
 Thread *ThreadScheduler::GetThreadPointerFromList(List *aList)
 {
-    return container_of(static_cast<Clist *>(aList), Thread, mRqEntry);
+    return container_of(aList, Thread, mRqEntry);
 }
 
 int ThreadScheduler::IsrStackUsage(void)

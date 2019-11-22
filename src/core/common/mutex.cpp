@@ -42,7 +42,7 @@ int Mutex::SetLock(int aBlocking)
 
         if (mQueue.mNext == MUTEX_LOCKED)
         {
-            mQueue.mNext        = static_cast<List *>(&me->GetRqEntry());
+            mQueue.mNext        = &me->GetRqEntry();
             mQueue.mNext->mNext = NULL;
         }
         else

@@ -14,7 +14,7 @@ namespace vc {
 class Mutex : public vcMutex, public InstanceLocator
 {
 public:
-    Mutex(void) { mQueue.mNext = NULL; }
+    explicit Mutex(void) { mQueue.mNext = NULL; }
 
     int TryLock(void) { return SetLock(0); }
 
