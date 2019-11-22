@@ -84,9 +84,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUNITTEST")
 
 # Set include dirs.
 set(unittest-includes-base
+  "${PROJECT_SOURCE_DIR}/target_header"
   "${PROJECT_SOURCE_DIR}/stubs"
   "${PROJECT_SOURCE_DIR}/.."
   "${PROJECT_SOURCE_DIR}/../include"
+  "${PROJECT_SOURCE_DIR}/../src"
+  "${PROJECT_SOURCE_DIR}/../src/core"
 )
 
 # Create a list for test suites.

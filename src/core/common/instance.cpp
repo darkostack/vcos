@@ -19,9 +19,13 @@ Instance::Instance(void)
 Instance &Instance::Init(void)
 {
     Instance *instance = &Get();
+
     VerifyOrExit(instance->mIsInitialized == false);
+
     instance = new (&gInstanceRaw) Instance();
+
     instance->AfterInit();
+
 exit:
     return *instance;
 }
@@ -29,6 +33,7 @@ exit:
 Instance &Instance::Get(void)
 {
     void *instance = &gInstanceRaw;
+
     return *static_cast<Instance *>(instance);
 }
 
@@ -44,7 +49,9 @@ void Instance::AfterInit(void)
 void Instance::Finalize(void)
 {
     VerifyOrExit(mIsInitialized == true);
+
     mIsInitialized = false;
+
 exit:
     return;
 }

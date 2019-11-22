@@ -35,7 +35,9 @@ public:
 
     int IsFull(void) { return mAvail == mSize; }
 
-    unsigned int GetFree(void) { return mSize - mAvail; }
+    unsigned int Free(void) { return mSize - mAvail; }
+
+    unsigned int Avail() { return mAvail; }
 
     int PeekOne(void);
 

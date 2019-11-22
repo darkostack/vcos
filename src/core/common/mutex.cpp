@@ -2,6 +2,7 @@
 
 #include "common/locator-getters.hpp"
 #include "common/mutex.hpp"
+#include "common/thread.hpp"
 
 #define ENABLE_DEBUG (0)
 #include "common/debug.h"

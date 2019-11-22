@@ -8,7 +8,6 @@
 
 #include "common/list.hpp"
 #include "common/locator.hpp"
-#include "common/thread.hpp"
 
 namespace vc {
 
