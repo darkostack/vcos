@@ -23,6 +23,12 @@ void vcThreadSchedulerRun(void)
     instance.Get<ThreadScheduler>().Run();
 }
 
+void vcThreadTaskExit(void)
+{
+    Instance &instance = Instance::Get();
+    instance.Get<ThreadScheduler>().TaskExit();
+}
+
 int vcThreadPidIsValid(vcKernelPid aPid)
 {
     return ((KERNEL_PID_FIRST <= aPid) && (aPid <= KERNEL_PID_LAST));

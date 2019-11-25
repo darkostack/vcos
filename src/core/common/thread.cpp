@@ -178,12 +178,6 @@ uintptr_t Thread::MeasureStackFree(void)
     return spacefree;
 }
 
-extern "C" void vcThreadTaskExit(void)
-{
-    Instance &instance = Instance::Get();
-    instance.Get<ThreadScheduler>().TaskExit();
-}
-
 char *Thread::StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackStart, int aStackSize)
 {
     uint32_t *stk;

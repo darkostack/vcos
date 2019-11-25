@@ -18,6 +18,8 @@ vcKernelPid vcThreadCreate(vcThread *          aThread,
 
 void vcThreadSchedulerRun(void);
 
+void vcThreadTaskExit(void);
+
 int vcThreadPidIsValid(vcKernelPid aPid);
 
 #ifdef __cplusplus
