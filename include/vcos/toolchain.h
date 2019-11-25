@@ -1,47 +1,9 @@
-#ifndef VCOS_DEFINES_H
-#define VCOS_DEFINES_H
+#ifndef VCOS_TOOLCHAIN_H
+#define VCOS_TOOLCHAIN_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define KERNEL_MAXTHREADS (32)
-
-#define KERNEL_PID_UNDEF (0)
-#define KERNEL_PID_FIRST (KERNEL_PID_UNDEF + 1)
-#define KERNEL_PID_LAST (KERNEL_PID_FIRST + KERNEL_MAXTHREADS - 1)
-
-#define PRIkernel_pid PRIi16
-
-#define MUTEX_LOCKED ((vcListNode *)-1)
-
-/**
- * Optional flags for controlling a threads initial state.
- */
-#define THREAD_FLAGS_CREATE_SLEEPING (1)
-#define THREAD_FLAGS_AUTO_FREE (2)
-#define THREAD_FLAGS_CREATE_WOUT_YIELD (4)
-#define THREAD_FLAGS_CREATE_STACKTEST (8)
-
-#define THREAD_STATUS_ON_RUNQUEUE THREAD_STATUS_RUNNING
-#define THREAD_STATUS_NOT_FOUND ((vcThreadStatus)-1)
-
-/**
- * This marker is used e.g. by 'Thread::SwitchContextExit()' to identify the stacks
- * beginning.
- */
-#define STACK_MARKER (0x77777777)
-
-/**
- * Initial program status register value for a newly created thread
- */
-#define INITIAL_XPSR (0x01000000)
-
-/**
- * ARM Cortex-M specific exception return value, that triggers the return to the
- * task mode stack pointer.
- */
-#define EXCEPT_RET_TASK_MODE (0xfffffffd)
 
 /**
  * Toolchain related defines.
@@ -97,4 +59,4 @@ extern "C" {
 }
 #endif
 
-#endif /* VCOS_DEFINES_H */
+#endif /* VCOS_TOOLCHAIN_H */

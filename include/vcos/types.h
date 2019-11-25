@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <sys/types.h>
 
-#include <vcos/defines.h>
+#include <vcos/toolchain.h>
 
 #ifdef __cplusplus
 extern "C" {

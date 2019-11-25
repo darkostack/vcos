@@ -7,6 +7,8 @@
 extern "C" {
 #endif
 
+#define MUTEX_LOCKED ((vcListNode *)-1)
+
 void vcMutexLock(vcMutex *aMutex);
 
 void vcMutexUnlock(vcMutex *aMutex);
