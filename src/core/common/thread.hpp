@@ -105,6 +105,8 @@ public:
 
     void SchedNumThreadsRemoveOne(void) { mSchedNumThreads--; }
 
+    uint32_t GetRunqueueBitCache(void) { return mRunqueueBitCache; }
+
     Thread *GetThread(vcKernelPid aPid);
 
     int GetStatus(vcKernelPid aPid);

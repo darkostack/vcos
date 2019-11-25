@@ -23,3 +23,11 @@ TEST_F(TestThreadScheduler, constructor)
 {
     EXPECT_TRUE(obj);
 }
+
+TEST_F(TestThreadScheduler, initial_state)
+{
+    EXPECT_EQ(obj->GetSchedNumThreads(), 0);
+    EXPECT_EQ(obj->GetContextSwitchRequest(), 0);
+    EXPECT_EQ(obj->GetSchedActivePid(), KERNEL_PID_UNDEF);
+    EXPECT_EQ(obj->GetRunqueueBitCache(), 0);
+}
