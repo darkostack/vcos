@@ -37,8 +37,6 @@ void vcCpuInit(void);
 
 void vcCpuIsrEnd(void);
 
-void vcThreadSchedulerRun(void);
-
 void vcCpuPrintLastInstruction(void);
 
 void vcCpuSleepUntilEvent(void);
@@ -48,6 +46,12 @@ void vcCpuSleep(int aDeep);
 void vcCpuJumpToImage(uint32_t aImageAddress);
 
 uint32_t vcCpuGetImageBaseAddr(void);
+
+void *vcCpuGetMsp(void);
+
+void vcCpuTriggerPendSV(void);
+
+void vcCpuSwitchContextExit(void);
 
 #ifdef __cplusplus
 }

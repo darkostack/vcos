@@ -16,3 +16,14 @@ vcKernelPid vcThreadCreate(vcThread *          aThread,
 {
     return (static_cast<Thread *>(aThread))->Create(aStack, aStackSize, aPriority, aFlags, aFunction, aArg, aName);
 }
+
+void vcThreadSchedulerRun(void)
+{
+    Instance &instance = Instance::Get();
+    instance.Get<ThreadScheduler>().Run();
+}
+
+int vcThreadPidIsValid(vcKernelPid aPid)
+{
+    return ((KERNEL_PID_FIRST <= aPid) && (aPid <= KERNEL_PID_LAST));
+}

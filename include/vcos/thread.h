@@ -16,10 +16,9 @@ vcKernelPid vcThreadCreate(vcThread *          aThread,
                            void *              aArg,
                            const char *        aName);
 
-static inline int vcThreadPidIsValid(vcKernelPid aPid)
-{
-    return ((KERNEL_PID_FIRST <= aPid) && (aPid <= KERNEL_PID_LAST));
-}
+void vcThreadSchedulerRun(void);
+
+int vcThreadPidIsValid(vcKernelPid aPid);
 
 #ifdef __cplusplus
 }

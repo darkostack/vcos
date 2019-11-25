@@ -38,7 +38,7 @@ vcKernelPid Thread::Create(char *              aStack,
     int totalStacksize = aStackSize;
 
     /* align the stack on 16/32bit boundary */
-    uintptr_t misalignment = (uintptr_t)aStack % 8;
+    uintptr_t misalignment = reinterpret_cast<uintptr_t>(aStack) % 8;
 
     if (misalignment)
     {
@@ -64,19 +64,19 @@ vcKernelPid Thread::Create(char *              aStack,
     if (aFlags & THREAD_FLAGS_CREATE_STACKTEST)
     {
         /* assign each int of the stack the value of it's address */
-        uintptr_t *stackmax = (uintptr_t *)(aStack + aStackSize);
-        uintptr_t *stackp   = (uintptr_t *)aStack;
+        uintptr_t *stackmax = reinterpret_cast<uintptr_t *>(aStack + aStackSize);
+        uintptr_t *stackp   = reinterpret_cast<uintptr_t *>(aStack);
 
         while (stackp < stackmax)
         {
-            *stackp = (uintptr_t)stackp;
+            *stackp = reinterpret_cast<uintptr_t>(stackp);
             stackp++;
         }
     }
     else
     {
         /* create stack guard */
-        *(uintptr_t *)aStack = (uintptr_t)aStack;
+        *(uintptr_t *)aStack = reinterpret_cast<uintptr_t>(aStack);
     }
 
     unsigned state = vcIrqDisable();
@@ -163,17 +163,17 @@ void Thread::AddToList(List *aList)
 
 uintptr_t Thread::MeasureStackFree(void)
 {
-    uintptr_t *stackp = (uintptr_t *)mStackStart;
+    uintptr_t *stackp = reinterpret_cast<uintptr_t *>(mStackStart);
 
     /* assume that the comparison fails before or after end of stack */
     /* assume that the stack grows "downwards" */
 
-    while (*stackp == (uintptr_t)stackp)
+    while (*stackp == reinterpret_cast<uintptr_t>(stackp))
     {
         stackp++;
     }
 
-    uintptr_t spacefree = (uintptr_t)stackp - (uintptr_t)mStackStart;
+    uintptr_t spacefree = reinterpret_cast<uintptr_t>(stackp) - reinterpret_cast<uintptr_t>(mStackStart);
 
     return spacefree;
 }
@@ -187,10 +187,10 @@ extern "C" void vcThreadTaskExit(void)
 char *Thread::StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackStart, int aStackSize)
 {
     uint32_t *stk;
-    stk = (uint32_t *)((uintptr_t)aStackStart + aStackSize);
+    stk = (uint32_t *)(reinterpret_cast<uintptr_t>(aStackStart) + aStackSize);
 
     /* adjust to 32 bit boundary by clearing the last two bits in the address */
-    stk = (uint32_t *)(((uint32_t)stk) & ~((uint32_t)0x3));
+    stk = (uint32_t *)((reinterpret_cast<uintptr_t>(stk)) & ~((uint32_t)0x3));
 
     /* stack start marker */
     stk--;
@@ -200,7 +200,7 @@ char *Thread::StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackS
     /* This is required in order to conform with Procedure Call Standard for the
      * ARM® Architecture (AAPCS) */
     /* http://infocenter.arm.com/help/topic/com.arm.doc.ihi0042e/IHI0042E_aapcs.pdf */
-    if (((uint32_t)stk & 0x7) != 0)
+    if ((reinterpret_cast<uintptr_t>(stk) & 0x7) != 0)
     {
         /* add a single word padding */
         --stk;
@@ -219,10 +219,10 @@ char *Thread::StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackS
     *stk = (uint32_t)INITIAL_XPSR;
     /* pc - initial program counter value := thread entry function */
     stk--;
-    *stk = (uint32_t)aFunction;
+    *stk = reinterpret_cast<uintptr_t>(aFunction);
     /* lr - contains the return address when the thread exits */
     stk--;
-    *stk = (uint32_t)vcThreadTaskExit;
+    *stk = reinterpret_cast<uintptr_t>(vcThreadTaskExit);
     /* r12 */
     stk--;
     *stk = 0;
@@ -234,7 +234,7 @@ char *Thread::StackInit(vcThreadHandlerFunc aFunction, void *aArg, void *aStackS
     }
     /* r0 - contains the thread function parameter */
     stk--;
-    *stk = (uint32_t)aArg;
+    *stk = reinterpret_cast<uintptr_t>(aArg);
 
     /* ************************* */
     /* Manually popped registers */
@@ -511,24 +511,18 @@ int ThreadScheduler::IsrStackUsage(void)
 
 void *ThreadScheduler::IsrStackPointer(void)
 {
-    void *msp = (void *)__get_MSP();
+    void *msp = vcCpuGetMsp();
     return msp;
 }
 
 void *ThreadScheduler::IsrStackStart(void)
 {
-    return (void *)&_sstack;
+    return reinterpret_cast<void *>(&_sstack);
 }
 
-__attribute__((naked)) void ThreadScheduler::SwitchContextExit(void)
+void ThreadScheduler::SwitchContextExit(void)
 {
-    __asm__ volatile("bl     vcIrqEnable                   \n" /* enable IRQs to make the SVC
-                                                                * interrupt is reachable */
-                     "svc    #1                            \n" /* trigger the SVC interrupt */
-                     "unreachable%=:                       \n" /* this loop is unreachable */
-                     "b      unreachable%=                 \n" /* loop indefinitely */
-                     ::
-                         :);
+    vcCpuSwitchContextExit();
 }
 
 extern "C" void vcCpuIsrEnd(void)
@@ -543,9 +537,7 @@ extern "C" void vcCpuIsrEnd(void)
 
 void ThreadScheduler::YieldHigher(void)
 {
-    /* trigger the PENDSV interrupt to run scheduler and schedule new thread if
-     * applicable */
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+    vcCpuTriggerPendSV();
 }
 
 const char *ThreadScheduler::ThreadStatusToString(vcThreadStatus aStatus)
@@ -674,52 +666,6 @@ void ThreadScheduler::ProcessStatus(void)
     }
 
     printf("\t%5s %-21s|%13s%6s %6i (%5i)\r\n", "|", "SUM", "|", "|", overallStackSize, overallStackUsed);
-}
-
-extern "C" void vcThreadSchedulerRun(void)
-{
-    Instance &instance = Instance::Get();
-    instance.Get<ThreadScheduler>().Run();
-}
-
-extern "C" void __attribute__((naked)) __attribute__((used)) isrPendsv(void)
-{
-    __asm__ volatile(
-        /* PendSV handler entry point */
-        /* save context by pushing unsaved registers to the stack */
-        /* {r0-r3,r12,LR,PC,xPSR,s0-s15,FPSCR} are saved automatically on exception entry */
-        ".thumb_func                            \n"
-        "mrs    r0, psp                         \n"  /* get stack pointer from user mode */
-        "stmdb  r0!,{r4-r11}                    \n"  /* save regs */
-        "stmdb  r0!,{lr}                        \n"  /* exception return value */
-        "ldr    r1, =gSchedActiveThread         \n"  /* load address of current tcb */
-        "ldr    r1, [r1]                        \n"  /* dereference pdc */
-        "str    r0, [r1]                        \n"  /* write r0 to pdc->sp */
-        "bl     isrSvc                           \n" /* continue with svc */
-    );
-}
-
-extern "C" void __attribute__((naked)) __attribute__((used)) isrSvc(void)
-{
-    __asm__ volatile(
-        /* SVC handler entry point */
-        /* PendSV will continue here as well (via jump) */
-        ".thumb_func                        \n"
-        /* perform scheduling */
-        "bl vcThreadSchedulerRun            \n"
-        /* restore context and return from exception */
-        ".thumb_func                        \n"
-        "context_restore:                   \n"
-        "ldr    r0, =gSchedActiveThread     \n" /* load address of current TCB */
-        "ldr    r0, [r0]                    \n" /* dereference TCB */
-        "ldr    r1, [r0]                    \n" /* load tcb->sp to register 1 */
-        "ldmia  r1!, {r0}                   \n" /* restore exception return value */
-        "ldmia  r1!, {r4-r11}               \n" /* restore other registers */
-        "msr    psp, r1                     \n" /* restore user mode SP to PSP reg */
-        "bx     r0                          \n" /* load exception return value to PC,
-                                                 * causes end of exception*/
-        /* {r0-r3,r12,LR,PC,xPSR,s0-s15,FPSCR} are restored automatically on exception return */
-    );
 }
 
 } // namespace vc

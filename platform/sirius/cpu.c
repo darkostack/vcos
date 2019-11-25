@@ -1,4 +1,5 @@
 #include <vcos/cpu.h>
+#include <vcos/thread.h>
 
 uint32_t SystemCoreClock = 0;
 
@@ -188,4 +189,68 @@ void vcCpuJumpToImage(uint32_t aImageAddress)
 uint32_t vcCpuGetImageBaseAddr(void)
 {
     return SCB->VTOR;
+}
+
+void *vcCpuGetMsp(void)
+{
+    return (void *)__get_MSP();
+}
+
+void vcCpuTriggerPendSV(void)
+{
+    /* trigger the PENDSV interrupt to run scheduler and schedule new thread if
+     * applicable */
+
+    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+}
+
+void __attribute__((naked)) vcCpuSwitchContextExit(void)
+{
+    __asm__ volatile("bl     vcIrqEnable                   \n" /* enable IRQs to make the SVC
+                                                                * interrupt is reachable */
+                     "svc    #1                            \n" /* trigger the SVC interrupt */
+                     "unreachable%=:                       \n" /* this loop is unreachable */
+                     "b      unreachable%=                 \n" /* loop indefinitely */
+                     ::
+                         :);
+}
+ 
+void __attribute__((naked)) __attribute__((used)) isrPendsv(void)
+{
+    __asm__ volatile(
+        /* PendSV handler entry point */
+        /* save context by pushing unsaved registers to the stack */
+        /* {r0-r3,r12,LR,PC,xPSR,s0-s15,FPSCR} are saved automatically on exception entry */
+        ".thumb_func                            \n"
+        "mrs    r0, psp                         \n"  /* get stack pointer from user mode */
+        "stmdb  r0!,{r4-r11}                    \n"  /* save regs */
+        "stmdb  r0!,{lr}                        \n"  /* exception return value */
+        "ldr    r1, =gSchedActiveThread         \n"  /* load address of current tcb */
+        "ldr    r1, [r1]                        \n"  /* dereference pdc */
+        "str    r0, [r1]                        \n"  /* write r0 to pdc->sp */
+        "bl     isrSvc                           \n" /* continue with svc */
+    );
+}
+
+void __attribute__((naked)) __attribute__((used)) isrSvc(void)
+{
+    __asm__ volatile(
+        /* SVC handler entry point */
+        /* PendSV will continue here as well (via jump) */
+        ".thumb_func                        \n"
+        /* perform scheduling */
+        "bl vcThreadSchedulerRun            \n"
+        /* restore context and return from exception */
+        ".thumb_func                        \n"
+        "context_restore:                   \n"
+        "ldr    r0, =gSchedActiveThread     \n" /* load address of current TCB */
+        "ldr    r0, [r0]                    \n" /* dereference TCB */
+        "ldr    r1, [r0]                    \n" /* load tcb->sp to register 1 */
+        "ldmia  r1!, {r0}                   \n" /* restore exception return value */
+        "ldmia  r1!, {r4-r11}               \n" /* restore other registers */
+        "msr    psp, r1                     \n" /* restore user mode SP to PSP reg */
+        "bx     r0                          \n" /* load exception return value to PC,
+                                                 * causes end of exception*/
+        /* {r0-r3,r12,LR,PC,xPSR,s0-s15,FPSCR} are restored automatically on exception return */
+    );
 }
