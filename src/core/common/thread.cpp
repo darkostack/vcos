@@ -38,11 +38,11 @@ vcKernelPid Thread::Create(char *              aStack,
     int totalStacksize = aStackSize;
 
     /* align the stack on 16/32bit boundary */
-    uintptr_t misalignment = (uintptr_t)aStack % ALIGN_OF(void *);
+    uintptr_t misalignment = (uintptr_t)aStack % 8;
 
     if (misalignment)
     {
-        misalignment = ALIGN_OF(void *) - misalignment;
+        misalignment = 8 - misalignment;
         aStack += misalignment;
         aStackSize -= misalignment;
     }
@@ -51,7 +51,7 @@ vcKernelPid Thread::Create(char *              aStack,
     aStackSize -= sizeof(Thread);
 
     /* round down the stacksize to multiple of Thread aligments (usually 16/32 bit) */
-    aStackSize -= aStackSize % ALIGN_OF(Thread);
+    aStackSize -= aStackSize % 8;
 
     if (aStackSize < 0)
     {

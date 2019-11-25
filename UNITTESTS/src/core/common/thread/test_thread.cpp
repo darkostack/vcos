@@ -19,4 +19,7 @@ protected:
     }
 };
 
-TEST_F(TestThreadScheduler, constructor);
+TEST_F(TestThreadScheduler, constructor)
+{
+    EXPECT_TRUE(obj);
+}

@@ -45,7 +45,7 @@ TEST_F(TestBitarithm, constructor)
     EXPECT_TRUE(obj);
 }
 
-TEST_F(TestBitarithm, functions)
+TEST_F(TestBitarithm, msb_lsb_position)
 {
     uint32_t bitcache = 0;
 

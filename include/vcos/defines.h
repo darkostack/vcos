@@ -83,14 +83,6 @@ extern "C" {
     } while (1)
 #endif
 
-#define ALIGN_OF(T) \
-    (offsetof(      \
-        struct {    \
-            char c; \
-            T    t; \
-        },          \
-        t))
-
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2 * !!(condition)]))
 
 #ifndef SSIZE_MAX
