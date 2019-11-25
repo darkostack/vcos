@@ -230,7 +230,6 @@ vcNetError Message::SetLength(uint16_t aLength)
 
 exit:
     return error;
-
 }
 
 uint8_t Message::GetBufferCount(void) const

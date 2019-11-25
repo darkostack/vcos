@@ -7,6 +7,8 @@
 #include "common/thread.hpp"
 #include "common/timer.hpp"
 
+#include "net/message.hpp"
+
 #include "utils/isrpipe.hpp"
 
 typedef struct vcInstance
@@ -41,6 +43,8 @@ private:
 
     Utils::UartIsrpipe mUartIsrpipe;
 
+    Net::MessagePool mMessagePool;
+
     bool mIsInitialized;
 };
 
@@ -57,6 +61,11 @@ template <> inline TimerScheduler &Instance::Get(void)
 template <> inline Utils::UartIsrpipe &Instance::Get(void)
 {
     return mUartIsrpipe;
+}
+
+template <> inline Net::MessagePool &Instance::Get(void)
+{
+    return mMessagePool;
 }
 
 } // namespace vc

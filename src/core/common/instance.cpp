@@ -12,6 +12,7 @@ Instance::Instance(void)
     : mThreadScheduler()
     , mTimerScheduler(*this)
     , mUartIsrpipe()
+    , mMessagePool()
     , mIsInitialized(false)
 {
 }

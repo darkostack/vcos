@@ -42,7 +42,7 @@ vcNetMessage *vcNetMessageQueueGetHead(vcNetMessageQueue *aQueue);
 
 vcNetMessage *vcNetMessageQueueGetNext(vcNetMessageQueue *aQueue, const vcNetMessage *aMessage);
 
-void vcNetMessageBufferInfo(vcInstance *aInstance, vcNetBufferInfo *aBufferInfo);
+void vcNetMessageGetBufferInfo(vcInstance *aInstance, vcNetBufferInfo *aBufferInfo);
 
 #ifdef __cplusplus
 }

@@ -52,6 +52,7 @@ add_library(vcos_src_core
     ${SRC_DIR}/core/api/stdiobase_api.cpp
     ${SRC_DIR}/core/api/thread_api.cpp
     ${SRC_DIR}/core/api/timer_api.cpp
+    ${SRC_DIR}/core/api/net/message_api.cpp
     ${SRC_DIR}/core/common/instance.cpp
     ${SRC_DIR}/core/common/kernel_init.cpp
     ${SRC_DIR}/core/common/msg.cpp
