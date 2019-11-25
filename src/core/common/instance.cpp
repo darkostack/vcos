@@ -13,6 +13,7 @@ Instance::Instance(void)
     , mTimerScheduler(*this)
     , mUartIsrpipe()
     , mMessagePool()
+    , mTaskletScheduler()
     , mIsInitialized(false)
 {
 }

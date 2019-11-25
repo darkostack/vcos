@@ -53,6 +53,7 @@ add_library(vcos_src_core
     ${SRC_DIR}/core/api/thread_api.cpp
     ${SRC_DIR}/core/api/timer_api.cpp
     ${SRC_DIR}/core/api/net/message_api.cpp
+    ${SRC_DIR}/core/api/net/tasklet_api.cpp
     ${SRC_DIR}/core/common/instance.cpp
     ${SRC_DIR}/core/common/kernel_init.cpp
     ${SRC_DIR}/core/common/msg.cpp
@@ -63,6 +64,7 @@ add_library(vcos_src_core
     ${SRC_DIR}/core/utils/isrpipe.cpp
     ${SRC_DIR}/core/utils/ringbuffer.cpp
     ${SRC_DIR}/core/net/message.cpp
+    ${SRC_DIR}/core/net/tasklet.cpp
 )
 
 target_include_directories(vcos_src_core
