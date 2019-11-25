@@ -61,6 +61,7 @@ add_library(vcos_src_core
     ${SRC_DIR}/core/utils/bitarithm.c
     ${SRC_DIR}/core/utils/isrpipe.cpp
     ${SRC_DIR}/core/utils/ringbuffer.cpp
+    ${SRC_DIR}/core/net/message.cpp
 )
 
 target_include_directories(vcos_src_core

@@ -8,6 +8,7 @@
 #endif
 
 #include "vcos-core-default-config.h"
+#include "vcos-core-net-default-config.h"
 
 #undef VCOS_CORE_CONFIG_H_IN
 
