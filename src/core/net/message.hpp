@@ -3,9 +3,9 @@
 
 #include "vcos-core-config.h"
 
+#include <assert.h>
 #include <stdint.h>
 #include <string.h>
-#include <assert.h>
 
 #include <vcos/net/message.h>
 
@@ -28,13 +28,13 @@ class PriorityQueue;
 
 struct MessageInfo
 {
-    Message *mNext;
-    Message *mPrev;
+    Message *    mNext;
+    Message *    mPrev;
     MessagePool *mMessagePool;
 
     union
     {
-        MessageQueue *mMessage;
+        MessageQueue * mMessage;
         PriorityQueue *mPriority;
     } mQueue;
 
@@ -46,11 +46,11 @@ struct MessageInfo
 
     uint8_t mType : 2;
     uint8_t mSubType : 4;
-    bool mDirectTx : 1;
-    bool mLinkSecurity : 1;
+    bool    mDirectTx : 1;
+    bool    mLinkSecurity : 1;
     uint8_t mPriority : 2;
-    bool mInPriorityQ : 1;
-    bool mTxSuccess : 1;
+    bool    mInPriorityQ : 1;
+    bool    mTxSuccess : 1;
 };
 
 class Buffer : public ::vcNetMessage
@@ -58,7 +58,6 @@ class Buffer : public ::vcNetMessage
     friend class Message;
 
 public:
-
     class Buffer *GetNextBuffer(void) const { return static_cast<Buffer *>(mNext); }
 
     void SetNextBuffer(class Buffer *aBuf) { mNext = static_cast<vcNetMessage *>(aBuf); }
@@ -74,7 +73,7 @@ private:
 
     enum
     {
-        kBufferDataSize = kBufferSize - sizeof(struct vcNetMessage),
+        kBufferDataSize     = kBufferSize - sizeof(struct vcNetMessage),
         kHeadBufferDataSize = kBufferDataSize - sizeof(struct MessageInfo),
     };
 
@@ -84,7 +83,7 @@ protected:
         struct
         {
             MessageInfo mInfo;
-            uint8_t mData[kHeadBufferDataSize];
+            uint8_t     mData[kHeadBufferDataSize];
         } mHead;
         uint8_t mData[kBufferDataSize];
     } mBuffer;
@@ -99,7 +98,7 @@ class Message : public Buffer
 public:
     enum
     {
-        kTypeIp6 = 0,
+        kTypeIp6     = 0,
         kType6lowpan = 1,
     };
 
@@ -110,10 +109,10 @@ public:
 
     enum
     {
-        kPriorityLow = VC_NET_MESSAGE_PRIORITY_LOW,
+        kPriorityLow    = VC_NET_MESSAGE_PRIORITY_LOW,
         kPriorityNormal = VC_NET_MESSAGE_PRIORITY_NORMAL,
-        kPriorityHigh = VC_NET_MESSAGE_PRIORITY_HIGH,
-        kPriorityNet = VC_NET_MESSAGE_PRIORITY_HIGH + 1,
+        kPriorityHigh   = VC_NET_MESSAGE_PRIORITY_HIGH,
+        kPriorityNet    = VC_NET_MESSAGE_PRIORITY_HIGH + 1,
 
         kNumPriorities = 4,
     };
@@ -306,13 +305,13 @@ private:
         kDefaultMessagePriority = Message::kPriorityNormal,
     };
 
-    Buffer *NewBuffer(uint8_t aPriority);
-    void FreeBuffers(Buffer *aBuffer);
+    Buffer *   NewBuffer(uint8_t aPriority);
+    void       FreeBuffers(Buffer *aBuffer);
     vcNetError ReclaimBuffers(int aNumBuffers, uint8_t aPriority);
 
     uint16_t mNumFreeBuffers;
-    Buffer mBuffers[kNumBuffers];
-    Buffer *mFreeBuffers;
+    Buffer   mBuffers[kNumBuffers];
+    Buffer * mFreeBuffers;
 };
 
 } // namespace Net

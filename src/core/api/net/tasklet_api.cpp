@@ -1,7 +1,7 @@
 #include "net/tasklet.hpp"
 
-#include "common/instance.hpp"
 #include "common/code_utils.hpp"
+#include "common/instance.hpp"
 
 using namespace vc;
 
@@ -19,7 +19,7 @@ exit:
 
 bool vcNetTaskletsArePending(vcInstance *aInstance)
 {
-    bool ret = false;
+    bool      ret      = false;
     Instance &instance = *static_cast<Instance *>(aInstance);
 
     VerifyOrExit(vcInstanceIsInitialized(aInstance));
@@ -32,5 +32,5 @@ exit:
 
 __attribute__((weak)) void vcNetTaskletsSignalPending(vcInstance *aInstance)
 {
-    (void) aInstance;
+    (void)aInstance;
 }

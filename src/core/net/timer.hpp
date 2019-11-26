@@ -44,8 +44,8 @@ protected:
     void Fired(void) { mHandler(*this); }
 
     Handler mHandler;
-    Time mFireTime;
-    Timer *mNext;
+    Time    mFireTime;
+    Timer * mNext;
 };
 
 class TimerMilli : public Timer

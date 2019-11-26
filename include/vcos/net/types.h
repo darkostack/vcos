@@ -1,6 +1,8 @@
 #ifndef VCOS_NET_TYPES_H
 #define VCOS_NET_TYPES_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -33,14 +35,14 @@ typedef struct vcNetBufferInfo
 
 typedef enum vcNetMessagePriority
 {
-    VC_NET_MESSAGE_PRIORITY_LOW = 0,
+    VC_NET_MESSAGE_PRIORITY_LOW    = 0,
     VC_NET_MESSAGE_PRIORITY_NORMAL = 1,
-    VC_NET_MESSAGE_PRIORITY_HIGH = 2,
+    VC_NET_MESSAGE_PRIORITY_HIGH   = 2,
 } vcNetMessagePriority;
 
 typedef struct vcNetMessageSettings
 {
-    bool mLinkSecurityEnabled;
+    bool                 mLinkSecurityEnabled;
     vcNetMessagePriority mPriority;
 } vcNetMessageSettings;
 

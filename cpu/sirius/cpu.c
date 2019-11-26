@@ -214,7 +214,7 @@ void __attribute__((naked)) vcCpuSwitchContextExit(void)
                      ::
                          :);
 }
- 
+
 void __attribute__((naked)) __attribute__((used)) isrPendsv(void)
 {
     __asm__ volatile(
@@ -222,13 +222,13 @@ void __attribute__((naked)) __attribute__((used)) isrPendsv(void)
         /* save context by pushing unsaved registers to the stack */
         /* {r0-r3,r12,LR,PC,xPSR,s0-s15,FPSCR} are saved automatically on exception entry */
         ".thumb_func                            \n"
-        "mrs    r0, psp                         \n"  /* get stack pointer from user mode */
-        "stmdb  r0!,{r4-r11}                    \n"  /* save regs */
-        "stmdb  r0!,{lr}                        \n"  /* exception return value */
-        "ldr    r1, =gSchedActiveThread         \n"  /* load address of current tcb */
-        "ldr    r1, [r1]                        \n"  /* dereference pdc */
-        "str    r0, [r1]                        \n"  /* write r0 to pdc->sp */
-        "bl     isrSvc                           \n" /* continue with svc */
+        "mrs    r0, psp                         \n" /* get stack pointer from user mode */
+        "stmdb  r0!,{r4-r11}                    \n" /* save regs */
+        "stmdb  r0!,{lr}                        \n" /* exception return value */
+        "ldr    r1, =gSchedActiveThread         \n" /* load address of current tcb */
+        "ldr    r1, [r1]                        \n" /* dereference pdc */
+        "str    r0, [r1]                        \n" /* write r0 to pdc->sp */
+        "bl     isrSvc                          \n" /* continue with svc */
     );
 }
 

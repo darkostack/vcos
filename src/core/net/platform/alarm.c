@@ -8,23 +8,23 @@
 #define US_PER_MS 1000
 #define US_PER_S 1000000
 
-static bool sIsMsRunning = false;
-static uint32_t sMsAlarm = 0;
+static bool     sIsMsRunning = false;
+static uint32_t sMsAlarm     = 0;
 
-static bool sIsUsRunning = false;
-static uint32_t sUsAlarm = 0;
+static bool     sIsUsRunning = false;
+static uint32_t sUsAlarm     = 0;
 
 void vcNetPlatAlarmMilliStartAt(vcInstance *aInstance, uint32_t aT0, uint32_t aDt)
 {
-    (void) aInstance;
+    (void)aInstance;
 
-    sMsAlarm = aT0 + aDt;
+    sMsAlarm     = aT0 + aDt;
     sIsMsRunning = true;
 }
 
 void vcNetPlatAlarmMilliStop(vcInstance *aInstance)
 {
-    (void) aInstance;
+    (void)aInstance;
 
     sIsMsRunning = false;
 }
@@ -36,15 +36,15 @@ uint32_t vcNetPlatAlarmMilliGetNow(void)
 
 void vcNetPlatAlarmMicroStartAt(vcInstance *aInstance, uint32_t aT0, uint32_t aDt)
 {
-    (void) aInstance;
+    (void)aInstance;
 
-    sUsAlarm = aT0 + aDt;
+    sUsAlarm     = aT0 + aDt;
     sIsUsRunning = true;
 }
 
 void vcNetPlatAlarmMicroStop(vcInstance *aInstance)
 {
-    (void) aInstance;
+    (void)aInstance;
 
     sIsUsRunning = false;
 }

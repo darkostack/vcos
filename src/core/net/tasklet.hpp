@@ -5,8 +5,8 @@
 
 #include <stdio.h>
 
-#include <vcos/net/tasklet.h>
 #include <vcos/net/error.h>
+#include <vcos/net/tasklet.h>
 
 #include "common/locator.hpp"
 
@@ -29,7 +29,7 @@ public:
 private:
     void RunTask(void) { mHandler(*this); }
 
-    Handler mHandler;
+    Handler  mHandler;
     Tasklet *mNext;
 };
 

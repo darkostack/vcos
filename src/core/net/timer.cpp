@@ -7,14 +7,11 @@
 namespace vc {
 namespace Net {
 
-const TimerScheduler::AlarmApi TimerMilliScheduler::sAlarmMilliApi = {&vcNetPlatAlarmMilliStartAt,
-                                                                      &vcNetPlatAlarmMilliStop,
-                                                                      &vcNetPlatAlarmMilliGetNow};
+const TimerScheduler::AlarmApi TimerMilliScheduler::sAlarmMilliApi = {
+    &vcNetPlatAlarmMilliStartAt, &vcNetPlatAlarmMilliStop, &vcNetPlatAlarmMilliGetNow};
 
-const TimerScheduler::AlarmApi TimerMicroScheduler::sAlarmMicroApi = {&vcNetPlatAlarmMicroStartAt,
-                                                                      &vcNetPlatAlarmMicroStop,
-                                                                      &vcNetPlatAlarmMicroGetNow};
-
+const TimerScheduler::AlarmApi TimerMicroScheduler::sAlarmMicroApi = {
+    &vcNetPlatAlarmMicroStartAt, &vcNetPlatAlarmMicroStop, &vcNetPlatAlarmMicroGetNow};
 
 bool Timer::DoesFireBefore(const Timer &aSecondTimer, Time aNow)
 {

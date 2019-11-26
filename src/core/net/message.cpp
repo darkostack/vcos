@@ -25,8 +25,8 @@ MessagePool::MessagePool()
 
 Message *MessagePool::New(uint8_t aType, uint16_t aReserveHeader, uint8_t aPriority)
 {
-    vcNetError error = VC_NET_ERROR_NONE;
-    Message *message = NULL;
+    vcNetError error   = VC_NET_ERROR_NONE;
+    Message *  message = NULL;
 
     VerifyOrExit((message = static_cast<Message *>(NewBuffer(aPriority))) != NULL);
 
@@ -53,18 +53,18 @@ exit:
 Message *MessagePool::New(uint8_t aType, uint16_t aReserveHeader, const vcNetMessageSettings *aSettings)
 {
     Message *message;
-    bool linkSecurityEnabled;
-    uint8_t priority;
+    bool     linkSecurityEnabled;
+    uint8_t  priority;
 
     if (aSettings == NULL)
     {
         linkSecurityEnabled = false;
-        priority = VC_NET_MESSAGE_PRIORITY_NORMAL;
+        priority            = VC_NET_MESSAGE_PRIORITY_NORMAL;
     }
     else
     {
         linkSecurityEnabled = aSettings->mLinkSecurityEnabled;
-        priority = aSettings->mPriority;
+        priority            = aSettings->mPriority;
     }
 
     message = New(aType, aReserveHeader, priority);
@@ -92,7 +92,7 @@ Buffer *MessagePool::NewBuffer(uint8_t aPriority)
 
     if (mFreeBuffers != NULL)
     {
-        buffer = mFreeBuffers;
+        buffer       = mFreeBuffers;
         mFreeBuffers = mFreeBuffers->GetNextBuffer();
         buffer->SetNextBuffer(NULL);
         mNumFreeBuffers--;
@@ -121,7 +121,7 @@ void MessagePool::FreeBuffers(Buffer *aBuffer)
 
 vcNetError MessagePool::ReclaimBuffers(int aNumBuffers, uint8_t aPriority)
 {
-    (void) aPriority;
+    (void)aPriority;
 
     // First comparison is to get around issues with comparing
     // signed and unsigned numbers, if aNumBuffers is negative then
@@ -129,7 +129,6 @@ vcNetError MessagePool::ReclaimBuffers(int aNumBuffers, uint8_t aPriority)
 
     return (aNumBuffers < 0 || aNumBuffers <= GetFreeBufferCount()) ? VC_NET_ERROR_NONE : VC_NET_ERROR_NO_BUFS;
 }
-
 
 uint16_t MessagePool::GetFreeBufferCount(void) const
 {
@@ -141,8 +140,8 @@ vcNetError Message::ResizeMessage(uint16_t aLength)
     vcNetError error = VC_NET_ERROR_NONE;
 
     // add buffers
-    Buffer *curBuffer = this;
-    Buffer *lastBuffer;
+    Buffer * curBuffer = this;
+    Buffer * lastBuffer;
     uint16_t curLength = kHeadBufferDataSize;
 
     while (curLength < aLength)
@@ -159,7 +158,7 @@ vcNetError Message::ResizeMessage(uint16_t aLength)
 
     // remove buffers
     lastBuffer = curBuffer;
-    curBuffer = curBuffer->GetNextBuffer();
+    curBuffer  = curBuffer->GetNextBuffer();
     lastBuffer->SetNextBuffer(NULL);
 
     GetMessagePool()->FreeBuffers(curBuffer);
@@ -199,10 +198,10 @@ exit:
 
 vcNetError Message::SetLength(uint16_t aLength)
 {
-    vcNetError error = VC_NET_ERROR_NONE;
-    uint16_t totalLengthRequest = GetReserved() + aLength;
-    uint16_t totalLengthCurrent = GetReserved() + GetLength();
-    int bufs = 0;
+    vcNetError error              = VC_NET_ERROR_NONE;
+    uint16_t   totalLengthRequest = GetReserved() + aLength;
+    uint16_t   totalLengthCurrent = GetReserved() + GetLength();
+    int        bufs               = 0;
 
     VerifyOrExit(totalLengthRequest >= GetReserved(), error = VC_NET_ERROR_INVALID_ARGS);
 
@@ -315,7 +314,7 @@ vcNetError Message::Append(const void *aBuf, uint16_t aLength)
 
     assert(bytesWritten == (int)aLength);
 
-    (void) bytesWritten;
+    (void)bytesWritten;
 
 exit:
     return error;
@@ -323,13 +322,12 @@ exit:
 
 vcNetError Message::Prepend(const void *aBuf, uint16_t aLength)
 {
-    vcNetError error  = VC_NET_ERROR_NONE;
-    Buffer *newBuffer = NULL;
+    vcNetError error     = VC_NET_ERROR_NONE;
+    Buffer *   newBuffer = NULL;
 
     while (aLength > GetReserved())
     {
-        VerifyOrExit((newBuffer = GetMessagePool()->NewBuffer(GetPriority())) != NULL,
-                     error = VC_NET_ERROR_NO_BUFS);
+        VerifyOrExit((newBuffer = GetMessagePool()->NewBuffer(GetPriority())) != NULL, error = VC_NET_ERROR_NO_BUFS);
 
         newBuffer->SetNextBuffer(GetNextBuffer());
         SetNextBuffer(newBuffer);
@@ -550,9 +548,9 @@ int Message::CopyTo(uint16_t aSourceOffset, uint16_t aDestinationOffset, uint16_
 
 Message *Message::Clone(uint16_t aLength) const
 {
-    vcNetError  error = VC_NET_ERROR_NONE;
-    Message *messageCopy;
-    uint16_t offset;
+    vcNetError error = VC_NET_ERROR_NONE;
+    Message *  messageCopy;
+    uint16_t   offset;
 
     VerifyOrExit((messageCopy = GetMessagePool()->New(GetType(), GetReserved(), GetPriority())) != NULL,
                  error = VC_NET_ERROR_NO_BUFS);
@@ -829,10 +827,10 @@ Message *PriorityQueue::GetTail(void) const
 
 vcNetError PriorityQueue::Enqueue(Message &aMessage)
 {
-    vcNetError  error = VC_NET_ERROR_NONE;
-    uint8_t  priority;
-    Message *tail;
-    Message *next;
+    vcNetError error = VC_NET_ERROR_NONE;
+    uint8_t    priority;
+    Message *  tail;
+    Message *  next;
 
     VerifyOrExit(!aMessage.IsInAQueue(), error = VC_NET_ERROR_ALREADY);
 
@@ -865,9 +863,9 @@ exit:
 
 vcNetError PriorityQueue::Dequeue(Message &aMessage)
 {
-    vcNetError  error = VC_NET_ERROR_NONE;
-    uint8_t  priority;
-    Message *tail;
+    vcNetError error = VC_NET_ERROR_NONE;
+    uint8_t    priority;
+    Message *  tail;
 
     VerifyOrExit(aMessage.GetPriorityQueue() == this, error = VC_NET_ERROR_NOT_FOUND);
 

@@ -1,8 +1,8 @@
 #ifndef VCOS_NET_MESSAGE_H
 #define VCOS_NET_MESSAGE_H
 
-#include <vcos/types.h>
 #include <vcos/net/types.h>
+#include <vcos/types.h>
 
 #ifdef __cplusplus
 extern "C" {

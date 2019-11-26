@@ -79,22 +79,22 @@ void vcNetMessageQueueInit(vcNetMessageQueue *aQueue)
 
 vcNetError vcNetMessageQueueEnqueue(vcNetMessageQueue *aQueue, vcNetMessage *aMessage)
 {
-    Net::Message &message = *static_cast<Net::Message *>(aMessage);
-    Net::MessageQueue &queue = *static_cast<Net::MessageQueue *>(aQueue);
+    Net::Message &     message = *static_cast<Net::Message *>(aMessage);
+    Net::MessageQueue &queue   = *static_cast<Net::MessageQueue *>(aQueue);
     return queue.Enqueue(message);
 }
 
 vcNetError vcNetMessageQueueEnqueueAtHead(vcNetMessageQueue *aQueue, vcNetMessage *aMessage)
 {
-    Net::Message &message = *static_cast<Net::Message *>(aMessage);
-    Net::MessageQueue &queue = *static_cast<Net::MessageQueue *>(aQueue);
+    Net::Message &     message = *static_cast<Net::Message *>(aMessage);
+    Net::MessageQueue &queue   = *static_cast<Net::MessageQueue *>(aQueue);
     return queue.Enqueue(message, Net::MessageQueue::kQueuePositionHead);
 }
 
 vcNetError vcNetMessageQueueDequeue(vcNetMessageQueue *aQueue, vcNetMessage *aMessage)
 {
-    Net::Message &message = *static_cast<Net::Message *>(aMessage);
-    Net::MessageQueue &queue = *static_cast<Net::MessageQueue *>(aQueue);
+    Net::Message &     message = *static_cast<Net::Message *>(aMessage);
+    Net::MessageQueue &queue   = *static_cast<Net::MessageQueue *>(aQueue);
     return queue.Dequeue(message);
 }
 
@@ -112,7 +112,7 @@ vcNetMessage *vcNetMessageQueueGetNext(vcNetMessageQueue *aQueue, const vcNetMes
 
     {
         const Net::Message &message = *static_cast<const Net::Message *>(aMessage);
-        Net::MessageQueue &queue = *static_cast<Net::MessageQueue *>(aQueue);
+        Net::MessageQueue & queue   = *static_cast<Net::MessageQueue *>(aQueue);
 
         VerifyOrExit(message.GetMessageQueue() == &queue, next = NULL);
         next = message.GetNext();

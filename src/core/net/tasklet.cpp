@@ -1,7 +1,7 @@
 #include "net/tasklet.hpp"
 
-#include "common/locator-getters.hpp"
 #include "common/code_utils.hpp"
+#include "common/locator-getters.hpp"
 
 namespace vc {
 namespace Net {
@@ -40,7 +40,7 @@ vcNetError TaskletScheduler::Post(Tasklet &aTasklet)
     else
     {
         mTail->mNext = &aTasklet;
-        mTail = &aTasklet;
+        mTail        = &aTasklet;
     }
 
 exit:

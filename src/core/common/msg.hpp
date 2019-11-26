@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <vcos/types.h>
 #include <vcos/kernel.h>
+#include <vcos/types.h>
 
 #include "vcos-core-config.h"
 

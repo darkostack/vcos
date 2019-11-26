@@ -16,37 +16,37 @@ public:
 
     Time(void) {}
 
-   explicit Time(uint32_t aValue) { SetValue(aValue); }
+    explicit Time(uint32_t aValue) { SetValue(aValue); }
 
-   uint32_t GetValue(void) const { return mValue; }
+    uint32_t GetValue(void) const { return mValue; }
 
-   void SetValue(uint32_t aValue) { mValue = aValue; }
+    void SetValue(uint32_t aValue) { mValue = aValue; }
 
-   uint32_t operator-(const Time &aOther) const { return mValue - aOther.mValue; }
+    uint32_t operator-(const Time &aOther) const { return mValue - aOther.mValue; }
 
-   Time operator+(uint32_t aDuration) const { return Time(mValue + aDuration); }
+    Time operator+(uint32_t aDuration) const { return Time(mValue + aDuration); }
 
-   Time operator-(uint32_t aDuration) const { return Time(mValue - aDuration); }
+    Time operator-(uint32_t aDuration) const { return Time(mValue - aDuration); }
 
-   void operator+=(uint32_t aDuration) { mValue += aDuration; }
+    void operator+=(uint32_t aDuration) { mValue += aDuration; }
 
-   void operator-=(uint32_t aDuration) { mValue -= aDuration; }
+    void operator-=(uint32_t aDuration) { mValue -= aDuration; }
 
-   bool operator==(const Time &aOther) const { return mValue == aOther.mValue; }
+    bool operator==(const Time &aOther) const { return mValue == aOther.mValue; }
 
-   bool operator!=(const Time &aOther) const { return !(*this == aOther); }
+    bool operator!=(const Time &aOther) const { return !(*this == aOther); }
 
-   bool operator<(const Time &aOther) const { return ((mValue - aOther.mValue) & (1UL << 31)) != 0; }
+    bool operator<(const Time &aOther) const { return ((mValue - aOther.mValue) & (1UL << 31)) != 0; }
 
-   bool operator>=(const Time &aOther) const { return !(*this < aOther); }
+    bool operator>=(const Time &aOther) const { return !(*this < aOther); }
 
-   bool operator<=(const Time &aOther) const { return (aOther >= *this); }
+    bool operator<=(const Time &aOther) const { return (aOther >= *this); }
 
-   bool operator>(const Time &aOther) const { return (aOther < *this); }
+    bool operator>(const Time &aOther) const { return (aOther < *this); }
 
-   static uint32_t SecToMsec(uint32_t aSeconds) { return aSeconds * 1000u; }
+    static uint32_t SecToMsec(uint32_t aSeconds) { return aSeconds * 1000u; }
 
-   static uint32_t MsecToSec(uint32_t aMilliseconds) { return aMilliseconds / 1000u; }
+    static uint32_t MsecToSec(uint32_t aMilliseconds) { return aMilliseconds / 1000u; }
 
 private:
     uint32_t mValue;
