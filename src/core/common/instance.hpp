@@ -9,6 +9,7 @@
 
 #include "net/message.hpp"
 #include "net/tasklet.hpp"
+#include "net/timer.hpp"
 
 #include "utils/isrpipe.hpp"
 
@@ -44,9 +45,13 @@ private:
 
     Utils::UartIsrpipe mUartIsrpipe;
 
-    Net::MessagePool mMessagePool;
+    Net::MessagePool mNetMessagePool;
 
-    Net::TaskletScheduler mTaskletScheduler;
+    Net::TaskletScheduler mNetTaskletScheduler;
+
+    Net::TimerMilliScheduler mNetTimerMilliScheduler;
+
+    Net::TimerMicroScheduler mNetTimerMicroScheduler;
 
     bool mIsInitialized;
 };
@@ -68,12 +73,22 @@ template <> inline Utils::UartIsrpipe &Instance::Get(void)
 
 template <> inline Net::MessagePool &Instance::Get(void)
 {
-    return mMessagePool;
+    return mNetMessagePool;
 }
 
 template <> inline Net::TaskletScheduler &Instance::Get(void)
 {
-    return mTaskletScheduler;
+    return mNetTaskletScheduler;
+}
+
+template <> inline Net::TimerMilliScheduler &Instance::Get(void)
+{
+    return mNetTimerMilliScheduler;
+}
+
+template <> inline Net::TimerMicroScheduler &Instance::Get(void)
+{
+    return mNetTimerMicroScheduler;
 }
 
 } // namespace vc

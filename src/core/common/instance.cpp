@@ -12,8 +12,10 @@ Instance::Instance(void)
     : mThreadScheduler()
     , mTimerScheduler(*this)
     , mUartIsrpipe()
-    , mMessagePool()
-    , mTaskletScheduler()
+    , mNetMessagePool()
+    , mNetTaskletScheduler()
+    , mNetTimerMilliScheduler()
+    , mNetTimerMicroScheduler()
     , mIsInitialized(false)
 {
 }

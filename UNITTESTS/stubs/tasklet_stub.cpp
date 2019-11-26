@@ -1,8 +1,13 @@
-#include <vcos/instance.h>
+#include "net/tasklet.hpp"
 
-using namespace vc;
+namespace vc {
+namespace Net {
 
-__attribute__((weak)) void vcNetTaskletsSignalPending(vcInstance *aInstance)
+TaskletScheduler::TaskletScheduler(void)
+    : mHead(NULL)
+    , mTail(NULL)
 {
-    (void) aInstance;
 }
+
+} // namespace Net
+} // namespace vc

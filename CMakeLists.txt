@@ -25,23 +25,23 @@ set(FIRST_PARTY_COMPILE_FLAGS
 
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-set(PLATFORM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/platform/${PLATFORM_NAME})
+set(CPU_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cpu/${CPU_NAME})
 
 set(APPS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/apps)
 
-set(PLATFORM_INCLUDE_DIRECTORIES
-    ${PLATFORM_DIR}
+set(CPU_INCLUDE_DIRECTORIES
+    ${CPU_DIR}
 )
 
-if (${PLATFORM_NAME} STREQUAL sirius)
-    set(PLATFORM_INCLUDE_DIRECTORIES
-        ${PLATFORM_INCLUDE_DIRECTORIES}
+if (${CPU_NAME} STREQUAL sirius)
+    set(CPU_INCLUDE_DIRECTORIES
+        ${CPU_INCLUDE_DIRECTORIES}
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ARM/cmsis
     )
 endif()
 
 set(PROJECT_CONFIG_DEFINITIONS
-    VCOS_PROJECT_CORE_CONFIG_FILE=\"vcos-core-${PLATFORM_NAME}-config.h\"
+    VCOS_PROJECT_CORE_CONFIG_FILE=\"vcos-core-${CPU_NAME}-config.h\"
 )
 
 add_library(vcos_src_core
@@ -63,8 +63,11 @@ add_library(vcos_src_core
     ${SRC_DIR}/core/utils/bitarithm.c
     ${SRC_DIR}/core/utils/isrpipe.cpp
     ${SRC_DIR}/core/utils/ringbuffer.cpp
+    ${SRC_DIR}/core/net/platform/alarm.c
+    ${SRC_DIR}/core/net/platform.c
     ${SRC_DIR}/core/net/message.cpp
     ${SRC_DIR}/core/net/tasklet.cpp
+    ${SRC_DIR}/core/net/timer.cpp
 )
 
 target_include_directories(vcos_src_core
@@ -73,7 +76,7 @@ target_include_directories(vcos_src_core
         ${SRC_DIR}/core
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${PLATFORM_INCLUDE_DIRECTORIES}
+        ${CPU_INCLUDE_DIRECTORIES}
 )
 
 target_compile_options(vcos_src_core
@@ -98,7 +101,7 @@ target_include_directories(vcos_src_cli
         ${SRC_DIR}/cli
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${PLATFORM_INCLUDE_DIRECTORIES}
+        ${CPU_INCLUDE_DIRECTORIES}
 )
 
 target_compile_options(vcos_src_cli
@@ -119,7 +122,7 @@ add_library(vcos_src_arduino
 target_include_directories(vcos_src_arduino
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${PLATFORM_INCLUDE_DIRECTORIES}
+        ${CPU_INCLUDE_DIRECTORIES}
 )
 
 target_compile_options(vcos_src_arduino
@@ -135,7 +138,7 @@ target_link_libraries(vcos_apps_cli
     PRIVATE
         vcos_src_core
         vcos_src_cli
-        vcos_platform_${PLATFORM_NAME}
+        vcos_cpu_${CPU_NAME}
 )
 
 add_executable(vcos_apps_arduino
@@ -146,39 +149,39 @@ target_link_libraries(vcos_apps_arduino
     PRIVATE
         vcos_src_core
         vcos_src_arduino
-        vcos_platform_${PLATFORM_NAME}
+        vcos_cpu_${CPU_NAME}
 )
 
-if (${PLATFORM_NAME} STREQUAL sirius)
-    add_library(vcos_platform_sirius
-        ${PLATFORM_DIR}/periph/gpio.c
-        ${PLATFORM_DIR}/periph/tim.c
-        ${PLATFORM_DIR}/periph/uart.c
-        ${PLATFORM_DIR}/cpu.c
-        ${PLATFORM_DIR}/irq.c
-        ${PLATFORM_DIR}/panic.c
-        ${PLATFORM_DIR}/syscalls.c
-        ${PLATFORM_DIR}/vectors.c
-        ${PLATFORM_DIR}/vectors_cortexm.c
+if (${CPU_NAME} STREQUAL sirius)
+    add_library(vcos_cpu_sirius
+        ${CPU_DIR}/periph/gpio.c
+        ${CPU_DIR}/periph/tim.c
+        ${CPU_DIR}/periph/uart.c
+        ${CPU_DIR}/cpu.c
+        ${CPU_DIR}/irq.c
+        ${CPU_DIR}/panic.c
+        ${CPU_DIR}/syscalls.c
+        ${CPU_DIR}/vectors.c
+        ${CPU_DIR}/vectors_cortexm.c
     )
 
-    target_include_directories(vcos_platform_sirius
+    target_include_directories(vcos_cpu_sirius
         PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR}/include
-            ${PLATFORM_INCLUDE_DIRECTORIES}
+            ${CPU_INCLUDE_DIRECTORIES}
     )
 
-    target_compile_options(vcos_platform_sirius
+    target_compile_options(vcos_cpu_sirius
         PRIVATE
             ${FIRST_PARTY_COMPILE_FLAGS}
     )
 
     #special link script
-    set_target_properties(vcos_apps_cli PROPERTIES LINK_DEPENDS ${PLATFORM_DIR}/sirius.ld)
-    set_target_properties(vcos_apps_cli PROPERTIES LINK_FLAGS "-L${CMAKE_CURRENT_SOURCE_DIR}/build -Wl,--whole-archive -lvcos_src_core -lvcos_src_cli -lvcos_platform_sirius -Wl,--no-whole-archive -T ${PLATFORM_DIR}/sirius.ld -lc -lnosys -lm -lstdc++")
+    set_target_properties(vcos_apps_cli PROPERTIES LINK_DEPENDS ${CPU_DIR}/sirius.ld)
+    set_target_properties(vcos_apps_cli PROPERTIES LINK_FLAGS "-L${CMAKE_CURRENT_SOURCE_DIR}/build -Wl,--whole-archive -lvcos_src_core -lvcos_src_cli -lvcos_cpu_sirius -Wl,--no-whole-archive -T ${CPU_DIR}/sirius.ld -lc -lnosys -lm -lstdc++")
 
-    set_target_properties(vcos_apps_arduino PROPERTIES LINK_DEPENDS ${PLATFORM_DIR}/sirius.ld)
-    set_target_properties(vcos_apps_arduino PROPERTIES LINK_FLAGS "-L${CMAKE_CURRENT_SOURCE_DIR}/build -Wl,--whole-archive -lvcos_src_core -lvcos_src_arduino -lvcos_platform_sirius -Wl,--no-whole-archive -T ${PLATFORM_DIR}/sirius.ld -lc -lnosys -lm -lstdc++")
+    set_target_properties(vcos_apps_arduino PROPERTIES LINK_DEPENDS ${CPU_DIR}/sirius.ld)
+    set_target_properties(vcos_apps_arduino PROPERTIES LINK_FLAGS "-L${CMAKE_CURRENT_SOURCE_DIR}/build -Wl,--whole-archive -lvcos_src_core -lvcos_src_arduino -lvcos_cpu_sirius -Wl,--no-whole-archive -T ${CPU_DIR}/sirius.ld -lc -lnosys -lm -lstdc++")
 
     # build bin file
     add_custom_command(OUTPUT vcos_apps_cli.bin
@@ -206,7 +209,7 @@ endif()
 set(PRETTY_DIRS
     ./src
     ./include
-    ./platform
+    ./cpu
     ./apps
 )
 
