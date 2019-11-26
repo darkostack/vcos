@@ -68,6 +68,7 @@ add_library(vcos_src_core
     ${SRC_DIR}/core/net/message.cpp
     ${SRC_DIR}/core/net/tasklet.cpp
     ${SRC_DIR}/core/net/timer.cpp
+    ${SRC_DIR}/core/net/utils/heap.cpp
 )
 
 target_include_directories(vcos_src_core

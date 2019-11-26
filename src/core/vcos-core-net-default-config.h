@@ -9,4 +9,8 @@
 #define VCOS_NET_CONFIG_MESSAGE_BUFFER_SIZE (sizeof(void *) * 32)
 #endif
 
+#ifndef VCOS_NET_CONFIG_HEAP_INTERNAL_SIZE
+#define VCOS_NET_CONFIG_HEAP_INTERNAL_SIZE (3072 * sizeof(void *))
+#endif
+
 #endif /* VCOS_CORE_NET_DEFAULT_CONFIG_H */

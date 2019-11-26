@@ -12,6 +12,7 @@ set(unittest-test-sources
     stubs/tasklet_api_stub.cpp
     stubs/timer_stub.cpp
     stubs/message_stub.cpp
+    stubs/heap_stub.cpp
 )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DVCOS_PROJECT_CORE_CONFIG_FILE='\"vcos-core-unittest-config.h\"'")

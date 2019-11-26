@@ -10,6 +10,7 @@
 #include "net/message.hpp"
 #include "net/tasklet.hpp"
 #include "net/timer.hpp"
+#include "net/utils/heap.hpp"
 
 #include "utils/isrpipe.hpp"
 
@@ -32,6 +33,12 @@ public:
 
     void Finalize(void);
 
+    void HeapFree(void *aPointer) { mHeap.Free(aPointer); }
+
+    void *HeapCAlloc(size_t aCount, size_t aSize) { return mHeap.CAlloc(aCount, aSize); }
+
+    Net::Utils::Heap &GetHeap(void) { return mHeap; }
+
     template <typename Type> inline Type &Get(void);
 
 private:
@@ -45,13 +52,15 @@ private:
 
     Utils::UartIsrpipe mUartIsrpipe;
 
-    Net::MessagePool mNetMessagePool;
+    Net::MessagePool mMessagePool;
 
-    Net::TaskletScheduler mNetTaskletScheduler;
+    Net::TaskletScheduler mTaskletScheduler;
 
-    Net::TimerMilliScheduler mNetTimerMilliScheduler;
+    Net::TimerMilliScheduler mTimerMilliScheduler;
 
-    Net::TimerMicroScheduler mNetTimerMicroScheduler;
+    Net::TimerMicroScheduler mTimerMicroScheduler;
+
+    Net::Utils::Heap mHeap;
 
     bool mIsInitialized;
 };
@@ -73,22 +82,22 @@ template <> inline Utils::UartIsrpipe &Instance::Get(void)
 
 template <> inline Net::MessagePool &Instance::Get(void)
 {
-    return mNetMessagePool;
+    return mMessagePool;
 }
 
 template <> inline Net::TaskletScheduler &Instance::Get(void)
 {
-    return mNetTaskletScheduler;
+    return mTaskletScheduler;
 }
 
 template <> inline Net::TimerMilliScheduler &Instance::Get(void)
 {
-    return mNetTimerMilliScheduler;
+    return mTimerMilliScheduler;
 }
 
 template <> inline Net::TimerMicroScheduler &Instance::Get(void)
 {
-    return mNetTimerMicroScheduler;
+    return mTimerMicroScheduler;
 }
 
 } // namespace vc
