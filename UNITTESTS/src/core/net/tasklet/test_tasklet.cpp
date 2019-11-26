@@ -90,6 +90,8 @@ TEST_F(TestTasklet, functions)
     EXPECT_EQ(test3.Post(), VC_NET_ERROR_NONE);
     EXPECT_EQ(test2.Post(), VC_NET_ERROR_NONE);
 
+    EXPECT_TRUE(obj->Get<Net::TaskletScheduler>().AreTaskletsPending());
+
     obj->Get<Net::TaskletScheduler>().ProcessQueuedTasklets();
 
     EXPECT_FALSE(obj->Get<Net::TaskletScheduler>().AreTaskletsPending());
