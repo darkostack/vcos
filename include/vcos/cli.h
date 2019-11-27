@@ -9,8 +9,6 @@ extern "C" {
 
 void vcCliUartInit(vcInstance *aInstance);
 
-void vcCliUartRun(void);
-
 void vcCliUartOutputBytes(const uint8_t *aBytes, uint8_t aLength);
 
 void vcCliUartOutputFormat(const char *aFmt, ...);

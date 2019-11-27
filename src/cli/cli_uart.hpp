@@ -8,6 +8,7 @@
 
 #include "common/instance.hpp"
 #include "common/new.hpp"
+#include "common/thread.hpp"
 
 namespace vc {
 namespace Cli {
@@ -27,14 +28,25 @@ public:
 
     void ReceiveTask(const uint8_t *aBuf, uint16_t aBufLength);
 
+    void ThreadCreate(Instance *aInstance)
+    {
+        mUartThreadPid =
+            mUartThread.Create(mUartThreadStack, sizeof(mUartThreadStack), VCOS_CONFIG_THREAD_PRIORITY_MAIN,
+                               THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, UartThreadFunc,
+                               static_cast<void *>(aInstance), "uart");
+    }
+
+    vcKernelPid GetUartThreadPid(void) { return mUartThreadPid; }
+
     static Uart *sUartServer;
 
 private:
     enum
     {
-        kRxBufferSize  = VCOS_CONFIG_CLI_UART_RX_BUFFER_SIZE,
-        kTxBufferSize  = VCOS_CONFIG_CLI_UART_TX_BUFFER_SIZE,
-        kMaxLineLength = VCOS_CONFIG_CLI_MAX_LINE_LENGTH,
+        kRxBufferSize        = VCOS_CONFIG_CLI_UART_RX_BUFFER_SIZE,
+        kTxBufferSize        = VCOS_CONFIG_CLI_UART_TX_BUFFER_SIZE,
+        kMaxLineLength       = VCOS_CONFIG_CLI_MAX_LINE_LENGTH,
+        kUartThreadStackSize = VCOS_CONFIG_CLI_THREAD_STACKSIZE,
     };
 
     int  ProcessCommand(void);
@@ -50,6 +62,11 @@ private:
     uint16_t mSendLength;
 
     Interpreter mInterpreter;
+
+    Thread       mUartThread;
+    vcKernelPid  mUartThreadPid;
+    char         mUartThreadStack[kUartThreadStackSize];
+    static void *UartThreadFunc(void *aArgs);
 
     friend class Interpreter;
 };

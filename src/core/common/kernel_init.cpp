@@ -81,10 +81,13 @@ extern "C" void vcKernelInit(void)
 
     printf("\r\n\r\nkernel started (version: 0.0.1)\r\n\r\n");
 
-    Thread mainThread(sMainStack, sizeof(sMainStack), VCOS_CONFIG_THREAD_PRIORITY_MAIN,
+    Thread mainThread;
+    Thread idleThread;
+
+    mainThread.Create(sMainStack, sizeof(sMainStack), VCOS_CONFIG_THREAD_PRIORITY_MAIN,
                       THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, mainThreadFunc, NULL, "main");
 
-    Thread idleThread(sIdleStack, sizeof(sIdleStack), VCOS_CONFIG_THREAD_PRIORITY_IDLE,
+    idleThread.Create(sIdleStack, sizeof(sIdleStack), VCOS_CONFIG_THREAD_PRIORITY_IDLE,
                       THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, idleThreadFunc, NULL, "idle");
 
     ThreadScheduler::SwitchContextExit();

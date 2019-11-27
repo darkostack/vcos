@@ -3,6 +3,7 @@
 
 #include <vcos/cli.h>
 #include <vcos/instance.h>
+#include <vcos/timer.h>
 
 int main(void)
 {
@@ -12,10 +13,10 @@ int main(void)
 
     vcCliUartInit(instance);
 
-    vcCliUartRun();
-
-    /* Should not reach here */
-    assert(0);
+    while (1)
+    {
+        vcTimerSleepUsec(100);
+    }
 
     return 0;
 }

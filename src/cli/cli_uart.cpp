@@ -6,6 +6,8 @@
 
 #include "cli/cli_uart.hpp"
 
+#include "utils/isrpipe.hpp"
+
 namespace vc {
 namespace Cli {
 
@@ -20,7 +22,10 @@ static vcDEFINE_ALIGNED_VAR(sCliUartRaw, sizeof(Uart), uint64_t);
 extern "C" void vcCliUartInit(vcInstance *aInstance)
 {
     Instance *instance = static_cast<Instance *>(aInstance);
-    Uart::sUartServer  = new (&sCliUartRaw) Uart(instance);
+
+    Uart::sUartServer = new (&sCliUartRaw) Uart(instance);
+
+    Uart::sUartServer->ThreadCreate(instance);
 }
 
 extern "C" void vcCliUartOutputBytes(const uint8_t *aBytes, uint8_t aLength)
@@ -38,6 +43,8 @@ extern "C" void vcCliUartOutputFormat(const char *aFmt, ...)
 
 Uart::Uart(Instance *aInstance)
     : mInterpreter(aInstance)
+    , mUartThread()
+    , mUartThreadPid(KERNEL_PID_UNDEF)
 {
     mRxLength   = 0;
     mTxHead     = 0;
@@ -45,16 +52,21 @@ Uart::Uart(Instance *aInstance)
     mSendLength = 0;
 }
 
-extern "C" void vcCliUartRun(void)
+void *Uart::UartThreadFunc(void *aArgs)
 {
+    Instance *instance = static_cast<Instance *>(aArgs);
+
+    char c;
+
     while (1)
     {
-        int c = getchar();
-
-        assert(c >= 0);
-
-        Uart::sUartServer->ReceiveTask(reinterpret_cast<const uint8_t *>(&c), 1);
+        if (instance->Get<Utils::UartIsrpipe>().Read(&c, 1))
+        {
+            Uart::sUartServer->ReceiveTask(reinterpret_cast<const uint8_t *>(&c), 1);
+        }
     }
+
+    return NULL;
 }
 
 void Uart::ReceiveTask(const uint8_t *aBuf, uint16_t aBufLength)
