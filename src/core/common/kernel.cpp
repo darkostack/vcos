@@ -7,9 +7,7 @@
 #include <vcos/stdiobase.h>
 
 #include "common/instance.hpp"
-#include "common/thread.hpp"
-
-#include "vcos-core-config.h"
+#include "common/kernel.hpp"
 
 namespace vc {
 
@@ -33,9 +31,9 @@ extern "C" __attribute__((weak)) int main(void)
     }
 }
 
-void *mainThreadFunc(void *aArg)
+void *Kernel::MainThreadFunc(void *aArgs)
 {
-    (void)aArg;
+    (void)aArgs;
 
     setup();
 
@@ -54,9 +52,9 @@ void *mainThreadFunc(void *aArg)
     return NULL;
 }
 
-void *idleThreadFunc(void *aArg)
+void *Kernel::IdleThreadFunc(void *aArgs)
 {
-    (void)aArg;
+    (void)aArgs;
 
     while (1)
     {
@@ -66,8 +64,16 @@ void *idleThreadFunc(void *aArg)
     return NULL;
 }
 
-static char sMainStack[VCOS_CONFIG_THREAD_STACKSIZE_MAIN];
-static char sIdleStack[VCOS_CONFIG_THREAD_STACKSIZE_IDLE];
+void Kernel::Init(Instance *aInstance)
+{
+    mMainKernelPid = mMainThread.Create(mMainThreadStack, sizeof(mMainThreadStack), VCOS_CONFIG_THREAD_PRIORITY_MAIN,
+                                        THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, MainThreadFunc,
+                                        static_cast<void *>(aInstance), "main");
+
+    mIdleKernelPid = mIdleThread.Create(mIdleThreadStack, sizeof(mIdleThreadStack), VCOS_CONFIG_THREAD_PRIORITY_IDLE,
+                                        THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, IdleThreadFunc,
+                                        static_cast<void *>(aInstance), "idle");
+}
 
 extern "C" void vcKernelInit(void)
 {
@@ -81,14 +87,7 @@ extern "C" void vcKernelInit(void)
 
     printf("\r\n\r\nkernel started (version: 0.0.1)\r\n\r\n");
 
-    Thread mainThread;
-    Thread idleThread;
-
-    mainThread.Create(sMainStack, sizeof(sMainStack), VCOS_CONFIG_THREAD_PRIORITY_MAIN,
-                      THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, mainThreadFunc, NULL, "main");
-
-    idleThread.Create(sIdleStack, sizeof(sIdleStack), VCOS_CONFIG_THREAD_PRIORITY_IDLE,
-                      THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, idleThreadFunc, NULL, "idle");
+    instance.Get<Kernel>().Init(&instance);
 
     ThreadScheduler::SwitchContextExit();
 }

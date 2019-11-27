@@ -4,6 +4,7 @@
 #include "vcos-core-config.h"
 
 #include "common/code_utils.hpp"
+#include "common/kernel.hpp"
 #include "common/thread.hpp"
 #include "common/timer.hpp"
 
@@ -46,6 +47,8 @@ private:
 
     void AfterInit(void);
 
+    Kernel mKernel;
+
     ThreadScheduler mThreadScheduler;
 
     TimerScheduler mTimerScheduler;
@@ -64,6 +67,11 @@ private:
 
     bool mIsInitialized;
 };
+
+template <> inline Kernel &Instance::Get(void)
+{
+    return mKernel;
+}
 
 template <> inline ThreadScheduler &Instance::Get(void)
 {

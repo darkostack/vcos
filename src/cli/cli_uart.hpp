@@ -28,13 +28,7 @@ public:
 
     void ReceiveTask(const uint8_t *aBuf, uint16_t aBufLength);
 
-    void ThreadCreate(Instance *aInstance)
-    {
-        mUartThreadPid =
-            mUartThread.Create(mUartThreadStack, sizeof(mUartThreadStack), VCOS_CONFIG_THREAD_PRIORITY_MAIN,
-                               THREAD_FLAGS_CREATE_WOUT_YIELD | THREAD_FLAGS_CREATE_STACKTEST, UartThreadFunc,
-                               static_cast<void *>(aInstance), "uart");
-    }
+    void ThreadCreate(Instance *aInstance);
 
     vcKernelPid GetUartThreadPid(void) { return mUartThreadPid; }
 
