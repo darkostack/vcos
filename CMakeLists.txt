@@ -55,6 +55,7 @@ add_library(vcos_src_core
     ${SRC_DIR}/core/api/net/message_api.cpp
     ${SRC_DIR}/core/api/net/tasklet_api.cpp
     ${SRC_DIR}/core/common/instance.cpp
+    ${SRC_DIR}/core/common/crc16.cpp
     ${SRC_DIR}/core/common/kernel.cpp
     ${SRC_DIR}/core/common/msg.cpp
     ${SRC_DIR}/core/common/mutex.cpp
