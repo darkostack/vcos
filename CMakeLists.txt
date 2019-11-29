@@ -60,15 +60,18 @@ add_library(vcos_src_core
     ${SRC_DIR}/core/common/mutex.cpp
     ${SRC_DIR}/core/common/thread.cpp
     ${SRC_DIR}/core/common/timer.cpp
+    ${SRC_DIR}/core/common/random.cpp
     ${SRC_DIR}/core/utils/bitarithm.c
     ${SRC_DIR}/core/utils/isrpipe.cpp
     ${SRC_DIR}/core/utils/ringbuffer.cpp
+    ${SRC_DIR}/core/utils/tinymt32/tinymt32.c
     ${SRC_DIR}/core/net/platform/alarm.c
     ${SRC_DIR}/core/net/platform.c
     ${SRC_DIR}/core/net/message.cpp
     ${SRC_DIR}/core/net/tasklet.cpp
     ${SRC_DIR}/core/net/timer.cpp
     ${SRC_DIR}/core/net/tlvs.cpp
+    ${SRC_DIR}/core/net/trickle_timer.cpp
     ${SRC_DIR}/core/net/utils/heap.cpp
 )
 
