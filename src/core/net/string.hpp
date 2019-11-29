@@ -26,7 +26,7 @@ template <uint16_t SIZE> class String : private StringBase
 public:
     enum
     {
-        kSize = SIZE;
+        kSize = SIZE,
     };
 
     String(void)
