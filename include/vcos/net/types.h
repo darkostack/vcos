@@ -153,6 +153,10 @@ typedef enum vcNetRadioState
     VC_NET_RADIO_STATE_TRANSMIT = 3,
 } vcNetRadioState;
 
+typedef uint32_t vcNetChangedFlags;
+
+typedef void (*vcNetStateChangedCallback)(vcNetChangedFlags aFlags, void *aContext);
+
 #ifdef __cplusplus
 }
 #endif

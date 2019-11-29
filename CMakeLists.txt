@@ -73,6 +73,7 @@ add_library(vcos_src_core
     ${SRC_DIR}/core/net/tlvs.cpp
     ${SRC_DIR}/core/net/trickle_timer.cpp
     ${SRC_DIR}/core/net/string.cpp
+    ${SRC_DIR}/core/net/notifier.cpp
     ${SRC_DIR}/core/net/utils/heap.cpp
 )
 

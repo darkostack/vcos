@@ -9,6 +9,7 @@
 #include "common/timer.hpp"
 
 #include "net/message.hpp"
+#include "net/notifier.hpp"
 #include "net/tasklet.hpp"
 #include "net/timer.hpp"
 #include "net/utils/heap.hpp"
@@ -57,6 +58,8 @@ private:
 
     Net::MessagePool mMessagePool;
 
+    Net::Notifier mNotifier;
+
     Net::TaskletScheduler mTaskletScheduler;
 
     Net::TimerMilliScheduler mTimerMilliScheduler;
@@ -91,6 +94,11 @@ template <> inline Utils::UartIsrpipe &Instance::Get(void)
 template <> inline Net::MessagePool &Instance::Get(void)
 {
     return mMessagePool;
+}
+
+template <> inline Net::Notifier &Instance::Get(void)
+{
+    return mNotifier;
 }
 
 template <> inline Net::TaskletScheduler &Instance::Get(void)
