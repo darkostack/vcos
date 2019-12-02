@@ -18,6 +18,7 @@ int main(void)
     while (1)
     {
         vcNetTaskletProcess(instance);
+        vcTimerSleepUsec(100);
     }
 
     return 0;
