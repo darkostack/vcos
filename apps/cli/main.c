@@ -5,6 +5,8 @@
 #include <vcos/instance.h>
 #include <vcos/timer.h>
 
+#include <vcos/net/tasklet.h>
+
 int main(void)
 {
     vcInstance *instance = vcInstanceGet();
@@ -15,7 +17,7 @@ int main(void)
 
     while (1)
     {
-        vcTimerSleepUsec(100);
+        vcNetTaskletProcess(instance);
     }
 
     return 0;
