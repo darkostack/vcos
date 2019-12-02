@@ -16,8 +16,7 @@ template <> inline Instance &InstanceLocator::Get(void) const
 template <typename Type> inline Type &InstanceLocator::Get(void) const
 {
     // This method uses the `Instance` template method `Get<Type>`
-    // to get to the given `Type` from the single OpenThread
-    // instance.
+    // to get to the given `Type` from the single instance.
     return GetInstance().Get<Type>();
 }
 
