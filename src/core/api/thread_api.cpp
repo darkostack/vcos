@@ -34,7 +34,8 @@ int vcThreadPidIsValid(vcKernelPid aPid)
     return ((KERNEL_PID_FIRST <= aPid) && (aPid <= KERNEL_PID_LAST));
 }
 
-void vcThreadYieldHigher(void)
+void vcThreadYield(vcInstance *aInstance)
 {
-    ThreadScheduler::YieldHigher();
+    Instance &instance = *static_cast<Instance *>(aInstance);
+    instance.Get<ThreadScheduler>().Yield();
 }

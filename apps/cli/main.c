@@ -18,7 +18,7 @@ int main(void)
     while (1)
     {
         vcNetTaskletProcess(instance);
-        vcThreadYieldHigher();
+        vcThreadYield(instance);
     }
 
     return 0;

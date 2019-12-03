@@ -32,7 +32,7 @@ void vcThreadTaskExit(void);
 
 int vcThreadPidIsValid(vcKernelPid aPid);
 
-void vcThreadYieldHigher(void);
+void vcThreadYield(vcInstance *aInstance);
 
 #ifdef __cplusplus
 }
