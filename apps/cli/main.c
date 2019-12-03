@@ -3,7 +3,7 @@
 
 #include <vcos/cli.h>
 #include <vcos/instance.h>
-#include <vcos/timer.h>
+#include <vcos/thread.h>
 
 #include <vcos/net/tasklet.h>
 
@@ -18,7 +18,7 @@ int main(void)
     while (1)
     {
         vcNetTaskletProcess(instance);
-        vcTimerSleepUsec(100);
+        vcThreadYieldHigher();
     }
 
     return 0;

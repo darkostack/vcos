@@ -111,9 +111,9 @@ public:
 
     enum Type
     {
-        kTypeNone,      // No address.
-        kTypeShort,     // IEEE 802.15.4 Short Address
-        kTypeExtended,  // IEEE 802.15.4 Extended Address
+        kTypeNone,     // No address.
+        kTypeShort,    // IEEE 802.15.4 Short Address
+        kTypeExtended, // IEEE 802.15.4 Extended Address
     };
 
     Address(void)
@@ -213,7 +213,7 @@ public:
 
     private:
         const char *mBuffer;
-        uint8_t mLength;
+        uint8_t     mLength;
     };
 
     NetworkName(void) { m8[0] = '\0'; }
@@ -530,7 +530,6 @@ public:
         kNativeFlag      = 1 << 3,                // Native Commissioner flag.
         kJoiningFlag     = 1 << 0,                // Joining Permitted flag.
     };
-
 
 } __attribute__((packed));
 
